@@ -1,0 +1,304 @@
+INFO:     Will watch for changes in these directories: ['/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [39333] using StatReload
+/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:275: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+INFO:     Started server process [39346]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:50072 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52126 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38282 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37556 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37556 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:mcp_agent:Listing available MCP tools...
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:34:04.0494...figuration for looker" ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+2026-01-30T22:34:04.099723764Z ERROR "toolbox failed to initialize: unable to initialize configs: unable to initialize source \"looker-source\": incorrect settings: Get \"string/api/4.0/user\": Post \"string/api/4.0/login\": unsupported protocol scheme \"\"" 
+ERROR:mcp_agent:Failed to list tools: unhandled errors in a TaskGroup (1 sub-exception)
+ERROR:main:Configuration failed
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/mcp_agent.py", line 46, in list_available_tools
+  |     async with stdio_client(server_params) as (read, write):
+  |   File "/usr/lib/python3.10/contextlib.py", line 217, in __aexit__
+  |     await self.gen.athrow(typ, value, traceback)
+  |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 182, in stdio_client
+  |     async with (
+  |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Exception Group Traceback (most recent call last):
+    |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 189, in stdio_client
+    |     yield read_stream, write_stream
+    |   File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/mcp_agent.py", line 47, in list_available_tools
+    |     async with ClientSession(read, write) as session:
+    |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/shared/session.py", line 238, in __aexit__
+    |     return await self._task_group.__aexit__(exc_type, exc_val, exc_tb)
+    |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+    |     raise BaseExceptionGroup(
+    | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+    +-+---------------- 1 ----------------
+      | Traceback (most recent call last):
+      |   File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/mcp_agent.py", line 48, in list_available_tools
+      |     await session.initialize()
+      |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/session.py", line 171, in initialize
+      |     result = await self.send_request(
+      |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/shared/session.py", line 306, in send_request
+      |     raise McpError(response_or_error.error)
+      | mcp.shared.exceptions.McpError: Connection closed
+      +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/main.py", line 65, in configure_looker
+    tools = await agent.list_available_tools(
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/mcp_agent.py", line 63, in list_available_tools
+    raise Exception(f"Failed to connect to Looker: {str(e)}")
+Exception: Failed to connect to Looker: unhandled errors in a TaskGroup (1 sub-exception)
+INFO:     127.0.0.1:39276 - "POST /api/configure_looker HTTP/1.1" 400 Bad Request
+INFO:main:Fetching tools for new credentials
+INFO:mcp_agent:Listing available MCP tools...
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:34:41.7537...figuration for looker" ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+2026-01-30T22:34:41.826238209Z ERROR "toolbox failed to initialize: unable to initialize configs: unable to initialize source \"looker-source\": incorrect settings: Get \"string/api/4.0/user\": Post \"string/api/4.0/login\": unsupported protocol scheme \"\"" 
+ERROR:mcp_agent:Failed to list tools: unhandled errors in a TaskGroup (1 sub-exception)
+ERROR:main:Chat processing failed
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/mcp_agent.py", line 46, in list_available_tools
+  |     async with stdio_client(server_params) as (read, write):
+  |   File "/usr/lib/python3.10/contextlib.py", line 217, in __aexit__
+  |     await self.gen.athrow(typ, value, traceback)
+  |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 182, in stdio_client
+  |     async with (
+  |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Exception Group Traceback (most recent call last):
+    |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 189, in stdio_client
+    |     yield read_stream, write_stream
+    |   File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/mcp_agent.py", line 47, in list_available_tools
+    |     async with ClientSession(read, write) as session:
+    |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/shared/session.py", line 238, in __aexit__
+    |     return await self._task_group.__aexit__(exc_type, exc_val, exc_tb)
+    |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+    |     raise BaseExceptionGroup(
+    | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+    +-+---------------- 1 ----------------
+      | Traceback (most recent call last):
+      |   File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/mcp_agent.py", line 48, in list_available_tools
+      |     await session.initialize()
+      |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/session.py", line 171, in initialize
+      |     result = await self.send_request(
+      |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/shared/session.py", line 306, in send_request
+      |     raise McpError(response_or_error.error)
+      | mcp.shared.exceptions.McpError: Connection closed
+      +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/main.py", line 101, in chat
+    tools = await agent.list_available_tools(
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/mcp_agent.py", line 63, in list_available_tools
+    raise Exception(f"Failed to connect to Looker: {str(e)}")
+Exception: Failed to connect to Looker: unhandled errors in a TaskGroup (1 sub-exception)
+INFO:     127.0.0.1:35494 - "POST /api/chat HTTP/1.1" 500 Internal Server Error
+INFO:main:Fetching tools for new credentials
+INFO:mcp_agent:Listing available MCP tools...
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:34:53.9810...figuration for looker" ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:34:54.5673...nitialized 1 sources." ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:34:54.5674...lized 0 authServices." ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:34:54.5676...Initialized 15 tools." ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:34:54.5676...itialized 2 toolsets." ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+2026-01-30T22:34:54.572767536Z ERROR "toolbox failed to start listener: failed to open listener for \"127.0.0.1:5000\": listen tcp 127.0.0.1:5000: bind: address already in use" 
+ERROR:mcp_agent:Failed to list tools: unhandled errors in a TaskGroup (1 sub-exception)
+ERROR:main:Chat processing failed
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/mcp_agent.py", line 46, in list_available_tools
+  |     async with stdio_client(server_params) as (read, write):
+  |   File "/usr/lib/python3.10/contextlib.py", line 217, in __aexit__
+  |     await self.gen.athrow(typ, value, traceback)
+  |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 182, in stdio_client
+  |     async with (
+  |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Exception Group Traceback (most recent call last):
+    |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 189, in stdio_client
+    |     yield read_stream, write_stream
+    |   File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/mcp_agent.py", line 47, in list_available_tools
+    |     async with ClientSession(read, write) as session:
+    |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/shared/session.py", line 238, in __aexit__
+    |     return await self._task_group.__aexit__(exc_type, exc_val, exc_tb)
+    |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+    |     raise BaseExceptionGroup(
+    | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+    +-+---------------- 1 ----------------
+      | Traceback (most recent call last):
+      |   File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/mcp_agent.py", line 48, in list_available_tools
+      |     await session.initialize()
+      |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/session.py", line 171, in initialize
+      |     result = await self.send_request(
+      |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/shared/session.py", line 306, in send_request
+      |     raise McpError(response_or_error.error)
+      | mcp.shared.exceptions.McpError: Connection closed
+      +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/main.py", line 101, in chat
+    tools = await agent.list_available_tools(
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/mcp_agent.py", line 63, in list_available_tools
+    raise Exception(f"Failed to connect to Looker: {str(e)}")
+Exception: Failed to connect to Looker: unhandled errors in a TaskGroup (1 sub-exception)
+INFO:     127.0.0.1:35418 - "POST /api/chat HTTP/1.1" 500 Internal Server Error
+INFO:main:Fetching tools for new credentials
+INFO:mcp_agent:Listing available MCP tools...
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:35:46.3796...figuration for looker" ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:35:46.9222...nitialized 1 sources." ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:35:46.9222...lized 0 authServices." ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:35:46.9224...Initialized 15 tools." ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:35:46.9225...itialized 2 toolsets." ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+2026-01-30T22:35:46.936316314Z ERROR "toolbox failed to start listener: failed to open listener for \"127.0.0.1:5000\": listen tcp 127.0.0.1:5000: bind: address already in use" 
+ERROR:mcp_agent:Failed to list tools: unhandled errors in a TaskGroup (1 sub-exception)
+ERROR:main:Chat processing failed
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/mcp_agent.py", line 46, in list_available_tools
+  |     async with stdio_client(server_params) as (read, write):
+  |   File "/usr/lib/python3.10/contextlib.py", line 217, in __aexit__
+  |     await self.gen.athrow(typ, value, traceback)
+  |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 182, in stdio_client
+  |     async with (
+  |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Exception Group Traceback (most recent call last):
+    |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 189, in stdio_client
+    |     yield read_stream, write_stream
+    |   File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/mcp_agent.py", line 47, in list_available_tools
+    |     async with ClientSession(read, write) as session:
+    |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/shared/session.py", line 238, in __aexit__
+    |     return await self._task_group.__aexit__(exc_type, exc_val, exc_tb)
+    |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+    |     raise BaseExceptionGroup(
+    | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+    +-+---------------- 1 ----------------
+      | Traceback (most recent call last):
+      |   File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/mcp_agent.py", line 48, in list_available_tools
+      |     await session.initialize()
+      |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/session.py", line 171, in initialize
+      |     result = await self.send_request(
+      |   File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/shared/session.py", line 306, in send_request
+      |     raise McpError(response_or_error.error)
+      | mcp.shared.exceptions.McpError: Connection closed
+      +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/main.py", line 101, in chat
+    tools = await agent.list_available_tools(
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/mcp_agent.py", line 63, in list_available_tools
+    raise Exception(f"Failed to connect to Looker: {str(e)}")
+Exception: Failed to connect to Looker: unhandled errors in a TaskGroup (1 sub-exception)
+INFO:     127.0.0.1:38076 - "POST /api/chat HTTP/1.1" 500 Internal Server Error

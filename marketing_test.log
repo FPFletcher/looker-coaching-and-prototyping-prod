@@ -1,0 +1,24 @@
+
+🚀 Testing Visualization with Marketing Model
+
+🧪 Testing with marketing dashboarding tool model
+================================================================================
+
+📤 Request: 'give me the top 10 product categories in France'
+Expected: Agent should call create_chart with marketing_dashboarding_tool model
+
+📥 Response:
+--------------------------------------------------------------------------------
+
+================================================================================
+
+📊 Analysis:
+
+Tools called: 
+✓ Used create_chart: ❌ NO
+✓ Explore URL present: ❌ NO
+
+================================================================================
+
+❌ TEST FAILED
+  Issue: No explore URL in response

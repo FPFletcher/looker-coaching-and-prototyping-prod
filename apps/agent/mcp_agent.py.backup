@@ -1,0 +1,475 @@
+import os
+import json
+import logging
+import asyncio
+from typing import Dict, List, Any, Optional
+import google.generativeai as genai
+from anthropic import Anthropic
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+
+logger = logging.getLogger(__name__)
+
+class MCPAgent:
+    """
+    Conversational agent that uses Gemini or Claude to interpret user requests
+    and executes appropriate Looker MCP tools.
+    
+    Supports both Google Gemini and Anthropic Claude models.
+    """
+    
+    def __init__(self, model_name: str = "gemini-2.0-flash"):
+        self.model_name = model_name
+        self.is_claude = model_name.startswith("claude-")
+        
+        if self.is_claude:
+            if not os.getenv("ANTHROPIC_API_KEY"):
+                raise Exception("ANTHROPIC_API_KEY not found in environment")
+            self.client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        else:
+            if not os.getenv("GOOGLE_API_KEY"):
+                raise Exception("GOOGLE_API_KEY not found in environment")
+            genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+            self.model = genai.GenerativeModel(model_name)
+        
+        self.toolbox_bin = os.path.abspath(os.path.join(os.getcwd(), "../../tools/mcp-toolbox/toolbox"))
+        
+    def _get_server_params(self, looker_url: str, client_id: str, client_secret: str) -> StdioServerParameters:
+        """Create server parameters with proper environment setup."""
+        env = os.environ.copy()
+        env["LOOKER_BASE_URL"] = looker_url.rstrip("/")
+        env["LOOKER_CLIENT_ID"] = client_id
+        env["LOOKER_CLIENT_SECRET"] = client_secret
+        env["LOOKER_VERIFY_SSL"] = "true"
+        
+        return StdioServerParameters(
+            command=self.toolbox_bin,
+            args=["--stdio", "--prebuilt", "looker"],
+            env=env
+        )
+        
+    async def list_available_tools(self, looker_url: str, client_id: str, client_secret: str) -> List[Dict[str, Any]]:
+        """
+        Lists all available Looker MCP tools by starting an ephemeral session.
+        Returns tool names, descriptions, and schemas.
+        """
+        logger.info("Listing available MCP tools...")
+        
+        server_params = self._get_server_params(looker_url, client_id, client_secret)
+        
+        try:
+            async with stdio_client(server_params) as (read, write):
+                async with ClientSession(read, write) as session:
+                    await session.initialize()
+                    tools_result = await session.list_tools()
+                    
+                    tools = []
+                    for tool in tools_result.tools:
+                        tools.append({
+                            "name": tool.name,
+                            "description": tool.description,
+                            "inputSchema": tool.inputSchema
+                        })
+                    
+                    logger.info(f"Found {len(tools)} Looker tools")
+                    return tools
+        except Exception as e:
+            logger.error(f"Failed to list tools: {e}")
+            raise Exception(f"Failed to connect to Looker: {str(e)}")
+    
+    async def execute_tool(
+        self, 
+        tool_name: str, 
+        arguments: Dict[str, Any],
+        looker_url: str,
+        client_id: str,
+        client_secret: str
+    ) -> Dict[str, Any]:
+        """
+        Executes a single MCP tool with the given arguments.
+        """
+        logger.info(f"Executing tool: {tool_name} with args: {arguments}")
+        
+        server_params = self._get_server_params(looker_url, client_id, client_secret)
+        
+        try:
+            async with stdio_client(server_params) as (read, write):
+                async with ClientSession(read, write) as session:
+                    await session.initialize()
+                    
+                    result = await session.call_tool(tool_name, arguments)
+                    
+                    if result.isError:
+                        return {
+                            "success": False,
+                            "error": str(result.content)
+                        }
+                    
+                    return {
+                        "success": True,
+                        "result": result.content
+                    }
+        except Exception as e:
+            logger.error(f"Tool execution failed: {e}")
+            return {
+                "success": False,
+                "error": str(e)
+            }
+    
+    def _format_tools_for_claude(self, tools: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Convert MCP tools to Claude tool format."""
+        claude_tools = []
+        for tool in tools:
+            claude_tools.append({
+                "name": tool["name"],
+                "description": tool["description"],
+                "input_schema": tool["inputSchema"]
+            })
+        return claude_tools
+    
+    async def _process_with_claude(
+        self,
+        user_message: str,
+        history: List[Dict[str, str]],
+        tools: List[Dict[str, Any]],
+        looker_url: str,
+        client_id: str,
+        client_secret: str
+    ) -> Dict[str, Any]:
+        """Process message using Claude."""
+        claude_tools = self._format_tools_for_claude(tools)
+        
+        # Build messages from history
+        messages = []
+        for msg in history:
+            messages.append({
+                "role": msg["role"],
+                "content": msg["content"]
+            })
+        messages.append({
+            "role": "user",
+            "content": user_message
+        })
+        
+        system_prompt = """You are a Looker assistant with direct access to Looker MCP tools. 
+
+CRITICAL INSTRUCTIONS:
+- When asked to create, query, or modify anything in Looker, you MUST call the appropriate tool immediately
+- DO NOT just describe what you will do - ACTUALLY CALL THE TOOL
+- DO NOT say "Now let me..." or "I'll create..." without immediately calling the tool
+- After calling tools, you MUST provide a text response summarizing:
+  * What tools you called
+  * What the results were
+  * Any relevant URLs, IDs, or next steps for the user
+- NEVER leave your response empty - always explain what happened
+
+Available tools: """ + ", ".join([t["name"] for t in tools]) + """
+
+Example workflow for dashboard creation:
+1. Call make_dashboard with title and folder_id
+2. Get the dashboard ID from the result
+3. Call add_dashboard_element multiple times to add tiles
+4. Provide a summary with the dashboard URL"""
+        
+        
+        try:
+            response = self.client.messages.create(
+                model=self.model_name,
+                max_tokens=4096,
+                system=system_prompt,
+                messages=messages,
+                tools=claude_tools
+            )
+            
+            # Handle tool calls
+            tool_calls = []
+            tool_use_blocks = []  # Track tool use blocks with their IDs
+            final_text = ""
+            
+            for content_block in response.content:
+                if content_block.type == "text":
+                    final_text += content_block.text
+                elif content_block.type == "tool_use":
+                    tool_result = await self.execute_tool(
+                        content_block.name,
+                        content_block.input,
+                        looker_url,
+                        client_id,
+                        client_secret
+                    )
+                    tool_calls.append({
+                        "tool": content_block.name,
+                        "arguments": content_block.input,
+                        "result": tool_result
+                    })
+                    
+                    # Store tool_use_id for later reference
+                    tool_use_blocks.append({
+                        "id": content_block.id,
+                        "name": content_block.name,
+                        "input": content_block.input
+                    })
+                    
+                    # If tool succeeded, add result to response
+                    if tool_result.get("success"):
+                        result_content = tool_result.get("result", [])
+                        if result_content:
+                            # Convert result to string if it's a list of content objects
+                            if isinstance(result_content, list):
+                                result_str = ""
+                                for item in result_content:
+                                    if hasattr(item, 'text'):
+                                        result_str += item.text
+                                    else:
+                                        result_str += str(item)
+                                final_text += f"\n\n{result_str}"
+                            else:
+                                final_text += f"\n\n{json.dumps(result_content, indent=2)}"
+            
+            # If we made tool calls, get final response from Claude
+            if tool_calls and response.stop_reason == "tool_use":
+                # Build tool results for Claude
+                tool_result_content = []
+                for i, tc in enumerate(tool_calls):
+                    # Convert result to string format
+                    result_str = ""
+                    if tc["result"].get("success"):
+                        result_data = tc["result"].get("result", [])
+                        if isinstance(result_data, list):
+                            for item in result_data:
+                                if hasattr(item, 'text'):
+                                    result_str += item.text
+                                else:
+                                    result_str += str(item)
+                        else:
+                            result_str = json.dumps(result_data)
+                    else:
+                        result_str = f"Error: {tc['result'].get('error', 'Unknown error')}"
+                    
+                    tool_result_content.append({
+                        "type": "tool_result",
+                        "tool_use_id": tool_use_blocks[i]["id"],
+                        "content": result_str
+                    })
+                
+                # Add assistant's tool use to conversation
+                messages.append({
+                    "role": "assistant",
+                    "content": [{"type": "tool_use", "id": block["id"], "name": block["name"], "input": block["input"]} for block in tool_use_blocks]
+                })
+                
+                # Add tool results
+                messages.append({
+                    "role": "user",
+                    "content": tool_result_content
+                })
+                
+                # Get final response
+                final_response = self.client.messages.create(
+                    model=self.model_name,
+                    max_tokens=4096,
+                    system=system_prompt,
+                    messages=messages
+                )
+                
+                final_text = ""
+                for content_block in final_response.content:
+                    if content_block.type == "text":
+                        final_text += content_block.text
+                
+                # Log for debugging
+                logger.info(f"Claude final response: {final_text[:200] if final_text else 'EMPTY'}")
+                
+                # If no text, build a meaningful response from tool results
+                if not final_text:
+                    tool_summary = []
+                    for tc in tool_calls:
+                        tool_name = tc["tool"]
+                        success = tc["result"].get("success", False)
+                        if success:
+                            result_data = tc["result"].get("result", [])
+                            # Extract meaningful info from result
+                            if isinstance(result_data, list) and result_data:
+                                result_str = ""
+                                for item in result_data:
+                                    if hasattr(item, 'text'):
+                                        result_str += item.text
+                                    else:
+                                        result_str += str(item)
+                                tool_summary.append(f"✅ {tool_name}: {result_str[:100]}")
+                            else:
+                                tool_summary.append(f"✅ {tool_name}: Success")
+                        else:
+                            error = tc["result"].get("error", "Unknown error")
+                            tool_summary.append(f"❌ {tool_name}: {error}")
+                    
+                    final_text = "I executed the following:\n\n" + "\n".join(tool_summary)
+            
+            return {
+                "success": True,
+                "response": final_text,
+                "tool_calls": tool_calls
+            }
+            
+        except Exception as e:
+            logger.error(f"Claude processing failed: {e}")
+            return {
+                "success": False,
+                "response": f"An error occurred: {str(e)}",
+                "tool_calls": []
+            }
+    
+    async def _process_with_gemini(
+        self,
+        user_message: str,
+        history: List[Dict[str, str]],
+        tools: List[Dict[str, Any]],
+        looker_url: str,
+        client_id: str,
+        client_secret: str
+    ) -> Dict[str, Any]:
+        """Process message using Gemini (existing implementation)."""
+        # Build the prompt with tool information
+        tools_description = "\n".join([
+            f"- {tool['name']}: {tool['description']}"
+            for tool in tools
+        ])
+        
+        system_prompt = f"""You are a helpful Looker assistant with access to the following MCP tools:
+
+{tools_description}
+
+When a user asks you to do something:
+1. Determine which tool(s) to use
+2. Call the tool(s) with appropriate arguments
+3. Return a helpful response based on the results
+
+IMPORTANT: To create a dashboard with visualizations, you MUST follow this workflow:
+1. First call make_dashboard(title="Dashboard Name") to create the dashboard → this returns a dashboard_id
+2. Then call add_dashboard_element(dashboard_id=<id>, query={{...}}) for each visualization you want to add
+3. Finally, return the dashboard URL to the user
+
+Example for "create a sales dashboard":
+Step 1: make_dashboard(title="Sales Dashboard") → returns {{"dashboard_id": "123"}}
+Step 2: add_dashboard_element(dashboard_id="123", query={{"model": "ecommerce", "explore": "orders", "fields": ["orders.created_date", "orders.total_revenue"]}})
+Step 3: Return "I've created your sales dashboard: https://looker.app/dashboards/123"
+
+When you want to call a tool, respond with a JSON object in this format:
+{{"tool_call": {{"name": "tool_name", "arguments": {{...}}}}}}
+
+You can make multiple tool calls by responding with multiple JSON objects, one per line.
+After all tool calls are complete, provide a final natural language response to the user."""
+
+        # Build conversation history
+        conversation = []
+        for msg in history:
+            conversation.append({
+                "role": msg["role"],
+                "parts": [msg["content"]]
+            })
+        
+        # Add current message
+        conversation.append({
+            "role": "user",
+            "parts": [f"{system_prompt}\n\nUser request: {user_message}"]
+        })
+        
+        try:
+            # Get Gemini response
+            response = self.model.generate_content(conversation)
+            response_text = response.text
+            
+            # Parse tool calls from response
+            tool_calls = []
+            lines = response_text.strip().split("\n")
+            final_response = []
+            
+            for line in lines:
+                line = line.strip()
+                if line.startswith("{") and "tool_call" in line:
+                    try:
+                        tool_call_data = json.loads(line)
+                        if "tool_call" in tool_call_data:
+                            tool_name = tool_call_data["tool_call"]["name"]
+                            tool_args = tool_call_data["tool_call"]["arguments"]
+                            
+                            # Execute the tool
+                            result = await self.execute_tool(
+                                tool_name,
+                                tool_args,
+                                looker_url,
+                                client_id,
+                                client_secret
+                            )
+                            
+                            tool_calls.append({
+                                "tool": tool_name,
+                                "arguments": tool_args,
+                                "result": result
+                            })
+                    except json.JSONDecodeError:
+                        final_response.append(line)
+                else:
+                    if line:
+                        final_response.append(line)
+            
+            # If we made tool calls, ask Gemini for a final response
+            if tool_calls:
+                tool_results_summary = "\n".join([
+                    f"Tool {tc['tool']} returned: {json.dumps(tc['result'], indent=2)}"
+                    for tc in tool_calls
+                ])
+                
+                final_prompt = f"""Based on these tool execution results:
+
+{tool_results_summary}
+
+Please provide a helpful response to the user's original request: "{user_message}"
+
+Include any relevant URLs or IDs from the results."""
+
+                final_gen = self.model.generate_content(final_prompt)
+                final_text = final_gen.text
+            else:
+                final_text = "\n".join(final_response) if final_response else response_text
+            
+            return {
+                "success": True,
+                "response": final_text,
+                "tool_calls": tool_calls
+            }
+            
+        except Exception as e:
+            logger.error(f"Gemini processing failed: {e}")
+            return {
+                "success": False,
+                "response": f"An error occurred: {str(e)}",
+                "tool_calls": []
+            }
+    
+    async def process_message(
+        self,
+        user_message: str,
+        history: List[Dict[str, str]],
+        looker_url: str,
+        client_id: str,
+        client_secret: str,
+        available_tools: Optional[List[Dict[str, Any]]] = None
+    ) -> Dict[str, Any]:
+        """
+        Main entry point for processing user messages.
+        Routes to appropriate model (Claude or Gemini).
+        """
+        if available_tools is None:
+            available_tools = await self.list_available_tools(looker_url, client_id, client_secret)
+        
+        if self.is_claude:
+            return await self._process_with_claude(
+                user_message, history, available_tools,
+                looker_url, client_id, client_secret
+            )
+        else:
+            return await self._process_with_gemini(
+                user_message, history, available_tools,
+                looker_url, client_id, client_secret
+            )

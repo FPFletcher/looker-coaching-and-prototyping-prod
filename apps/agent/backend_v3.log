@@ -1,0 +1,154 @@
+INFO:     Will watch for changes in these directories: ['/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [35645] using StatReload
+/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:275: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+WARNING:  StatReload detected changes in 'verify_dashboard.py'. Reloading...
+/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:275: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+Process SpawnProcess-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.10/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/_subprocess.py", line 78, in subprocess_started
+    target(sockets=sockets)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/server.py", line 62, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "/usr/lib/python3.10/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/server.py", line 69, in serve
+    config.load()
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/config.py", line 458, in load
+    self.loaded_app = import_from_string(self.app)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/importer.py", line 24, in import_from_string
+    raise exc from None
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/importer.py", line 21, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/usr/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/main.py", line 8, in <module>
+    from agent_logic import BananaAgent
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/agent_logic.py", line 10, in <module>
+    from mcp import ClientSession, StdioServerParameters
+ModuleNotFoundError: No module named 'mcp'
+WARNING:  StatReload detected changes in 'agent_logic.py'. Reloading...
+/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:275: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+Process SpawnProcess-3:
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.10/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/_compat.py", line 60, in asyncio_run
+    return loop.run_until_complete(main)
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/usr/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/main.py", line 8, in <module>
+    from agent_logic import BananaAgent
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/agent_logic.py", line 2, in <module>
+    import google.generativeai as genai
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/generativeai/__init__.py", line 45, in <module>
+    from google.generativeai import types
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/generativeai/types/__init__.py", line 17, in <module>
+    from google.generativeai.types.discuss_types import *
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/generativeai/types/discuss_types.py", line 22, in <module>
+    import google.ai.generativelanguage as glm
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/ai/generativelanguage/__init__.py", line 21, in <module>
+    from google.ai.generativelanguage_v1beta.services.discuss_service.async_client import (
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/ai/generativelanguage_v1beta/__init__.py", line 21, in <module>
+    from .services.discuss_service import DiscussServiceAsyncClient, DiscussServiceClient
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/ai/generativelanguage_v1beta/services/discuss_service/__init__.py", line 16, in <module>
+    from .async_client import DiscussServiceAsyncClient
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/ai/generativelanguage_v1beta/services/discuss_service/async_client.py", line 32, in <module>
+    from google.api_core import gapic_v1
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/gapic_v1/__init__.py", line 16, in <module>
+    from google.api_core.gapic_v1 import config
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/gapic_v1/config.py", line 26, in <module>
+    from google.api_core import retry
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/retry/__init__.py", line 17, in <module>
+    from .retry_base import exponential_sleep_generator
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/retry/retry_base.py", line 30, in <module>
+    import requests.exceptions
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/requests/__init__.py", line 147, in <module>
+    from . import packages, utils
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/requests/packages.py", line 16, in <module>
+    locals()[package] = __import__(package)
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 879, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1012, in get_code
+  File "<frozen importlib._bootstrap_external>", line 672, in _compile_bytecode
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/server.py", line 334, in handle_exit
+    self._captured_signals.append(sig)
+AttributeError: 'Server' object has no attribute '_captured_signals'. Did you mean: 'capture_signals'?
+/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:275: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+ERROR:agent_logic:GOOGLE_API_KEY is missing!
+Process SpawnProcess-4:
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.10/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/_compat.py", line 60, in asyncio_run
+    return loop.run_until_complete(main)
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/usr/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/main.py", line 22, in <module>
+    agent = BananaAgent()
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/agent_logic.py", line 24, in __init__
+    raise Exception("GOOGLE_API_KEY not found in environment")
+Exception: GOOGLE_API_KEY not found in environment

@@ -1,0 +1,8 @@
+2026-01-30T21:39:31.277061252Z INFO "Using prebuilt tool configuration for looker" 
+2026-01-30T21:39:31.845902164Z INFO "Initialized 1 sources." 
+2026-01-30T21:39:31.84596648Z INFO "Initialized 0 authServices." 
+2026-01-30T21:39:31.846210978Z INFO "Initialized 15 tools." 
+2026-01-30T21:39:31.846273379Z INFO "Initialized 2 toolsets." 
+2026-01-30T21:39:31.846779728Z INFO "Server ready to serve!" 
+2026-01-30T21:40:16.400529319Z INFO Response: 404 Client Error service: "httplog" httpRequest: {url: "http://127.0.0.1:5000/ui/js/loadTools.js" method: "GET" path: "/ui/js/loadTools.js" remoteIP: "127.0.0.1:52018" proto: "HTTP/1.1" requestID: "antigravity-vm/c9HOiPziqi-000001"} httpResponse: {status: 404 bytes: 19 elapsed: 0.027557} 
+2026-02-04T13:04:56.505116517Z WARN "Shutting down gracefully..." 

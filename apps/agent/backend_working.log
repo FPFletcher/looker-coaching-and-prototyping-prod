@@ -1,0 +1,107 @@
+INFO:     Will watch for changes in these directories: ['/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [38753] using StatReload
+/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:275: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+ERROR:agent_logic:GOOGLE_API_KEY is missing!
+Process SpawnProcess-1:
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.10/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/_compat.py", line 60, in asyncio_run
+    return loop.run_until_complete(main)
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/usr/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/main.py", line 22, in <module>
+    agent = BananaAgent()
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/agent_logic.py", line 24, in __init__
+    raise Exception("GOOGLE_API_KEY not found in environment")
+Exception: GOOGLE_API_KEY not found in environment
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:275: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+INFO:     Started server process [38938]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:35148 - "GET /docs HTTP/1.1" 200 OK
+INFO:agent_logic:Verifying Looker Credentials...
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:19:14.5071...figuration for looker" ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+2026-01-30T22:19:15.261730994Z ERROR "toolbox failed to start listener: failed to open listener for \"127.0.0.1:5000\": listen tcp 127.0.0.1:5000: bind: address already in use" 
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:19:15.2603...nitialized 1 sources." ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:19:15.2604...lized 0 authServices." ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:19:15.2609...Initialized 15 tools." ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+ERROR:mcp.client.stdio:Failed to parse JSONRPC message from server
+Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/mcp/client/stdio/__init__.py", line 155, in stdout_reader
+    message = types.JSONRPCMessage.model_validate_json(line)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/pydantic/main.py", line 766, in model_validate_json
+    return cls.__pydantic_validator__.validate_json(
+pydantic_core._pydantic_core.ValidationError: 1 validation error for JSONRPCMessage
+  Invalid JSON: trailing characters at line 1 column 5 [type=json_invalid, input_value='2026-01-30T22:19:15.2610...itialized 2 toolsets." ', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+ERROR:agent_logic:Credential verification failed: unhandled errors in a TaskGroup (1 sub-exception)
+INFO:     127.0.0.1:45058 - "POST /api/generate_prototype HTTP/1.1" 500 Internal Server Error
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [38938]
+/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:275: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+INFO:     Started server process [39159]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.

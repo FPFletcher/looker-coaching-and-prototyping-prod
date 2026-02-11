@@ -1,0 +1,834 @@
+import os
+import json
+import logging
+import asyncio
+from typing import Dict, List, Any, Optional
+import google.generativeai as genai
+from anthropic import Anthropic
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+from duckduckgo_search import DDGS
+import base64
+import requests
+import google.auth
+import google.auth.transport.requests
+
+logger = logging.getLogger(__name__)
+
+class MCPAgent:
+    """
+    Conversational agent that uses Gemini or Claude to interpret user requests
+    and executes appropriate Looker MCP tools.
+    
+    Supports both Google Gemini and Anthropic Claude models.
+    """
+    
+    def __init__(self, model_name: str = "gemini-2.0-flash"):
+        self.model_name = model_name
+        self.is_claude = model_name.startswith("claude-")
+        
+        if self.is_claude:
+            if not os.getenv("ANTHROPIC_API_KEY"):
+                raise Exception("ANTHROPIC_API_KEY not found in environment")
+            self.client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        else:
+            if not os.getenv("GOOGLE_API_KEY"):
+                raise Exception("GOOGLE_API_KEY not found in environment")
+            genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+            self.model = genai.GenerativeModel(model_name)
+        
+        # Apps/agent/mcp_agent.py -> ../../tools/mcp-toolbox/toolbox
+        self.toolbox_bin = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../tools/mcp-toolbox/toolbox"))
+        
+    def _get_server_params(self, looker_url: str, client_id: str, client_secret: str) -> StdioServerParameters:
+        """Create server parameters with proper environment setup."""
+        env = os.environ.copy()
+        env["LOOKER_BASE_URL"] = looker_url.rstrip("/")
+        env["LOOKER_CLIENT_ID"] = client_id
+        env["LOOKER_CLIENT_SECRET"] = client_secret
+        env["LOOKER_VERIFY_SSL"] = "true"
+        
+        return StdioServerParameters(
+            command=self.toolbox_bin,
+            args=["--stdio", "--prebuilt", "looker"],
+            env=env
+        )
+        
+    async def list_available_tools(self, looker_url: str, client_id: str, client_secret: str) -> List[Dict[str, Any]]:
+        """
+        Lists all available Looker MCP tools by starting an ephemeral session.
+        Returns tool names, descriptions, and schemas.
+        """
+        logger.info("Listing available MCP tools...")
+        
+        server_params = self._get_server_params(looker_url, client_id, client_secret)
+        
+        try:
+            tools = []
+            
+            # 1. Get tools from binary
+            async with stdio_client(server_params) as (read, write):
+                async with ClientSession(read, write) as session:
+                    await session.initialize()
+                    tools_result = await session.list_tools()
+                    
+                    for tool in tools_result.tools:
+                        tools.append({
+                            "name": tool.name,
+                            "description": tool.description,
+                            "inputSchema": tool.inputSchema
+                        })
+            
+            # 2. Inject custom tools (not in binary)
+            tools.append({
+                "name": "create_dashboard_filter",
+                "description": "Add a filter to an existing dashboard. Types: field_filter, date_filter, string_filter, number_filter.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "dashboard_id": {"type": "string", "description": "ID of the dashboard to update"},
+                        "name": {"type": "string", "description": "Name of the filter (internal)"},
+                        "title": {"type": "string", "description": "Display title for the filter"},
+                        "type": {"type": "string", "description": "Type of filter (field_filter, date_filter, etc)"},
+                        "model": {"type": "string", "description": "Model name"},
+                        "explore": {"type": "string", "description": "Explore name"},
+                        "dimension": {"type": "string", "description": "Fully qualified dimension name (e.g. orders.created_date)"}
+                    },
+                    "required": ["dashboard_id", "title", "type", "model", "explore", "dimension"]
+                }
+            })
+
+            tools.append({
+                "name": "search_web",
+                "description": "Search the web for real-time information, trends, or external data.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "query": {"type": "string", "description": "Search query"}
+                    },
+                    "required": ["query"]
+                }
+            })
+
+            tools.append({
+                "name": "create_chart",
+                "description": "Generate a single chart/visualization image for a quick answer. Use this for simple questions instead of creating a full dashboard.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "model": {"type": "string", "description": "Model name"},
+                        "explore": {"type": "string", "description": "Explore name"},
+                        "fields": {"type": "array", "items": {"type": "string"}, "description": "List of fields (dimensions/measures)"},
+                        "filters": {"type": "object", "description": "Dictionary of filters {field: value}"},
+                        "sorts": {"type": "array", "items": {"type": "string"}, "description": "List of fields to sort by"},
+                        "limit": {"type": "string", "description": "Row limit (default 500)"},
+                        "vis_config": {"type": "object", "description": "Visualization configuration (type: looker_line, looker_column, looker_pie, etc)"}
+                    },
+                    "required": ["model", "explore", "fields"]
+                }
+
+            })
+
+            tools.append({
+                "name": "list_data_agents",
+                "description": "List available Google Cloud Data Agents for Conversational Analytics.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "project_id": {"type": "string", "description": "GCP Project ID"},
+                        "location": {"type": "string", "description": "GCP Location (default: us-central1)"}
+                    },
+                    "required": ["project_id"]
+                }
+            })
+
+            tools.append({
+                "name": "chat_with_data_agent",
+                "description": "Send a natural language query to a specific Google Cloud Data Agent.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "project_id": {"type": "string", "description": "GCP Project ID"},
+                        "location": {"type": "string", "description": "GCP Location (default: us-central1)"},
+                        "agent_id": {"type": "string", "description": "ID of the Data Agent (e.g. 'sales-agent')"},
+                        "message": {"type": "string", "description": "The user's question or query"}
+                    },
+                    "required": ["project_id", "agent_id", "message"]
+                }
+            })
+                    
+            logger.info(f"Found {len(tools)} Looker tools (including custom)")
+            return tools
+        except Exception as e:
+            logger.error(f"Failed to list tools: {e}")
+            raise Exception(f"Failed to connect to Looker: {str(e)}")
+    
+    async def execute_tool(
+        self, 
+        tool_name: str, 
+        arguments: Dict[str, Any],
+        looker_url: str,
+        client_id: str,
+        client_secret: str
+    ) -> Dict[str, Any]:
+        """
+        Executes a single MCP tool with the given arguments.
+        """
+        logger.info(f"Executing tool: {tool_name} with args: {arguments}")
+        
+        # Handle custom tools
+        if tool_name == "create_dashboard_filter":
+            return self._execute_create_dashboard_filter(arguments, looker_url, client_id, client_secret)
+        elif tool_name == "search_web":
+            return self._execute_search_web(arguments)
+        elif tool_name == "create_chart":
+            return self._execute_create_chart(arguments, looker_url, client_id, client_secret)
+        elif tool_name == "list_data_agents":
+            return self._execute_list_data_agents(arguments)
+        elif tool_name == "chat_with_data_agent":
+            return self._execute_chat_with_data_agent(arguments)
+        
+        server_params = self._get_server_params(looker_url, client_id, client_secret)
+        
+        try:
+            async with stdio_client(server_params) as (read, write):
+                async with ClientSession(read, write) as session:
+                    await session.initialize()
+                    
+                    result = await session.call_tool(tool_name, arguments)
+                    
+                    if result.isError:
+                        return {
+                            "success": False,
+                            "error": str(result.content)
+                        }
+                    
+                    return {
+                        "success": True,
+                        "result": result.content
+                    }
+        except Exception as e:
+            logger.error(f"Tool execution failed: {e}")
+            return {
+                "success": False,
+                "error": str(e)
+            }
+
+    def _execute_create_dashboard_filter(self, args: Dict[str, Any], url: str, client_id: str, client_secret: str) -> Dict[str, Any]:
+        try:
+            import looker_sdk
+            from looker_sdk import models40
+            
+            # Initialize SDK
+            os.environ["LOOKERSDK_BASE_URL"] = url
+            os.environ["LOOKERSDK_CLIENT_ID"] = client_id
+            os.environ["LOOKERSDK_CLIENT_SECRET"] = client_secret
+            os.environ["LOOKERSDK_VERIFY_SSL"] = "true"
+            
+            sdk = looker_sdk.init40()
+            
+            # Create filter
+            filter_body = models40.WriteCreateDashboardFilter(
+                dashboard_id=args.get("dashboard_id"),
+                name=args.get("name", args.get("title")),
+                title=args.get("title"),
+                type=args.get("type"),
+                model=args.get("model"),
+                explore=args.get("explore"),
+                dimension=args.get("dimension"),
+                allow_multiple_values=True,
+                row=0
+            )
+            
+            created_filter = sdk.create_dashboard_filter(filter_body)
+            
+            return {
+                "success": True,
+                "result": f"Created filter '{created_filter.title}' (id: {created_filter.id}) on dashboard {args.get('dashboard_id')}"
+            }
+        except Exception as e:
+            logger.error(f"Failed to create filter: {e}")
+            return {"success": False, "error": str(e)}
+    
+    
+    def _execute_search_web(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        try:
+            query = args.get("query")
+            if not query:
+                return {"success": False, "error": "No query provided"}
+            
+            # search
+            results = DDGS().text(query, max_results=5)
+            
+            return {
+                "success": True,
+                "result": results
+            }
+        except Exception as e:
+            logger.error(f"Search failed: {e}")
+            return {"success": False, "error": str(e)}
+
+    def _execute_create_chart(self, args: Dict[str, Any], url: str, client_id: str, client_secret: str) -> Dict[str, Any]:
+        try:
+            import looker_sdk
+            from looker_sdk import models40
+            
+            # Initialize SDK
+            os.environ["LOOKERSDK_BASE_URL"] = url
+            os.environ["LOOKERSDK_CLIENT_ID"] = client_id
+            os.environ["LOOKERSDK_CLIENT_SECRET"] = client_secret
+            os.environ["LOOKERSDK_VERIFY_SSL"] = "true"
+            
+            sdk = looker_sdk.init40()
+            
+            # Construct Query
+            query_body = models40.WriteQuery(
+                model=args.get("model"),
+                view=args.get("explore"), # 'view' param often maps to explore in SDK, or use 'view'
+                fields=args.get("fields"),
+                filters=args.get("filters"),
+                sorts=args.get("sorts"),
+                limit=args.get("limit", "500"),
+                vis_config=args.get("vis_config")
+            )
+            
+            # Run Inline Query - JSON for LLM understanding
+            json_results = sdk.run_inline_query(
+                result_format="json",
+                body=query_body
+            )
+            data_summary = json_results[:10]  # First 10 rows for context
+            
+            # Create Query to get Slug/ID for Explore URL
+            created_query = sdk.create_query(body=query_body)
+            query_slug = created_query.client_id
+            
+            # Construct Explore URL (Standard Looker URL structure)
+            # https://<instance>/embed/explore/<model>/<view>?qid=<slug>&toggle=dat,pik,vis
+            base_url = url.rstrip("/")
+            # Use /embed/explore/ so it triggers the DashboardEmbed component
+            explore_url = f"{base_url}/embed/explore/{args.get('model')}/{args.get('explore')}?qid={query_slug}&toggle=dat,pik,vis"
+
+            # Run Inline Query - PNG for User Visualization
+            png_bytes = sdk.run_inline_query(
+                result_format="png",
+                body=query_body
+            )
+            
+            # Convert to base64
+            base64_img = base64.b64encode(png_bytes).decode('utf-8')
+            data_url = f"data:image/png;base64,{base64_img}"
+            
+            return {
+                "success": True,
+                "result": [
+                    {"text": f"**[Open Explorer]({explore_url})**\n\n"},
+                    {"text": f"Generated chart based on {args.get('explore')}. Data Preview: {data_summary}\n\n"},
+                    {"text": f"![Chart]({data_url})\n\n"}
+                ]
+            }
+        except Exception as e:
+            logger.error(f"Failed to create chart: {e}")
+            return {"success": False, "error": str(e)}
+
+    def _get_gcp_token(self):
+        credentials, project = google.auth.default()
+        auth_req = google.auth.transport.requests.Request()
+        credentials.refresh(auth_req)
+        return credentials.token
+
+    def _execute_list_data_agents(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        try:
+            project_id = args.get("project_id")
+            location = args.get("location", "us-central1")
+            
+            if not project_id:
+                return {"success": False, "error": "Project ID required"}
+
+            token = self._get_gcp_token()
+            headers = {"Authorization": f"Bearer {token}"}
+            
+            url = f"https://geminidataanalytics.googleapis.com/v1beta/projects/{project_id}/locations/{location}/dataAgents"
+            
+            response = requests.get(url, headers=headers)
+            if response.status_code != 200:
+                return {"success": False, "error": f"API Error: {response.text}"}
+                
+            return {"success": True, "result": response.json()}
+        except Exception as e:
+            logger.error(f"Failed to list agents: {e}")
+            return {"success": False, "error": str(e)}
+
+    def _execute_chat_with_data_agent(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        try:
+            project_id = args.get("project_id")
+            location = args.get("location", "us-central1")
+            agent_id = args.get("agent_id")
+            message = args.get("message")
+            
+            if not all([project_id, agent_id, message]):
+                return {"success": False, "error": "Missing required args"}
+
+            token = self._get_gcp_token()
+            headers = {
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json"
+            }
+            
+            # Construct the endpoint for Chat
+            # POST /v1beta/projects/{project}/locations/{location}:chat
+            # Note: The docs say ...:chatQuery or similar. Let's use the one the user provided: 
+            # POST/v1beta/projects/{project}/locations/{location}:chat  <-- This looks like a mix of vertex and data agents.
+            # But wait, looking at the user request: "Chat (Stateless) POST /v1beta/projects/...:chat"
+            # It might be `.../dataAgents/{agent_id}:chat` or usage of the `chat` method on the location?
+            # The User says: "Chat (Stateless) POST /v1beta/projects/{project}/locations/{location}:chat"
+            # And typical payload includes `agent` or `data_agent` field.
+            
+            url = f"https://geminidataanalytics.googleapis.com/v1beta/projects/{project_id}/locations/{location}:chat"
+            
+            payload = {
+                "data_agent": f"projects/{project_id}/locations/{location}/dataAgents/{agent_id}",
+                "messages": [{
+                    "role": "USER",
+                    "content": {"text": message}
+                }]
+            }
+            
+            response = requests.post(url, headers=headers, json=payload)
+            
+            if response.status_code != 200:
+                return {"success": False, "error": f"API Error: {response.text}"}
+            
+            return {"success": True, "result": response.json()}
+        except Exception as e:
+            logger.error(f"Failed to chat with agent: {e}")
+            return {"success": False, "error": str(e)}
+
+    def _format_tools_for_claude(self, tools: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Convert MCP tools to Claude tool format."""
+        claude_tools = []
+        for tool in tools:
+            claude_tools.append({
+                "name": tool["name"],
+                "description": tool["description"],
+                "input_schema": tool["inputSchema"]
+            })
+        return claude_tools
+    
+    async def process_message(
+        self,
+        user_message: str,
+        history: List[Dict[str, str]],
+        looker_url: str,
+        client_id: str,
+        client_secret: str,
+        available_tools: Optional[List[Dict[str, Any]]] = None,
+        images: Optional[List[str]] = None,
+        explore_context: str = "",
+        gcp_project: str = "",
+        gcp_location: str = ""
+    ):
+        """
+        Process a user message (Async Generator).
+        Yields events: tool_start, tool_end, text, done, error.
+        """
+        # Fetch tools if not provided
+        if available_tools is None:
+            available_tools = await self.list_available_tools(looker_url, client_id, client_secret)
+
+        # Handle Gemini (Non-streaming wrapper)
+        if not self.is_claude:
+            try:
+                result = await self._process_with_gemini(
+                    user_message, history, available_tools,
+                    looker_url, client_id, client_secret
+                )
+                yield {"type": "text", "content": result["response"]}
+                # We could try to yield tool info here if Gemini returned it, 
+                # but Gemini implementation structure is different. 
+                # For now just return the text.
+                yield {"type": "done"}
+            except Exception as e:
+                yield {"type": "error", "content": str(e)}
+            return
+
+        # Handle Claude (Streaming/Generator)
+        claude_tools = self._format_tools_for_claude(available_tools)
+        
+        # Build messages from history
+        messages = []
+        for msg in history:
+            messages.append({
+                "role": msg["role"],
+                "content": msg["content"]
+            })
+        
+        # Build user message content - support images
+        user_content = []
+        if images:
+            # Add images first
+            for img_base64 in images:
+                # Extract media type and data from base64 string
+                # Format: data:image/png;base64,iVBORw0KG...
+                if img_base64.startswith("data:"):
+                    media_type_part, data_part = img_base64.split(";base64,", 1)
+                    media_type = media_type_part.split(":")[1]
+                else:
+                    # Assume PNG if no prefix
+                    media_type = "image/png"
+                    data_part = img_base64
+                
+                user_content.append({
+                    "type": "image",
+                    "source": {
+                        "type": "base64",
+                        "media_type": media_type,
+                        "data": data_part
+                    }
+                })
+        
+        # Add text message
+        user_content.append({
+            "type": "text",
+            "text": user_message
+        })
+        
+        messages.append({
+            "role": "user",
+            "content": user_content if images else user_message
+        })
+        
+        
+        tools_list = ", ".join([t["name"] for t in available_tools])
+        system_prompt = (
+            f"You are a friendly, helpful Data Analyst assistant. Your goal is to help users  "
+            f"visualize and understand their data using Looker. Speak in plain English, avoiding "
+            f"overly technical jargon where possible. Be encouraging and clear.\\n\\n"
+            f"CRITICAL INSTRUCTIONS:\\n"
+            f"- VALIDATION FIRST: Before using a specific model or explore provided by the user, "
+            f"verify it exists using `get_models` or `get_explores`. If unsure, check what's available first.\\n"
+            f"- ASK CLARIFYING QUESTIONS: When uncertain about which model/explore to use, or when the user's "
+            f"request is ambiguous, ASK THE USER for clarification. Examples:\\n"
+            f"  * 'I found models X and Y with retail data. Would you like me to use model X, or do you have a preference?'\\n"
+            f"  * 'I can create this using explore A or B - which would you prefer?'\\n"
+            f"  * 'This model has explores for orders and order_items. The order_items explore has more detail. Are you okay with me using order_items?'\\n"
+            f"- BE PROACTIVE: When multiple valid options exist (models, explores, fields), suggest the best option "
+            f"and ask the user if they're okay with your choice before proceeding.\\n"
+            f"- GRANULAR SELECTION: When selecting explores, prefer granular views (e.g. `order_items` vs `orders`) "
+            f"that offer more details.\\n"
+            f"- DASHBOARD URLS: If you create a dashboard, you MUST return its URL in your final response.\\n"
+            f"- FUZZY MODEL MATCHING: When users mention partial or rearranged model names (e.g., 'google poc', 'poc google', '2025 google'), "
+            f"search for models containing those keywords using case-insensitive partial matching. If multiple matches, ask which one.\\n"
+            f"- VISUALIZATION LIMITS: When creating visualizations:\\n"
+            f"  * PIE CHARTS can only display max 50 rows - ALWAYS add 'limit: 50' or less\\n"
+            f"  * BAR/COLUMN CHARTS should limit to 10-20 rows for readability\\n"
+            f"  * TABLE views can show more rows (100-500)\\n"
+            f"- DASHBOARD FILTERS: CRITICAL - After creating all tiles, you MUST add filters using `create_dashboard_filter`.\\n"
+            f"  Add filters for time, key dimensions, or categories relevant to the dashboard.\\n"
+            f"  Common filters: Date range (field_filter), Category (field_filter).\\n\\n"
+            f"CONVERSATIONAL ANALYTICS vs DASHBOARDS - READ CAREFULLY:\\n"
+            f"1. **Quick / Single Questions** (e.g. 'Show me sales last week', 'What is the trend for X?'):\\n"
+            f"CONVERSATIONAL ANALYTICS vs DASHBOARDS - READ CAREFULLY:\\n"
+            f"1. **Quick / Single Questions** (e.g. 'Show me sales last week', 'What is the trend for X?'):\\n"
+            f"   - **PRIMARY OPTION**: Use `chat_with_data_agent` if a suitable Google Cloud Data Agent is available.\\n"
+            f"     * Requires Project ID. If unknown, ask user. If Agent ID unknown, use `list_data_agents`.\\n"
+            f"   - **SECONDARY OPTION**: Use `create_chart` if no Data Agent is configured or if the user prefers inline Looker charts.\\n"
+            f"   - Do NOT create a dashboard for these simple requests.\\n"
+            f"2. **Complete Reports / Persistent Views** (e.g. 'Create a sales dashboard', 'Build a report for X'):\\n"
+            f"   - Use `make_dashboard`, `add_dashboard_element`, etc.\\n"
+            f"   - Use this when the user explicitly asks for a 'dashboard' or a comprehensive view.\\n"
+            f"3. **External Info**:\\n"
+            f"   - Use `search_web` when the user asks for outside context (competitors, trends, news).\\n\\n"
+            f"You have access to the following tools:\\n"
+            f"- When asked to create, query, or modify anything in Looker, you MUST call the appropriate tool immediately.\\n"
+            f"- DO NOT just describe what you will do - ACTUALLY CALL THE TOOL.\\n"
+            f"- After calling tools, you MUST provide a text response summarizing results and providing next steps.\n"
+            f"            f"- **RESPONSE STRUCTURE**: When using `create_chart` OR `make_dashboard`, follow this EXACT order:\n"
+            f""\n"
+            f"            f"  1. Brief intro sentence (e.g. 'Here\\'s your Top 10 Products by Gross Margin:' or 'Your Top Clients Analysis Dashboard is now live and ready to use!')\n"
+            f""\n"
+            f"            f"  2. Render the Explore/Dashboard URL link IMMEDIATELY (the tool returns this)\n"
+            f""\n"
+            f"            f"  3. Key Insights section (short, punchy bullets focusing on PATTERNS and WHY)\n"
+            f""\n"
+            f"            f"  4. Suggested next steps or actions\n"
+            f""\n"
+            f"            f"- **KEY INSIGHTS**: Provide short, punchy, bullet points focusing on PATTERNS and WHY. Do NOT explain the chart description (e.g. 'Bar A is higher than Bar B'). Instead, say 'X is driving performance because Y'. Be Predictive and Actionable.\n"
+            f""\n"
+            f"            f"- **WEB SEARCH**: If the data allows for comparison/benchmarking (e.g. sales data, trends), suggest a web search or provide a button/link suggestion like 'Search Web for Industry Benchmarks'.\n"
+            f""\n"
+            f"            f"- **NO REDUNDANT HEADERS**: Do NOT add headers like 'Explore the Data Further' or 'Open Your Dashboard Here' before the embed link. The embed should appear right after your intro sentence.\n"
+            f""\n"
+            f"            f"- **MCP TOOLBOX VALIDATION**: When using `add_dashboard_element`, ALWAYS choose visualization types that match the data:\n"
+            f""\n"
+            f"            f"  * Single value/metric → 'single_value'\n"
+            f""\n"
+            f"            f"  * Time series/trends → 'line' or 'area'\n"
+            f""\n"
+            f"            f"  * Comparisons → 'bar' or 'column'\n"
+            f""\n"
+            f"            f"  * Parts of whole → 'pie'\n"
+            f""\n"
+            f"            f"  * Detailed data → 'table'\n"
+            f""\n"
+            f"            f"  * If unsure, default to 'table' which always works\n"
+            f"\n"
+            f""\n"
+            f"Available tools: {tools_list}\\n\\n"
+            f"Example workflow for dashboard creation:\\n"
+            f"1. Call get_models to check available models (if not known)\\n"
+            f"2. Call make_dashboard with title and folder_id -> returns dashboard_id\\n"
+            f"3. Call add_dashboard_element multiple times to add tiles\\n"
+            f"4. Call create_dashboard_filter to add filters (e.g. Date, Category)\\n"
+            f"5. Provide a summary with the dashboard URL"
+            f"{explore_context}"  # Add explore context
+        )
+        
+        if gcp_project:
+             system_prompt += f"\\n\\nGCP CONFIGURATION:\\nProject ID: {gcp_project}\\nLocation: {gcp_location}\\nUse these values when calling `list_data_agents` or `chat_with_data_agent`."
+        
+        
+        
+        try:
+            # Multi-turn loop: continue until Claude stops calling tools
+            max_turns = 15
+            final_text = ""
+            
+            for turn in range(max_turns):
+                logger.info(f"Turn {turn + 1}")
+                
+                # We need to buffer the response to parse tools, but ideally we'd stream text from Claude too.
+                # For now, we'll await the full response for each turn to safely handle tool parsing,
+                # but we'll yield "tool_start" events immediately before execution.
+                
+                response = self.client.messages.create(
+                    model=self.model_name,
+                    max_tokens=4096,
+                    system=system_prompt,
+                    messages=messages,
+                    tools=claude_tools
+                )
+                
+                # Check handling of content
+                turn_text = ""
+                turn_tool_blocks = []
+                
+                for content_block in response.content:
+                    if content_block.type == "text":
+                        turn_text += content_block.text
+                        # Yield text chunks if we have them (this is post-generation here, but helpful for client)
+                        if content_block.text.strip():
+                            yield {"type": "text", "content": content_block.text}
+                    elif content_block.type == "tool_use":
+                        turn_tool_blocks.append(content_block)
+                
+                # If we have text but no tools, and this is the first turn or later, update final_text
+                if turn_text:
+                    final_text = turn_text
+
+                # If no tools, we are done
+                if not turn_tool_blocks:
+                    break
+                
+                # Execute tools
+                tool_results = []
+                for tool_block in turn_tool_blocks:
+                    # Notify client tool is starting
+                    # Convert tool_block.input which might be a dict or object to a proper dict
+                    tool_input = tool_block.input if isinstance(tool_block.input, dict) else {}
+                    yield {
+                        "type": "tool_start", 
+                        "tool": tool_block.name, 
+                        "input": tool_input
+                    }
+                    
+                    logger.info(f"Executing tool: {tool_block.name}")
+                    
+                    tool_result = await self.execute_tool(
+                        tool_block.name,
+                        tool_block.input,
+                        looker_url,
+                        client_id,
+                        client_secret
+                    )
+                    
+                    # Notify client tool finished
+                    # Serialize tool_result properly
+                    try:
+                        import json
+                        json.dumps(tool_result)  # Test if serializable
+                        serialized_result = tool_result
+                    except (TypeError, ValueError):
+                        # Convert non-serializable result to string
+                        serialized_result = {"result": str(tool_result)}
+                    
+                    yield {
+                        "type": "tool_end",
+                        "tool": tool_block.name,
+                        "result": serialized_result
+                    }
+                    
+                    # Prepare results for Claude
+                    result_str = ""
+                    if tool_result.get("success"):
+                        result_data = tool_result.get("result", [])
+                        if isinstance(result_data, list):
+                            for item in result_data:
+                                if hasattr(item, 'text'):
+                                    result_str += item.text
+                                else:
+                                    result_str += str(item)
+                        else:
+                            result_str = json.dumps(result_data) if result_data else "Success"
+                    else:
+                        result_str = f"Error: {tool_result.get('error', 'Unknown error')}"
+                    
+                    tool_results.append({
+                        "type": "tool_result",
+                        "tool_use_id": tool_block.id,
+                        "content": result_str
+                    })
+
+                # Update conversation history
+                messages.append({
+                    "role": "assistant",
+                    "content": response.content
+                })
+                messages.append({
+                    "role": "user",
+                    "content": tool_results
+                })
+            
+            yield {"type": "done"}
+            
+        except Exception as e:
+            logger.error(f"Claude processing failed: {e}")
+            yield {"type": "error", "content": f"An error occurred: {str(e)}"}
+    
+    async def _process_with_gemini(
+        self,
+        user_message: str,
+        history: List[Dict[str, str]],
+        tools: List[Dict[str, Any]],
+        looker_url: str,
+        client_id: str,
+        client_secret: str
+    ) -> Dict[str, Any]:
+        """Process message using Gemini (existing implementation)."""
+        # Build the prompt with tool information
+        tools_description = "\n".join([
+            f"- {tool['name']}: {tool['description']}"
+            for tool in tools
+        ])
+        
+        system_prompt = (
+            f"You are a helpful Looker assistant with access to the following MCP tools:\\n\\n"
+            f"{tools_description}\\n\\n"
+            f"When a user asks you to do something:\\n"
+            f"1. Determine which tool(s) to use\\n"
+            f"2. If uncertain about model/explore choices or the request is ambiguous, ASK THE USER for clarification before proceeding\\n"
+            f"3. Call the tool(s) with appropriate arguments\\n"
+            f"4. Return a helpful response based on the results\\n\\n"
+            f"CLARIFYING QUESTIONS: When you find multiple valid models or explores, suggest the best option and ask:\\n"
+            f"'I found model X which seems suitable for your request. Are you okay with me using this, or would you prefer a different model?'\\n\\n"
+            f"IMPORTANT: To create a dashboard with visualizations, you MUST follow this workflow:\\n"
+            f"1. First call make_dashboard(title='Dashboard Name') to create the dashboard -> this returns a dashboard_id\\n"
+            f"2. Then call add_dashboard_element(dashboard_id=<id>, query={{...}}) for each visualization you want to add\\n"
+            f"3. Finally, return the dashboard URL to the user\\n\\n"
+            f"Example for 'create a sales dashboard':\\n"
+            f"Step 1: make_dashboard(title='Sales Dashboard') -> returns {{'dashboard_id': '123'}}\\n"
+            f"Step 2: add_dashboard_element(dashboard_id='123', query={{'model': 'ecommerce', 'explore': 'orders', 'fields': ['orders.created_date', 'orders.total_revenue']}})\\n"
+            f"Step 3: Return 'I have created your sales dashboard: https://looker.app/dashboards/123'\\n\\n"
+            f"When you want to call a tool, respond with a JSON object in this format:\\n"
+            f"{{'tool_call': {{'name': 'tool_name', 'arguments': {{...}}}}}}\\n\\n"
+            f"You can make multiple tool calls by responding with multiple JSON objects, one per line.\\n"
+            f"After all tool calls are complete, provide a final natural language response to the user."
+        )
+
+        # Build conversation history
+        conversation = []
+        for msg in history:
+            conversation.append({
+                "role": msg["role"],
+                "parts": [msg["content"]]
+            })
+        
+        # Add current message
+        conversation.append({
+            "role": "user",
+            "parts": [f"{system_prompt}\n\nUser request: {user_message}"]
+        })
+        
+        try:
+            # Get Gemini response
+            response = self.model.generate_content(conversation)
+            response_text = response.text
+            
+            # Parse tool calls from response
+            tool_calls = []
+            lines = response_text.strip().split("\n")
+            final_response = []
+            
+            for line in lines:
+                line = line.strip()
+                if line.startswith("{") and "tool_call" in line:
+                    try:
+                        tool_call_data = json.loads(line)
+                        if "tool_call" in tool_call_data:
+                            tool_name = tool_call_data["tool_call"]["name"]
+                            tool_args = tool_call_data["tool_call"]["arguments"]
+                            
+                            # Execute the tool
+                            result = await self.execute_tool(
+                                tool_name,
+                                tool_args,
+                                looker_url,
+                                client_id,
+                                client_secret
+                            )
+                            
+                            tool_calls.append({
+                                "tool": tool_name,
+                                "arguments": tool_args,
+                                "result": result
+                            })
+                    except json.JSONDecodeError:
+                        final_response.append(line)
+                else:
+                    if line:
+                        final_response.append(line)
+            
+            # If we made tool calls, ask Gemini for a final response
+            if tool_calls:
+                tool_results_summary = "\n".join([
+                    f"Tool {tc['tool']} returned: {json.dumps(tc['result'], indent=2)}"
+                    for tc in tool_calls
+                ])
+                
+                final_prompt = (
+                    "Based on these tool execution results:\n\n"
+                    f"{tool_results_summary}\n\n"
+                    f"Please provide a helpful response to the user's original request: \"{user_message}\"\n\n"
+                    "Include any relevant URLs or IDs from the results."
+                )
+
+                final_gen = self.model.generate_content(final_prompt)
+                final_text = final_gen.text
+            else:
+                final_text = "\n".join(final_response) if final_response else response_text
+            
+            return {
+                "success": True,
+                "response": final_text,
+                "tool_calls": tool_calls
+            }
+            
+        except Exception as e:
+            logger.error(f"Gemini processing failed: {e}")
+            return {
+                "success": False,
+                "response": f"An error occurred: {str(e)}",
+                "tool_calls": []
+            }
+    
+

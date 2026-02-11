@@ -1,0 +1,344 @@
+import React, { useRef, useEffect, useMemo, memo, useCallback } from "react";
+import ReactMarkdown from "react-markdown";
+import { Loader2, ChevronDown, Terminal, CheckCircle2, SendHorizontal, Image as ImageIcon, Mic, Sparkles } from "lucide-react";
+import ThinkingBlock from "./ThinkingBlock";
+import StableDashboardEmbed from "./StableDashboardEmbed";
+import ImageUpload from "./ImageUpload";
+import remarkGfm from "remark-gfm";
+
+interface ToolStep {
+    tool: string;
+    input?: any;
+    result?: any;
+    status: "running" | "success" | "error";
+    error?: string;
+}
+
+interface ToolPart {
+    type: 'tool';
+    tool: string;
+    input?: any;
+    result?: any;
+    status: "running" | "success" | "error";
+    error?: string;
+}
+
+interface TextPart {
+    type: 'text';
+    content: string;
+}
+
+export type MessagePart = ToolPart | TextPart;
+
+export interface Message {
+    id?: string; // Stable ID for React keys - CRITICAL for preventing re-renders
+    role: "user" | "assistant";
+    content: string; // Keep for backward compat / simple text
+    parts?: MessagePart[]; // New field for interleaved content
+    thinkingSteps?: ToolStep[]; // Keep for backward compat
+    isThinking?: boolean;
+}
+
+interface ChatInterfaceProps {
+    messages: Message[];
+    isLoading: boolean;
+    inputValue: string;
+    setInputValue: (val: string) => void;
+    onSubmit: (e: React.FormEvent) => void;
+    messagesEndRef: React.RefObject<HTMLDivElement>;
+    mode?: 'existing' | 'dummy';
+    selectedImages: File[];
+    onImagesChange: (images: File[]) => void;
+    onStop?: () => void;
+}
+
+const ChatInterface = memo(function ChatInterface({
+    messages,
+    isLoading,
+    inputValue,
+    setInputValue,
+    onSubmit,
+    messagesEndRef,
+    mode = 'existing',
+    selectedImages,
+    onImagesChange
+}: ChatInterfaceProps) {
+    const { onStop } = arguments[0];
+
+    // Log when component re-renders
+    console.log('[ChatInterface] 🔄 Component rendered. Message count:', messages.length, 'isLoading:', isLoading);
+
+    // Helper to determine which logo to show based on active tool
+    const getLogoForMessage = useCallback((msg: Message) => {
+        if (!msg.thinkingSteps || msg.thinkingSteps.length === 0) {
+            return '/selo-logo.jpg';
+        }
+
+        // Check the most recent tool
+        const lastTool = msg.thinkingSteps[msg.thinkingSteps.length - 1];
+        if (lastTool.tool === 'search_web') {
+            return '/google-logo.svg';
+        } else if (lastTool.tool && (lastTool.tool.includes('toolbox') || lastTool.tool.includes('mcp'))) {
+            return '/adk-logo.svg';
+        }
+        return '/selo-logo.jpg';
+    }, []);
+
+    useEffect(() => {
+        // Auto-resize textarea
+        const textarea = document.getElementById('chat-textarea');
+        if (textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+    }, [inputValue]);
+
+    // Dynamic prompts... (omitted for brevity, keep existing)
+    const prompts = mode === 'existing'
+        ? [
+            { icon: Terminal, text: "Create a dashboard for sales metrics" },
+            { icon: Sparkles, text: "Analyze order trends over time" },
+            { icon: ImageIcon, text: "Show me available data models" }
+        ]
+        : [
+            { icon: Sparkles, text: "Create a full retail analytics prototype" },
+            { icon: Terminal, text: "Build an e-commerce demo dashboard" },
+            { icon: ImageIcon, text: "Generate sample data reports" }
+        ];
+
+    const handlePromptClick = useCallback((promptText: string) => {
+        setInputValue(promptText);
+    }, [setInputValue]);
+
+    // Memoize markdown components to prevent re-creation on every render
+    const markdownComponents = useMemo(() => ({
+        a: ({ node, ...props }: any) => {
+            const href = props.href || "";
+            // Support both standard dashboards and embed URLs
+            const isDashboard = href.includes("/dashboards/") || href.includes("looker.app/embed/");
+
+            if (isDashboard) {
+                let embedUrl = href;
+                // If it's a standard dashboard URL, convert to embed
+                if (!href.includes("/embed/")) {
+                    embedUrl = href.replace("/dashboards/", "/embed/dashboards/");
+                }
+
+                return (
+                    <div className="my-4">
+                        <a {...props} className="text-[#A8C7FA] hover:underline block mb-2" target="_blank" rel="noreferrer">
+                            {props.children}
+                        </a>
+                        <StableDashboardEmbed url={href} />
+                    </div>
+                );
+            }
+            return <a {...props} className="text-[#A8C7FA] hover:underline" target="_blank" rel="noreferrer" />;
+        },
+        p: ({ node, ...props }: any) => <div className="mb-4 last:mb-0" {...props} />,
+        ul: ({ node, ...props }: any) => <ul className="list-disc pl-5 mb-4 space-y-1" {...props} />,
+        ol: ({ node, ...props }: any) => <ol className="list-decimal pl-5 mb-4 space-y-1" {...props} />,
+        code: ({ node, ...props }: any) => <code className="bg-[#2A2B2D] px-1.5 py-0.5 rounded text-[#E2E2E2] font-mono text-sm" {...props} />,
+        pre: ({ node, ...props }: any) => <pre className="bg-[#1E1F20] p-4 rounded-xl border border-[#333537] overflow-x-auto mb-4" {...props} />,
+    }), []);
+
+    const renderMarkdown = useCallback((content: string) => (
+        <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={markdownComponents}
+        >
+            {content}
+        </ReactMarkdown>
+    ), [markdownComponents]);
+
+
+    return (
+        <div className="flex flex-col h-full bg-gradient-to-br from-[#131314] to-[#0a1929] text-[#E3E3E3] relative">
+
+            {/* Messages Area */}
+            <div className="flex-1 overflow-y-auto px-40 py-8 space-y-8 scrollbar-thin scrollbar-thumb-[#444746] scrollbar-track-transparent">
+                {messages.length === 0 && (
+                    <div className="h-full flex flex-col items-start justify-center max-w-3xl mx-auto -mt-20">
+                        <div className="mb-2">
+                            <Sparkles className="w-12 h-12 text-[#4c8df6]" />
+                        </div>
+                        <h1 className="text-6xl font-medium tracking-tight bg-gradient-to-r from-[#4c8df6] via-[#9c5af2] to-[#e47672] bg-clip-text text-transparent pb-4">
+                            Hi Francois
+                        </h1>
+                        <h2 className="text-6xl font-medium text-[#444746] tracking-tight">
+                            Where should we start?
+                        </h2>
+                    </div>
+                )}
+
+
+                {useMemo(() => {
+                    console.log('[ChatInterface] 🔄 Messages memo recalculating - message count:', messages.length);
+                    return messages.map((msg, idx) => {
+                        // Use stable ID if available (CRITICAL for preventing re-renders during streaming!)
+                        const msgKey = msg.id || `fallback-${idx}`;
+                        console.log('[ChatInterface] 📝 Rendering message', idx, 'with STABLE key:', msgKey, 'role:', msg.role, 'content length:', msg.content?.length || 0);
+                        return (
+                            <div key={msgKey} className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                                <div className={`max-w-6xl w-full ${msg.role === "user" ? "bg-[#333537] rounded-[24px] px-6 py-4 rounded-tr-md" : "pr-6"}`}>
+                                    {/* Assistant Avatar for AI messages */}
+                                    {msg.role === "assistant" && (
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
+                                                <img
+                                                    src={getLogoForMessage(msg)}
+                                                    alt="AI"
+                                                    className={`w-full h-full object-cover ${msg.isThinking ? 'animate-pulse' : ''}`}
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Render Interleaved Parts if available, otherwise fallback to thinking + content */}
+                                    {msg.parts && msg.parts.length > 0 ? (
+                                        <div className="space-y-4">
+                                            {msg.parts.map((part, pIdx) => (
+                                                <div key={pIdx}>
+                                                    {part.type === 'tool' ? (
+                                                        <ThinkingBlock
+                                                            tool={{
+                                                                name: part.tool,
+                                                                input: part.input,
+                                                                output: part.result || part.error,
+                                                                status: part.status,
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <div className="prose prose-invert max-w-none text-[#E3E3E3] text-[16px] leading-relaxed">
+                                                            {renderMarkdown(part.content)}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <>
+                                            {/* Legacy Rendering Fallback */}
+                                            {msg.role === "assistant" && msg.thinkingSteps && msg.thinkingSteps.length > 0 && (
+                                                <div className="mb-4 space-y-2">
+                                                    {msg.thinkingSteps.map((step, stepsIdx) => (
+                                                        <ThinkingBlock
+                                                            key={stepsIdx}
+                                                            tool={{
+                                                                name: step.tool,
+                                                                input: step.input,
+                                                                output: step.result || step.error,
+                                                                status: step.status,
+                                                            }}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            )}
+                                            <div className="prose prose-invert max-w-none text-[#E3E3E3] text-[16px] leading-relaxed">
+                                                {renderMarkdown(msg.content)}
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    });
+                }, [messages])}
+
+                {/* Loader for simple text wait (if thinking accordion not enough) */}
+                {isLoading && messages.length > 0 && !messages[messages.length - 1].isThinking && (
+                    <div className="flex items-center gap-2 text-[#C4C7C5] animate-pulse pl-2">
+                        <div className="w-2 h-2 rounded-full bg-[#E3E3E3]"></div>
+                        <div className="w-2 h-2 rounded-full bg-[#E3E3E3]"></div>
+                        <div className="w-2 h-2 rounded-full bg-[#E3E3E3]"></div>
+                    </div>
+                )}
+
+                <div ref={messagesEndRef} className="h-4" />
+            </div>
+
+            {/* Input Area (Bottom Floating) */}
+            <div className="p-6 bg-transparent">
+                <div className="max-w-3xl mx-auto space-y-4">
+
+                    {/* Suggestion Chips (only on empty state) */}
+                    {messages.length === 0 && (
+                        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                            {prompts.map((prompt, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => handlePromptClick(prompt.text)}
+                                    className="whitespace-nowrap flex items-center gap-2 px-4 py-3 bg-[#1E1F20] hover:bg-[#333537] rounded-xl text-[#E3E3E3] border border-[#333537] transition-colors text-sm"
+                                >
+                                    <prompt.icon className="w-4 h-4 text-[#C4C7C5]" />
+                                    {prompt.text}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Main Input Box */}
+                    <div className="relative rounded-[28px] bg-[#1E1F20] transition-colors focus-within:bg-[#2A2B2D]">
+                        <form onSubmit={onSubmit}>
+                            <textarea
+                                id="chat-textarea"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault();
+                                        onSubmit(e);
+                                    }
+                                }}
+                                placeholder="Ask Selo"
+                                className="w-full bg-transparent text-[#E3E3E3] p-5 pr-14 rounded-[28px] focus:outline-none resize-none min-h-[56px] max-h-[200px] placeholder-[#8E918F] text-[16px]"
+                                rows={1}
+                            />
+
+                            <div className="absolute right-4 bottom-3 flex items-center gap-2">
+                                {/* Image Upload and Action Buttons */}
+                                <div className="flex items-center gap-1">
+                                    <ImageUpload
+                                        images={selectedImages}
+                                        onImagesChange={onImagesChange}
+                                        maxImages={3}
+                                    />
+                                </div>
+
+                                {/* Send Button */}
+                                {isLoading && onStop ? (
+                                    <button
+                                        type="button"
+                                        onClick={onStop}
+                                        className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                                        title="Stop generating"
+                                    >
+                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <rect x="6" y="6" width="8" height="8" />
+                                        </svg>
+                                    </button>
+                                ) : inputValue.trim() && (
+                                    <button
+                                        type="submit"
+                                        disabled={isLoading}
+                                        className="p-2 bg-[#E3E3E3] text-[#131314] rounded-full hover:bg-white transition-colors disabled:opacity-50"
+                                    >
+                                        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <SendHorizontal className="w-5 h-5" />}
+                                    </button>
+                                )}
+                            </div>
+                        </form>
+                    </div>
+
+                    <div className="text-center text-[11px] text-[#8E918F]">
+                        Selo may display inaccurate info, including about people, so double-check its responses.
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+});
+
+ChatInterface.displayName = 'ChatInterface';
+
+export default ChatInterface;

@@ -1,0 +1,24 @@
+
+🚀 Starting Agent Visualization Test
+
+🧪 Testing: 'find me the top 3 product categories by revenue in France'
+======================================================================
+
+📤 Sending request...
+
+📥 Response stream:
+----------------------------------------------------------------------
+
+======================================================================
+
+📊 Analysis:
+  - Tools called: None
+  - Contains 'create_chart': False
+  - Contains '/explore/' URL: False
+  - Contains 'Would you like': False
+  - Contains 'visualization': False
+
+======================================================================
+❌ TEST FAILED:
+  ❌ Did not call create_chart tool
+  ❌ Explore URL not in response

@@ -1,0 +1,42 @@
+
+> banana-prototype-agent@0.1.0 dev
+> next dev
+
+ ⚠ Port 3000 is in use, trying 3001 instead.
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3001
+
+ ✓ Starting...
+ ✓ Ready in 11s
+ ○ Compiling / ...
+ ✓ Compiled / in 23s (834 modules)
+ GET / 200 in 24245ms
+ ✓ Compiled in 4s (811 modules)
+ ✓ Compiled in 24.4s (811 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⨯ app/page.tsx (204:34) @ handleConnect
+ ⨯ ReferenceError: handleConnect is not defined
+    at Home (./app/page.tsx:350:34)
+digest: "1216732561"
+[0m [90m 202 |[39m                     [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[0m
+[0m [90m 203 |[39m                     [33m<[39m[33mbutton[39m[0m
+[0m[31m[1m>[22m[39m[90m 204 |[39m                         onClick[33m=[39m{handleConnect}[0m
+[0m [90m     |[39m                                  [31m[1m^[22m[39m[0m
+[0m [90m 205 |[39m                         disabled[33m=[39m{isConfigured}[0m
+[0m [90m 206 |[39m                         className[33m=[39m[32m"px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"[39m[0m
+[0m [90m 207 |[39m                     [33m>[39m[0m
+ GET / 500 in 1778ms
+ ⨯ app/page.tsx (204:34) @ handleConnect
+ ⨯ ReferenceError: handleConnect is not defined
+    at Home (./app/page.tsx:350:34)
+digest: "1216732561"
+[0m [90m 202 |[39m                     [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[0m
+[0m [90m 203 |[39m                     [33m<[39m[33mbutton[39m[0m
+[0m[31m[1m>[22m[39m[90m 204 |[39m                         onClick[33m=[39m{handleConnect}[0m
+[0m [90m     |[39m                                  [31m[1m^[22m[39m[0m
+[0m [90m 205 |[39m                         disabled[33m=[39m{isConfigured}[0m
+[0m [90m 206 |[39m                         className[33m=[39m[32m"px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"[39m[0m
+[0m [90m 207 |[39m                     [33m>[39m[0m
+ GET / 500 in 302ms
+ ✓ Compiled in 2.8s (811 modules)
+[?25h

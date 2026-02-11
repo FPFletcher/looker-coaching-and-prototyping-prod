@@ -1,0 +1,7 @@
+2026-01-30T21:29:41.369040876Z INFO "Using prebuilt tool configuration for looker" 
+2026-01-30T21:29:42.209762871Z INFO "Initialized 1 sources." 
+2026-01-30T21:29:42.209822605Z INFO "Initialized 0 authServices." 
+2026-01-30T21:29:42.21022822Z INFO "Initialized 15 tools." 
+2026-01-30T21:29:42.210365908Z INFO "Initialized 2 toolsets." 
+2026-01-30T21:29:42.211271679Z INFO "Server ready to serve!" 
+./start_toolbox.sh: line 7: 34964 Killed                  ./toolbox start --prebuilt looker

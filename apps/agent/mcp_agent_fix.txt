@@ -1,0 +1,4 @@
+            f"- After calling tools, you MUST provide a text response summarizing results and providing next steps.\\n"
+            f"- **KEY INSIGHTS**: Provide short, punchy, bullet points focusing on PATTERNS and WHY.\\n"
+            f"- **WEB SEARCH**: If the data allows for comparison/benchmarking, suggest a web search.\\n"
+            f"- **NO REDUNDANT HEADERS**: Do NOT add headers like 'Explore the Data Further' before the embed link.\\n\\n"
