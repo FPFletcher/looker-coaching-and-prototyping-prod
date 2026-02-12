@@ -29,7 +29,7 @@ app = FastAPI(title="Looker MCP Chat API")
 # Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"], # Allow all origins for Cloud Run/POC
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -160,16 +160,17 @@ async def reset_session(request: ResetRequest):
 @app.post("/api/explores")
 async def get_explores(request: Dict[str, Any]):
     """Fetch all available explores from Looker"""
+    import looker_sdk
+    
+    credentials = request.get("credentials", {})
+    
+    # Set Looker credentials
+    os.environ["LOOKERSDK_BASE_URL"] = credentials.get("url", "")
+    os.environ["LOOKERSDK_CLIENT_ID"] = credentials.get("client_id", "")
+    os.environ["LOOKERSDK_CLIENT_SECRET"] = credentials.get("client_secret", "")
+    os.environ["LOOKERSDK_VERIFY_SSL"] = "false" # POC dev/test
+    
     try:
-        import looker_sdk
-        
-        credentials = request.get("credentials", {})
-        
-        # Set Looker credentials
-        os.environ["LOOKERSDK_BASE_URL"] = credentials.get("url", "")
-        os.environ["LOOKERSDK_CLIENT_ID"] = credentials.get("client_id", "")
-        os.environ["LOOKERSDK_CLIENT_SECRET"] = credentials.get("client_secret", "")
-        
         sdk = looker_sdk.init40()
         
         # Get all models
@@ -186,10 +187,12 @@ async def get_explores(request: Dict[str, Any]):
                     })
         
         return {"explores": explores_list}
-        
+
     except Exception as e:
-        logger.error(f"Failed to fetch explores: {str(e)}")
-        return {"error": str(e), "explores": []}
+        logger.error(f"Failed to fetch explores (returning empty list to prevent crash): {str(e)}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return {"explores": []}
 
 @app.post("/api/auth/google")
 async def google_auth(request: Dict[str, Any]):

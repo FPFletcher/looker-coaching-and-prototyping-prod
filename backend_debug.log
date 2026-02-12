@@ -1,0 +1,301 @@
+/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:275: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+INFO:     Will watch for changes in these directories: ['/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [41641] using StatReload
+/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:275: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+INFO:     Started server process [41650]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:34596 - "OPTIONS /api/explores HTTP/1.1" 200 OK
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+ERROR:main:Failed to fetch explores (returning empty list to prevent crash): 
+    message:           {"message":"Not found","documentation_url":"https://cloud.google.com/looker/docs/r/err/4.0/404/post/login"}
+    documentation_url: 
+    error_doc_url:     
+    error details:
+    
+    
+ERROR:main:Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/main.py", line 177, in get_explores
+    models = sdk.all_lookml_models()
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/sdk/api40/methods.py", line 7673, in all_lookml_models
+    self.get(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/api_methods.py", line 149, in get
+    response = self.transport.request(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/requests_transport.py", line 66, in request
+    headers.update(authenticator(transport_options or {}))
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 100, in authenticate
+    token = self._get_token(transport_options)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 87, in _get_token
+    self._login(transport_options)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 148, in _login
+    response = self._ok(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 240, in _ok
+    raise error.SDKError(response.value.decode(encoding="utf-8"))
+looker_sdk.error.SDKError: 
+    message:           {"message":"Not found","documentation_url":"https://cloud.google.com/looker/docs/r/err/4.0/404/post/login"}
+    documentation_url: 
+    error_doc_url:     
+    error details:
+    
+    
+
+INFO:     127.0.0.1:34596 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34604 - "OPTIONS /api/explores HTTP/1.1" 200 OK
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+ERROR:main:Failed to fetch explores (returning empty list to prevent crash): 
+    message:           {"message":"Not found","documentation_url":"https://cloud.google.com/looker/docs/r/err/4.0/404/post/login"}
+    documentation_url: 
+    error_doc_url:     
+    error details:
+    
+    
+ERROR:main:Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/main.py", line 177, in get_explores
+    models = sdk.all_lookml_models()
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/sdk/api40/methods.py", line 7673, in all_lookml_models
+    self.get(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/api_methods.py", line 149, in get
+    response = self.transport.request(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/requests_transport.py", line 66, in request
+    headers.update(authenticator(transport_options or {}))
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 100, in authenticate
+    token = self._get_token(transport_options)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 87, in _get_token
+    self._login(transport_options)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 148, in _login
+    response = self._ok(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 240, in _ok
+    raise error.SDKError(response.value.decode(encoding="utf-8"))
+looker_sdk.error.SDKError: 
+    message:           {"message":"Not found","documentation_url":"https://cloud.google.com/looker/docs/r/err/4.0/404/post/login"}
+    documentation_url: 
+    error_doc_url:     
+    error details:
+    
+    
+
+INFO:     127.0.0.1:34604 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+ERROR:main:Failed to fetch explores (returning empty list to prevent crash): 
+    message:           {"message":"Not found","documentation_url":"https://cloud.google.com/looker/docs/r/err/4.0/404/post/login"}
+    documentation_url: 
+    error_doc_url:     
+    error details:
+    
+    
+ERROR:main:Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/main.py", line 177, in get_explores
+    models = sdk.all_lookml_models()
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/sdk/api40/methods.py", line 7673, in all_lookml_models
+    self.get(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/api_methods.py", line 149, in get
+    response = self.transport.request(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/requests_transport.py", line 66, in request
+    headers.update(authenticator(transport_options or {}))
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 100, in authenticate
+    token = self._get_token(transport_options)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 87, in _get_token
+    self._login(transport_options)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 148, in _login
+    response = self._ok(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 240, in _ok
+    raise error.SDKError(response.value.decode(encoding="utf-8"))
+looker_sdk.error.SDKError: 
+    message:           {"message":"Not found","documentation_url":"https://cloud.google.com/looker/docs/r/err/4.0/404/post/login"}
+    documentation_url: 
+    error_doc_url:     
+    error details:
+    
+    
+
+INFO:     127.0.0.1:34608 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+ERROR:main:Failed to fetch explores (returning empty list to prevent crash): 
+    message:           {"message":"Not found","documentation_url":"https://cloud.google.com/looker/docs/r/err/4.0/404/post/login"}
+    documentation_url: 
+    error_doc_url:     
+    error details:
+    
+    
+ERROR:main:Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/main.py", line 177, in get_explores
+    models = sdk.all_lookml_models()
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/sdk/api40/methods.py", line 7673, in all_lookml_models
+    self.get(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/api_methods.py", line 149, in get
+    response = self.transport.request(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/requests_transport.py", line 66, in request
+    headers.update(authenticator(transport_options or {}))
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 100, in authenticate
+    token = self._get_token(transport_options)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 87, in _get_token
+    self._login(transport_options)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 148, in _login
+    response = self._ok(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 240, in _ok
+    raise error.SDKError(response.value.decode(encoding="utf-8"))
+looker_sdk.error.SDKError: 
+    message:           {"message":"Not found","documentation_url":"https://cloud.google.com/looker/docs/r/err/4.0/404/post/login"}
+    documentation_url: 
+    error_doc_url:     
+    error details:
+    
+    
+
+INFO:     127.0.0.1:35768 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+ERROR:main:Failed to fetch explores (returning empty list to prevent crash): 
+    message:           {"message":"Not found","documentation_url":"https://cloud.google.com/looker/docs/r/err/4.0/404/post/login"}
+    documentation_url: 
+    error_doc_url:     
+    error details:
+    
+    
+ERROR:main:Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/main.py", line 177, in get_explores
+    models = sdk.all_lookml_models()
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/sdk/api40/methods.py", line 7673, in all_lookml_models
+    self.get(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/api_methods.py", line 149, in get
+    response = self.transport.request(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/requests_transport.py", line 66, in request
+    headers.update(authenticator(transport_options or {}))
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 100, in authenticate
+    token = self._get_token(transport_options)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 87, in _get_token
+    self._login(transport_options)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 148, in _login
+    response = self._ok(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 240, in _ok
+    raise error.SDKError(response.value.decode(encoding="utf-8"))
+looker_sdk.error.SDKError: 
+    message:           {"message":"Not found","documentation_url":"https://cloud.google.com/looker/docs/r/err/4.0/404/post/login"}
+    documentation_url: 
+    error_doc_url:     
+    error details:
+    
+    
+
+INFO:     127.0.0.1:56278 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+ERROR:main:Failed to fetch explores (returning empty list to prevent crash): 
+    message:           {"message":"Not found","documentation_url":"https://cloud.google.com/looker/docs/r/err/4.0/404/post/login"}
+    documentation_url: 
+    error_doc_url:     
+    error details:
+    
+    
+ERROR:main:Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/main.py", line 177, in get_explores
+    models = sdk.all_lookml_models()
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/sdk/api40/methods.py", line 7673, in all_lookml_models
+    self.get(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/api_methods.py", line 149, in get
+    response = self.transport.request(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/requests_transport.py", line 66, in request
+    headers.update(authenticator(transport_options or {}))
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 100, in authenticate
+    token = self._get_token(transport_options)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 87, in _get_token
+    self._login(transport_options)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 148, in _login
+    response = self._ok(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 240, in _ok
+    raise error.SDKError(response.value.decode(encoding="utf-8"))
+looker_sdk.error.SDKError: 
+    message:           {"message":"Not found","documentation_url":"https://cloud.google.com/looker/docs/r/err/4.0/404/post/login"}
+    documentation_url: 
+    error_doc_url:     
+    error details:
+    
+    
+
+INFO:     127.0.0.1:56288 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+ERROR:main:Failed to fetch explores (returning empty list to prevent crash): 
+    message:           {"message":"Not found","documentation_url":"https://cloud.google.com/looker/docs/r/err/4.0/404/post/login"}
+    documentation_url: 
+    error_doc_url:     
+    error details:
+    
+    
+ERROR:main:Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/main.py", line 177, in get_explores
+    models = sdk.all_lookml_models()
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/sdk/api40/methods.py", line 7673, in all_lookml_models
+    self.get(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/api_methods.py", line 149, in get
+    response = self.transport.request(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/requests_transport.py", line 66, in request
+    headers.update(authenticator(transport_options or {}))
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 100, in authenticate
+    token = self._get_token(transport_options)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 87, in _get_token
+    self._login(transport_options)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 148, in _login
+    response = self._ok(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 240, in _ok
+    raise error.SDKError(response.value.decode(encoding="utf-8"))
+looker_sdk.error.SDKError: 
+    message:           {"message":"Not found","documentation_url":"https://cloud.google.com/looker/docs/r/err/4.0/404/post/login"}
+    documentation_url: 
+    error_doc_url:     
+    error details:
+    
+    
+
+INFO:     127.0.0.1:56296 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49968 - "OPTIONS /api/explores HTTP/1.1" 200 OK
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+ERROR:main:Failed to fetch explores (returning empty list to prevent crash): 
+    message:           {"message":"Not found","documentation_url":"https://cloud.google.com/looker/docs/r/err/4.0/404/post/login"}
+    documentation_url: 
+    error_doc_url:     
+    error details:
+    
+    
+ERROR:main:Traceback (most recent call last):
+  File "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/agent/main.py", line 177, in get_explores
+    models = sdk.all_lookml_models()
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/sdk/api40/methods.py", line 7673, in all_lookml_models
+    self.get(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/api_methods.py", line 149, in get
+    response = self.transport.request(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/requests_transport.py", line 66, in request
+    headers.update(authenticator(transport_options or {}))
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 100, in authenticate
+    token = self._get_token(transport_options)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 87, in _get_token
+    self._login(transport_options)
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 148, in _login
+    response = self._ok(
+  File "/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/looker_sdk/rtl/auth_session.py", line 240, in _ok
+    raise error.SDKError(response.value.decode(encoding="utf-8"))
+looker_sdk.error.SDKError: 
+    message:           {"message":"Not found","documentation_url":"https://cloud.google.com/looker/docs/r/err/4.0/404/post/login"}
+    documentation_url: 
+    error_doc_url:     
+    error details:
+    
+    
+
+INFO:     127.0.0.1:49968 - "POST /api/explores HTTP/1.1" 200 OK

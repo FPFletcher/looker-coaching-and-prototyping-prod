@@ -1,53 +1,27 @@
-FROM node:18-alpine AS base
+FROM node:18-alpine
 
-# Install dependencies only when needed
-FROM base AS deps
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# 1. Install dependencies
+# We copy package.json to the root to install modules there
 COPY apps/web/package.json apps/web/package-lock.json ./
 RUN npm ci
 
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# 2. Copy the rest of the source code
 COPY apps/web ./apps/web
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-ENV NEXT_TELEMETRY_DISABLED 1
-
-# Build the application
-# We need to set working dir to apps/web for build context
+# 3. Build the Next.js app
 WORKDIR /app/apps/web
-# Skip type checking for faster builds in POC
+# Accept build arg for API URL
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build -- --no-lint
 
-# Production image, copy all the files and run next
-FROM base AS runner
-WORKDIR /app
-
+# 4. Start the app
 ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+# Next.js automatically respects the PORT env var from Cloud Run
+ENV PORT 8080
+EXPOSE 8080
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-# Copy verify files
-COPY --from=builder /app/apps/web/public ./public
-
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
-
-USER nextjs
-
-EXPOSE 3000
-
-ENV PORT 3000
-# set hostname to localhost
-ENV HOSTNAME "0.0.0.0"
-
-CMD ["node", "server.js"]
+CMD ["npm", "start"]

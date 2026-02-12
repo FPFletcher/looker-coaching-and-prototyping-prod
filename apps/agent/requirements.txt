@@ -8,3 +8,4 @@ python-dotenv==1.0.1
 mcp>=1.0.0
 looker-sdk==26.0.0
 anthropic
+duckduckgo-search

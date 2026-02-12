@@ -332,8 +332,8 @@ export default function Home() {
                             const toolName = data.tool_name || data.tool;
                             // Find the *last* matching running tool to update
                             for (let i = currentParts.length - 1; i >= 0; i--) {
-                                if (currentParts[i].type === 'tool' && currentParts[i].tool === toolName && currentParts[i].status === 'running') {
-                                    currentParts[i] = {
+                                if (currentParts[i].type === 'tool' && (currentParts[i] as any).tool === toolName && (currentParts[i] as any).status === 'running') {
+                                    (currentParts as any)[i] = {
                                         ...currentParts[i],
                                         result: data.result,
                                         status: "success"

@@ -48,6 +48,7 @@ class BananaAgent:
         )
         
         try:
+            logger.info(f"Agent Logic: Starting toolbox at {self.toolbox_bin}")
             async with stdio_client(server_params) as (read, write):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
@@ -55,8 +56,9 @@ class BananaAgent:
                     logger.info(f"Credentials valid. Found {len(tools.tools)} Looker tools.")
                     return True
         except Exception as e:
-            logger.error(f"Credential verification failed: {e}")
-            raise Exception("Failed to connect to Looker. Check credentials.")
+            logger.error(f"Credential verification failed details: {e}", exc_info=True)
+            logger.warning("Continuing without Looker connection availability.")
+            return False
 
     async def analyze_requirements(self, prompt: str, image_bytes: bytes = None):
         """

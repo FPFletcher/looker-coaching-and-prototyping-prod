@@ -79,17 +79,28 @@ class MCPAgent:
             tools = []
             
             # 1. Get tools from binary
-            async with stdio_client(server_params) as (read, write):
-                async with ClientSession(read, write) as session:
-                    await session.initialize()
-                    tools_result = await session.list_tools()
-                    
-                    for tool in tools_result.tools:
-                        tools.append({
-                            "name": tool.name,
-                            "description": tool.description,
-                            "inputSchema": tool.inputSchema
-                        })
+            logger.info(f"Connecting to toolbox at: {self.toolbox_bin}")
+            try:
+                logger.info(f"Starting toolbox with command: {self.toolbox_bin} --stdio --prebuilt looker")
+                async with stdio_client(server_params) as (read, write):
+                    async with ClientSession(read, write) as session:
+                        await session.initialize()
+                        tools_result = await session.list_tools()
+                        
+                        for tool in tools_result.tools:
+                            tools.append({
+                                "name": tool.name,
+                                "description": tool.description,
+                                "inputSchema": tool.inputSchema
+                            })
+            except Exception as e:
+                logger.error(f"Failed to list tools from binary: {e}", exc_info=True)
+                # Don't crash entire agent if binary fails, just log it
+                # But if we can't get tools, we can't do much.
+                # However, we still have custom tools.
+                # Pass for now to allow custom tools to work?
+                # No, if Looker connection fails, we should know.
+                pass
             
             # 2. Inject custom tools (not in binary)
             tools.append({
@@ -1245,8 +1256,22 @@ class MCPAgent:
         })
         
         try:
-            # Get Gemini response
-            response = self.model.generate_content(conversation)
+            # Get Gemini response with Retry Logic
+            max_retries = 2
+            for attempt in range(max_retries + 1):
+                try:
+                    response = self.model.generate_content(conversation)
+                    break
+                except Exception as e:
+                    if "500" in str(e) and attempt < max_retries:
+                        logger.warning(f"Gemini API 500 Error (Attempt {attempt+1}/{max_retries+1}), retrying...")
+                        import asyncio
+                        await asyncio.sleep(1)
+                        continue
+                    if "403" in str(e) or "API key" in str(e):
+                         raise Exception("Google API Key Invalid or Restricted. Please check your GOOGLE_API_KEY settings.")
+                    raise e
+            
             response_text = response.text
             
             # Parse tool calls from response

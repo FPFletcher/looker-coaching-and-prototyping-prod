@@ -66,7 +66,7 @@ const ChatInterface = memo(function ChatInterface({
     const { onStop } = arguments[0];
 
     // Log when component re-renders
-    console.log('[ChatInterface] 🔄 Component rendered. Message count:', messages.length, 'isLoading:', isLoading);
+
 
     // Helper to determine which logo to show based on active tool
     const getLogoForMessage = useCallback((msg: Message) => {
@@ -173,11 +173,10 @@ const ChatInterface = memo(function ChatInterface({
 
 
                 {useMemo(() => {
-                    console.log('[ChatInterface] 🔄 Messages memo recalculating - message count:', messages.length);
+
                     return messages.map((msg, idx) => {
                         // Use stable ID if available (CRITICAL for preventing re-renders during streaming!)
                         const msgKey = msg.id || `fallback-${idx}`;
-                        console.log('[ChatInterface] 📝 Rendering message', idx, 'with STABLE key:', msgKey, 'role:', msg.role, 'content length:', msg.content?.length || 0);
                         return (
                             <div key={msgKey} className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                                 <div className={`max-w-6xl w-full ${msg.role === "user" ? "bg-[#333537] rounded-[24px] px-6 py-4 rounded-tr-md" : "pr-6"}`}>
