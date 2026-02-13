@@ -1,0 +1,177 @@
+/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:275: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+INFO:main:Incoming Request: POST /api/explores
+INFO:main:Incoming Request: POST /api/explores
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:main:Incoming Request: POST /api/chat
+INFO:mcp_agent:Listing available MCP tools...
+INFO:mcp_agent:Connecting to toolbox at: /home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/tools/mcp-toolbox/toolbox
+INFO:mcp_agent:Starting toolbox with command: /home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/tools/mcp-toolbox/toolbox --stdio --prebuilt looker
+INFO:mcp_agent:Found 44 Looker tools (including custom)
+INFO:mcp_agent:Turn 1
+INFO:httpx:HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+INFO:main:Incoming Request: POST /api/explores
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+INFO:main:Incoming Request: POST /api/explores
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:main:Incoming Request: POST /api/chat
+INFO:mcp_agent:Listing available MCP tools...
+INFO:mcp_agent:Connecting to toolbox at: /home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/tools/mcp-toolbox/toolbox
+INFO:mcp_agent:Starting toolbox with command: /home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/tools/mcp-toolbox/toolbox --stdio --prebuilt looker
+INFO:mcp_agent:Found 44 Looker tools (including custom)
+INFO:mcp_agent:GEMINI RAW OUTPUT: {"tool": "get_explore_fields", "arguments": {"explore_name": "order_items", "model_name": "thelook"}}
+INFO:mcp_agent:GEMINI EXTRACTED JSONS: [{'tool': 'get_explore_fields', 'arguments': {'explore_name': 'order_items', 'model_name': 'thelook'}}]
+INFO:mcp_agent:Executing extracted tool: get_explore_fields
+WARNING:mcp_agent:⚠️ Missing 'model' argument for tool get_explore_fields. Defaulting to 'thelook'.
+INFO:mcp_agent:Executing tool: get_explore_fields with args: {'model_name': 'thelook', 'explore': 'order_items', 'model': 'thelook'}
+INFO:mcp_agent:🔍 [FETCH_FIELDS] Fetching fields for thelook.order_items from API...
+INFO:mcp_agent:Initializing SDK with Base URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app, Client ID: vQyY...V85N
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
+INFO:mcp_agent:SDK Auth Successful: Logged in as Super Admin (admin@ffrancois.altostrat.com)
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models/thelook/explores/order_items)
+ERROR:mcp_agent:Failed to fetch fields: 
+    message:           2
+    documentation_url: https://cloud.google.com/looker/docs/r/err/4.0/404/get/lookml_models/:lookml_model_name/explores/:explore_name
+    error_doc_url:     https://static-a.cdn.looker.app/errorcodes/404.md
+    error details:
+    
+    
+ERROR:mcp_agent:Gemini processing error: The `response.text` quick accessor only works for simple (single-`Part`) text responses. This response is not simple text.Use the `result.parts` accessor or the full `result.candidates[index].content.parts` lookup instead.
+INFO:main:Incoming Request: POST /api/explores
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+INFO:main:Incoming Request: POST /api/explores
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:main:Incoming Request: POST /api/explores
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+INFO:main:Incoming Request: POST /api/explores
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:main:Incoming Request: POST /api/auth/google
+INFO:mcp_agent:Listing available MCP tools...
+INFO:mcp_agent:Connecting to toolbox at: /home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/tools/mcp-toolbox/toolbox
+INFO:mcp_agent:Starting toolbox with command: /home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/tools/mcp-toolbox/toolbox --stdio --prebuilt looker
+INFO:mcp_agent:Found 44 Looker tools (including custom)
+INFO:mcp_agent:GEMINI RAW OUTPUT: Okay, I understand the mandatory protocol. I will prioritize calling `get_dimensions` or `get_explore_fields` first, output raw JSON for tool calls, and avoid any text answers until the tools have been analyzed.
+
+```json
+{"tool": "get_explore_fields", "arguments": {}}
+```
+
+INFO:mcp_agent:GEMINI EXTRACTED JSONS: [{'tool': 'get_explore_fields', 'arguments': {}}]
+INFO:mcp_agent:Executing extracted tool: get_explore_fields
+INFO:mcp_agent:Executing tool: get_explore_fields with args: {}
+INFO:mcp_agent:🔍 [FETCH_FIELDS] Fetching fields for None.None from API...
+INFO:mcp_agent:Initializing SDK with Base URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app, Client ID: vQyY...V85N
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
+INFO:mcp_agent:SDK Auth Successful: Logged in as Super Admin (admin@ffrancois.altostrat.com)
+ERROR:mcp_agent:Failed to fetch fields: argument of type 'NoneType' is not iterable
+INFO:main:Incoming Request: POST /api/explores
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+INFO:main:Incoming Request: POST /api/explores
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:main:Incoming Request: POST /api/chat
+INFO:mcp_agent:Listing available MCP tools...
+INFO:mcp_agent:Connecting to toolbox at: /home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/tools/mcp-toolbox/toolbox
+INFO:mcp_agent:Starting toolbox with command: /home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/tools/mcp-toolbox/toolbox --stdio --prebuilt looker
+INFO:mcp_agent:Found 44 Looker tools (including custom)
+INFO:mcp_agent:Turn 1
+INFO:httpx:HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+INFO:main:Incoming Request: POST /api/explores
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+INFO:main:Incoming Request: POST /api/explores
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:main:Incoming Request: POST /api/auth/google
+INFO:mcp_agent:Listing available MCP tools...
+INFO:mcp_agent:Connecting to toolbox at: /home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/tools/mcp-toolbox/toolbox
+INFO:mcp_agent:Starting toolbox with command: /home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/tools/mcp-toolbox/toolbox --stdio --prebuilt looker
+INFO:mcp_agent:Found 44 Looker tools (including custom)
+INFO:mcp_agent:GEMINI RAW OUTPUT: ```json
+{"tool": "get_dimensions", "arguments": {}}
+```
+
+INFO:mcp_agent:GEMINI EXTRACTED JSONS: [{'tool': 'get_dimensions', 'arguments': {}}]
+INFO:mcp_agent:Executing extracted tool: get_dimensions
+INFO:mcp_agent:Executing tool: get_dimensions with args: {}
+2026-02-13T13:46:10.584469362Z ERROR "provided parameters were invalid: parameter \"model\" is required" 
+ERROR:mcp_agent:Tool execution failed: unhandled errors in a TaskGroup (1 sub-exception)
+INFO:main:Incoming Request: POST /api/chat
+INFO:mcp_agent:Listing available MCP tools...
+INFO:mcp_agent:Connecting to toolbox at: /home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/tools/mcp-toolbox/toolbox
+INFO:mcp_agent:Starting toolbox with command: /home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/tools/mcp-toolbox/toolbox --stdio --prebuilt looker
+INFO:mcp_agent:Found 44 Looker tools (including custom)
+INFO:mcp_agent:Turn 1
+INFO:httpx:HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+INFO:mcp_agent:Executing tool: get_models
+INFO:mcp_agent:Tool args: {}
+INFO:mcp_agent:Executing tool: get_models with args: {}
+INFO:mcp_agent:🔧 [GET_MODELS_ENHANCED] Listing models with workspace info
+INFO:mcp_agent:Initializing SDK with Base URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app, Client ID: vQyY...V85N
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
+INFO:mcp_agent:SDK Auth Successful: Logged in as Super Admin (admin@ffrancois.altostrat.com)
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/session)
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+INFO:mcp_agent:Turn 2
+INFO:httpx:HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"

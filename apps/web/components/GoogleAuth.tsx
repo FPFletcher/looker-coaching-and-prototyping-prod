@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { LogOut } from 'lucide-react';
+import { getApiUrl } from '@/lib/apiConfig';
 
 interface GoogleAuthProps {
     onAuthChange: (user: GoogleUser | null) => void;
@@ -50,7 +51,7 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({ onAuthChange }) => {
     // Load saved user on mount
     useEffect(() => {
         const savedUser = localStorage.getItem('google_user');
-        if (savedUser) {
+        if (savedUser && savedUser !== "undefined") {
             try {
                 const parsedUser = JSON.parse(savedUser) as GoogleUser;
                 setUser(parsedUser);
@@ -99,7 +100,7 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({ onAuthChange }) => {
             console.log('Received credential response from Google');
 
             // Send token to backend for verification
-            const res = await fetch('http://localhost:8000/api/auth/google', {
+            const res = await fetch(`${getApiUrl()}/api/auth/google`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ token: response.credential }),

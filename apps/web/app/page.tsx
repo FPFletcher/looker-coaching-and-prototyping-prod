@@ -7,6 +7,7 @@ import type { Message } from "@/components/ChatInterface";
 import SettingsModal, { SettingsData, LookerCredentials } from "../components/SettingsModal";
 import ExploreSelector from "../components/ExploreSelector";
 import { getUserSetting, saveUserSetting } from "@/lib/userSettings";
+import { getApiUrl } from "@/lib/apiConfig";
 
 interface Explore {
     name: string;
@@ -59,7 +60,7 @@ export default function Home() {
             // Try to get current user
             const userStr = localStorage.getItem('google_user');
             let userId: string | undefined;
-            if (userStr) {
+            if (userStr && userStr !== "undefined") {
                 try {
                     const user = JSON.parse(userStr) as GoogleUser;
                     userId = user.id;
@@ -261,7 +262,7 @@ export default function Home() {
             });
             const base64Images = await Promise.all(imagePromises);
 
-            const response = await fetch("http://localhost:8000/api/chat", {
+            const response = await fetch(`${getApiUrl()}/api/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

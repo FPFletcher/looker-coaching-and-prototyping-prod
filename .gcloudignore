@@ -1,7 +1,0 @@
-.git
-.gitignore
-.gemini
-node_modules
-__pycache__
-README.md
-*.tar.gz

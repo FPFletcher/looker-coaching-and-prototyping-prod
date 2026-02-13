@@ -1,8 +1,8 @@
-    def _register_lookml_in_context(self, path: str, source: str, project_id: str):
+def _register_lookml_in_context(self, path: str, source: str, project_id: str):
         """Parse and register LookML file in context"""
         try:
             from lookml_context import LookMLParser
-            
+
             if path.endswith(".view.lkml"):
                 # Parse view
                 view_metadata = LookMLParser.parse_view(source)
@@ -13,11 +13,11 @@
                         sql_table_name=view_metadata.sql_table_name
                     )
                     logger.info(f"✅ Registered view '{view_metadata.name}' with {len(view_metadata.fields)} fields in context")
-            
+
             elif path.endswith(".model.lkml"):
                 # Extract model name from path
                 model_name = path.replace(".model.lkml", "").split("/")[-1]
-                
+
                 # Parse model
                 model_metadata = LookMLParser.parse_model(source, model_name)
                 if model_metadata:
@@ -28,7 +28,7 @@
                         includes=model_metadata.includes
                     )
                     logger.info(f"✅ Registered model '{model_metadata.name}' with {len(model_metadata.explores)} explores in context")
-                    
+
                     # Register each explore
                     for explore_name in model_metadata.explores:
                         # Assume base view has same name as explore (common pattern)
@@ -38,7 +38,7 @@
                             base_view=explore_name
                         )
                         logger.info(f"✅ Registered explore '{model_metadata.name}.{explore_name}' in context")
-        
+
         except Exception as e:
             logger.warning(f"Failed to register LookML in context: {e}")
             # Don't fail the whole operation if context registration fails

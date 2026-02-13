@@ -173,8 +173,8 @@ async def get_explores(request: Dict[str, Any]):
     try:
         sdk = looker_sdk.init40()
         
-        # Get all models
-        models = sdk.all_lookml_models()
+        # Get all models with explicit fields to ensure explores are returned
+        models = sdk.all_lookml_models(fields="name,label,project_name,explores(name,label)")
         
         explores_list = []
         for model in models:

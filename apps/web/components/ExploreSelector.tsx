@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, Database } from 'lucide-react';
+import { getApiUrl } from '@/lib/apiConfig';
 
 interface Explore {
     name: string;
@@ -36,7 +37,7 @@ const ExploreSelector: React.FC<ExploreSelectorProps> = ({
     const fetchExplores = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:8000/api/explores', {
+            const response = await fetch(`${getApiUrl()}/api/explores`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

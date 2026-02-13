@@ -1,6 +1,7 @@
-fastapi==0.109.0
+fastapi>=0.110.0
+starlette>=0.37.0
 uvicorn==0.27.0
-google-generativeai==0.3.2
+google-generativeai
 pandas==2.2.0
 python-multipart==0.0.6
 requests==2.31.0
@@ -9,3 +10,5 @@ mcp>=1.0.0
 looker-sdk==26.0.0
 anthropic
 duckduckgo-search
+firebase-admin
+functions-framework>=3.9.1

@@ -1,0 +1,50 @@
+/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:275: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+INFO:     Will watch for changes in these directories: ['/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [53182] using StatReload
+/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:275: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+INFO:     Started server process [53189]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:48684 - "OPTIONS /api/explores HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48688 - "OPTIONS /api/explores HTTP/1.1" 200 OK
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:     127.0.0.1:48688 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:     127.0.0.1:48684 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56766 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59658 - "OPTIONS /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59658 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:mcp_agent:Listing available MCP tools...
+INFO:mcp_agent:Connecting to toolbox at: /home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/tools/mcp-toolbox/toolbox
+INFO:mcp_agent:Starting toolbox with command: /home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/tools/mcp-toolbox/toolbox --stdio --prebuilt looker
+INFO:mcp_agent:Found 44 Looker tools (including custom)
+WARNING:mcp_agent:Gemini API 500 Error (Attempt 1), retrying...
+WARNING:mcp_agent:Gemini API 500 Error (Attempt 2), retrying...
+ERROR:mcp_agent:Gemini processing failed: 500 Internal error encountered.
+WARNING:  StatReload detected changes in 'apps/agent/mcp_agent.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [53189]
+WARNING:  StatReload detected changes in 'apps/agent/mcp_agent.py'. Reloading...
+/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:275: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+WARNING:  StatReload detected changes in 'apps/agent/mcp_agent.py'. Reloading...
+/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:275: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+INFO:     Started server process [53485]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.

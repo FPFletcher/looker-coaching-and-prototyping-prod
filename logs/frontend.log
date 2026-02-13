@@ -4,9 +4,115 @@
 
   ▲ Next.js 14.2.35
   - Local:        http://localhost:3000
+  - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 2.4s
+ ✓ Ready in 1725ms
  ○ Compiling / ...
- ✓ Compiled / in 7.8s (852 modules)
- GET / 200 in 8327ms
+ ✓ Compiled / in 2.2s (1055 modules)
+ GET / 200 in 2576ms
+ GET / 200 in 30ms
+ GET / 200 in 31ms
+ GET / 200 in 23ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 777ms (1058 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 924ms
+ GET / 200 in 126ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 55ms
+ GET / 200 in 48ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 77ms
+ GET / 200 in 37ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 54ms
+ GET / 200 in 20ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 57ms
+ GET / 200 in 31ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 44ms
+ GET / 200 in 29ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 50ms
+ GET / 200 in 39ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 42ms
+ GET / 200 in 55ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 48ms
+ ⚠ Found a change in next.config.js. Restarting the server to apply the changes...
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 2.3s
+ ○ Compiling / ...
+ ✓ Compiled / in 11s (1078 modules)
+ GET / 200 in 11677ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 8.4s (1072 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 8551ms
+   Reload env: .env.local
+ ✓ Compiled in 859ms (1055 modules)
+ GET / 200 in 300ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1167ms (1058 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 1337ms
+ GET / 200 in 154ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 100ms
+ GET / 200 in 52ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 83ms
+ GET / 200 in 40ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 78ms
+ GET / 200 in 66ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 110ms
+ GET / 200 in 48ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 38ms
+ GET / 200 in 41ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 22ms
+ GET / 200 in 39ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 45ms
+ GET / 200 in 32ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 78ms
+ GET / 200 in 27ms
+ GET / 200 in 26ms
+ GET / 200 in 43ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 31ms
+ GET / 200 in 32ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 52ms
+ GET / 200 in 24ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 50ms
+ GET / 200 in 21ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 67ms
+ GET / 200 in 35ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 76ms
+ GET / 200 in 22ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 33ms
+ GET / 200 in 18ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 40ms
+ GET / 200 in 19ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 26ms
+ GET / 200 in 22ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 40ms
+ GET / 200 in 19ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 18ms
+ GET / 200 in 23ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 63ms
+ GET / 200 in 26ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 52ms
+ GET / 200 in 22ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 36ms
+ GET / 200 in 22ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 62ms
+ GET / 200 in 25ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 42ms
+ ✓ Compiled in 1002ms (1069 modules)
+   Reload env: .env.local
+ ✓ Compiled in 590ms (1055 modules)
+ GET / 200 in 169ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 812ms (1058 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 947ms
+ GET / 200 in 107ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 20ms
+   Reload env: .env.local
+ ✓ Compiled in 1195ms (1055 modules)
+ GET / 200 in 91ms
+ ✓ Compiled /_not-found in 354ms (1058 modules)
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 468ms
+ GET / 200 in 48ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 18ms
