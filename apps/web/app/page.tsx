@@ -40,6 +40,7 @@ export default function Home() {
     const [abortController, setAbortController] = useState<AbortController | null>(null);
     const [currentUser, setCurrentUser] = useState<GoogleUser | null>(null);
     const [selectedImages, setSelectedImages] = useState<File[]>([]);
+    const [isPocMode, setIsPocMode] = useState(false);
 
     // Chat History State
     const [savedChats, setSavedChats] = useState<SavedChat[]>([]);
@@ -73,13 +74,19 @@ export default function Home() {
                 }
             }
 
-            // Load settings with user scope
             const settings = getUserSetting<SettingsData>('looker_settings', userId);
             if (settings) {
                 setCredentials(settings.credentials);
                 setMode(settings.mode || 'existing');
                 setSelectedModel(settings.model || 'claude-sonnet-4-5-20250929');
             }
+
+            // Load persisted UI state
+            const persistedPocMode = getUserSetting<boolean>('poc_mode', userId, false);
+            if (persistedPocMode !== null) setIsPocMode(persistedPocMode);
+
+            const persistedExplore = getUserSetting<Explore | null>('selected_explore', userId, null);
+            if (persistedExplore) setSelectedExplore(persistedExplore);
         }
     }, []); // Run once on mount
 
@@ -182,7 +189,7 @@ export default function Home() {
         setMode(settings.mode);
         setSelectedModel(settings.model);
 
-        // Save to scoped localStorage
+        // Save settings to storage
         if (typeof window !== 'undefined') {
             saveUserSetting('looker_settings', settings, currentUser?.id);
         }
@@ -281,7 +288,8 @@ export default function Home() {
                     explore: selectedExplore, // Send selected explore
                     images: base64Images,      // Send images as base64
                     gcp_project: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.gcpProject,
-                    gcp_location: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.gcpLocation
+                    gcp_location: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.gcpLocation,
+                    poc_mode: isPocMode
                 }),
                 signal: controller.signal // Add abort signal
             });
@@ -412,6 +420,16 @@ export default function Home() {
         }
     }, [abortController]);
 
+    const handlePocModeChange = (newMode: boolean) => {
+        setIsPocMode(newMode);
+        saveUserSetting('poc_mode', newMode, currentUser?.id);
+    };
+
+    const handleExploreChange = (explore: Explore | null) => {
+        setSelectedExplore(explore);
+        saveUserSetting('selected_explore', explore, currentUser?.id);
+    };
+
     return (
         <div className="flex h-screen bg-[#131314]">
             <Sidebar
@@ -425,20 +443,21 @@ export default function Home() {
                 onSelectChat={handleSelectChat}
                 onDeleteChat={handleDeleteChat}
                 onRenameChat={handleRenameChat}
-            />
-
-            <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? "ml-64" : "ml-16"} h-full flex flex-col`}>
-                {/* Explore Selector - Always visible */}
-                <div className="px-40 pt-6 pb-4 border-b border-[#37393b]">
+                isPocMode={isPocMode}
+                onPocModeChange={handlePocModeChange}
+                exploreSelector={
                     <ExploreSelector
                         lookerUrl={credentials.url}
                         clientId={credentials.client_id}
                         clientSecret={credentials.client_secret}
-                        onSelectExplore={setSelectedExplore}
+                        onSelectExplore={handleExploreChange}
                         selectedExplore={selectedExplore}
+                        disabled={isPocMode}
                     />
-                </div>
+                }
+            />
 
+            <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? "ml-64" : "ml-16"} h-full flex flex-col`}>
                 <div className="flex-1">
                     <ChatInterface
                         messages={messages}

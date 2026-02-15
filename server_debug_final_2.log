@@ -1,0 +1,35 @@
+/home/admin_ffrancois_altostrat_com/.local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:275: FutureWarning: You are using a Python version (3.10.12) which Google will stop supporting in new releases of google.api_core once it reaches its end of life (2026-10-04). Please upgrade to the latest Python version, or at least Python 3.11, to continue receiving updates for google.api_core past that date.
+  warnings.warn(message, FutureWarning)
+INFO:     Started server process [161016]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:54422 - "OPTIONS /api/explores HTTP/1.1" 200 OK
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:     127.0.0.1:54422 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:     127.0.0.1:54430 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:     127.0.0.1:54422 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:1020: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  warnings.warn(
+INFO:     127.0.0.1:54440 - "POST /api/explores HTTP/1.1" 200 OK

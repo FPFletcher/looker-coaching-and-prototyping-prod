@@ -59,6 +59,12 @@ const DashboardEmbed: React.FC<DashboardEmbedProps> = ({ url, lookerBaseUrl }) =
         }
     }
 
+    // CRITICAL: Add embed_domain to allow iframe communication and pass CSP checks
+    if (typeof window !== 'undefined') {
+        const separator = embedUrl.includes('?') ? '&' : '?';
+        embedUrl += `${separator}embed_domain=${encodeURIComponent(window.location.origin)}`;
+    }
+
     // Use a stable key based on resource ID, not the full embedUrl
     // This prevents re-mounting when the URL changes but it's the same resource
     const stableKey = `${resource.type}-${resource.id}`;

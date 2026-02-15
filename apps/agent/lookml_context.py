@@ -96,6 +96,10 @@ class LookMLContext:
             joins=joins or [],
             fields=fields
         )
+
+    def has_explore(self, model: str, explore: str) -> bool:
+        """Check if an explore exists in the context"""
+        return f"{model}.{explore}" in self.explores
     
     def get_available_fields(self, model: str, explore: str) -> List[Field]:
         """Get fields for an explore without API call"""
@@ -239,7 +243,7 @@ class LookMLParser:
         for match in re.finditer(r'include:\s+"([^"]+)"', lookml_content):
             includes.append(match.group(1))
         
-        # Extract explores
+        # Extract explores (names only for now, but we could parse blocks)
         explores = []
         for match in re.finditer(r'explore:\s+(\w+)', lookml_content):
             explore_name = match.group(1)
@@ -250,4 +254,48 @@ class LookMLParser:
             connection=connection,
             explores=explores,
             includes=includes
+        )
+
+    @staticmethod
+    def parse_explore(lookml_content: str) -> Optional[ExploreMetadata]:
+        """Parse explore LookML block and extract metadata"""
+        # Note: This expects an "explore: name { ... }" block or file content
+        
+        explore_match = re.search(r'explore:\s+(\w+)', lookml_content)
+        if not explore_match:
+            return None
+        explore_name = explore_match.group(1)
+        
+        # Extract base view (from 'from' parameter or default to explore name)
+        from_match = re.search(r'from:\s+(\w+)', lookml_content)
+        base_view = from_match.group(1) if from_match else explore_name
+
+        # Extract joins
+        joins = []
+        # Regex to match join block with balanced braces for ${...}
+        # matches: join: name { content }
+        # content can contain anything except } OR ${...} which contains anything except }
+        for match in re.finditer(r'join:\s+(\w+)\s*\{((?:[^{}]|\$\{[^}]+\})+)\}', lookml_content, re.DOTALL):
+            join_name = match.group(1)
+            join_body = match.group(2)
+            
+            # Simple extraction of sql_on or type if needed
+            # Use DOTALL for sql_on to capture multi-line SQL
+            # Non-greedy match until ;;
+            sql_on_match = re.search(r'sql_on:\s+(.*?);;', join_body, re.DOTALL)
+            relationship_match = re.search(r'relationship:\s+(\w+)', join_body)
+            
+            sql_on = sql_on_match.group(1).strip() if sql_on_match else None
+            
+            joins.append({
+                "name": join_name,
+                "sql_on": sql_on,
+                "relationship": relationship_match.group(1) if relationship_match else "many_to_one"
+            })
+            
+        return ExploreMetadata(
+            model_name="unknown", # Context must supply this
+            explore_name=explore_name,
+            base_view=base_view,
+            joins=joins
         )

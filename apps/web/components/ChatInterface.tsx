@@ -257,7 +257,7 @@ const ChatInterface = memo(function ChatInterface({
             </div>
 
             {/* Input Area (Bottom Floating) */}
-            <div className="p-6 bg-transparent">
+            <div className="p-6 sticky bottom-0 z-10 bg-[#131314]">
                 <div className="max-w-3xl mx-auto space-y-4">
 
                     {/* Suggestion Chips (only on empty state) */}

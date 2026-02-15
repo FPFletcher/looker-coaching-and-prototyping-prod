@@ -154,8 +154,15 @@ def deploy_file(project_id, path, source_path):
             logger.info("Enforcing Dev Mode...")
             modes = session.patch(f"{api_base}/session", json={"workspace_id": "dev"}, verify=False)
             logger.info(f"Dev Mode Status: {modes.status_code}")
+            
+            # Explicit verification
+            session_info = session.get(f"{api_base}/session", verify=False).json()
+            if session_info.get("workspace_id") != "dev":
+                return {"success": False, "error": "Failed to enter Development Mode. Check permissions."}
+                
         except Exception as e:
             logger.warning(f"Dev Mode warning: {e}")
+            return {"success": False, "error": f"Dev Mode Error: {e}"}
         
         create_url = f"{api_base}/projects/{project_id}/files"
         
@@ -210,4 +217,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     result = deploy_file(args.project, args.path, args.source_file)
-    print(json.dumps(result))
+    sys.stdout.write(json.dumps(result))

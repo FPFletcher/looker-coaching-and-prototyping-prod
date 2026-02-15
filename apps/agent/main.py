@@ -67,7 +67,9 @@ class ChatRequest(BaseModel):
     images: Optional[List[str]] = None  # Base64 encoded images
     explore: Optional[Dict[str, str]] = None  # Selected explore {name, label, model}
     gcp_project: Optional[str] = None
+    gcp_project: Optional[str] = None
     gcp_location: Optional[str] = None
+    poc_mode: bool = False  # New flag for strict POC mode
 
 class ResetRequest(BaseModel):
     session_id: str
@@ -132,7 +134,8 @@ async def chat(request: ChatRequest):
                     images=request.images,
                     explore_context=system_context,
                     gcp_project=request.gcp_project or "",
-                    gcp_location=request.gcp_location or ""
+                    gcp_location=request.gcp_location or "",
+                    poc_mode=request.poc_mode
                 ):
                     # Format as SSE
                     yield f"data: {json.dumps(event, ensure_ascii=False)}\n\n"

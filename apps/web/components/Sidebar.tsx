@@ -14,6 +14,9 @@ interface SidebarProps {
     onSelectChat: (chat: SavedChat) => void;
     onDeleteChat: (chatId: string) => void;
     onRenameChat: (chatId: string, newTitle: string) => void;
+    exploreSelector?: React.ReactNode;
+    isPocMode: boolean;
+    onPocModeChange: (enabled: boolean) => void;
 }
 
 export default function Sidebar({
@@ -26,7 +29,10 @@ export default function Sidebar({
     currentChatId,
     onSelectChat,
     onDeleteChat,
-    onRenameChat
+    onRenameChat,
+    exploreSelector,
+    isPocMode = false,
+    onPocModeChange = () => { }
 }: SidebarProps) {
     const [user, setUser] = useState<any | null>(null);
     const [editingChatId, setEditingChatId] = useState<string | null>(null);
@@ -100,9 +106,35 @@ export default function Sidebar({
 
                 {/* Content */}
                 <div className="flex-1 overflow-y-auto py-2 scrollbar-thin scrollbar-thumb-[#444746] scrollbar-track-transparent">
+
+                    {/* Explore Selector & POC Toggle - Only when open */}
+                    {isOpen && (
+                        <div className="px-4 mb-6 space-y-4">
+                            {/* Explore Selector */}
+                            <div className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+                                Context
+                            </div>
+                            {exploreSelector}
+
+                            {/* POC Mode Toggle */}
+                            <div className="flex items-center justify-between bg-[#2A2B2D] p-3 rounded-lg border border-[#37393b]">
+                                <div className="flex flex-col">
+                                    <span className="text-sm font-medium text-white">POC Mode</span>
+                                    <span className="text-[10px] text-gray-400">Restrict to Context</span>
+                                </div>
+                                <button
+                                    onClick={() => onPocModeChange(!isPocMode)}
+                                    className={`w-10 h-5 rounded-full transition-colors relative ${isPocMode ? 'bg-blue-500' : 'bg-gray-600'}`}
+                                >
+                                    <div className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-transform ${isPocMode ? 'left-6' : 'left-1'}`} />
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
                     {isOpen && (
                         <div className="px-4 mb-2 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                            Recent
+                            Recent Chats
                         </div>
                     )}
 

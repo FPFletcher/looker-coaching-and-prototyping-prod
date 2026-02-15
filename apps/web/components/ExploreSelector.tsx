@@ -14,6 +14,7 @@ interface ExploreSelectorProps {
     clientSecret: string;
     onSelectExplore: (explore: Explore | null) => void;
     selectedExplore: Explore | null;
+    disabled?: boolean;
 }
 
 const ExploreSelector: React.FC<ExploreSelectorProps> = ({
@@ -21,7 +22,8 @@ const ExploreSelector: React.FC<ExploreSelectorProps> = ({
     clientId,
     clientSecret,
     onSelectExplore,
-    selectedExplore
+    selectedExplore,
+    disabled = false
 }) => {
     const [explores, setExplores] = useState<Explore[]>([]);
     const [loading, setLoading] = useState(false);
@@ -75,18 +77,19 @@ const ExploreSelector: React.FC<ExploreSelectorProps> = ({
     }, {} as Record<string, Explore[]>);
 
     return (
-        <div className="relative w-full max-w-md">
+        <div className={`relative w-full max-w-md ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
             <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex items-center justify-between px-4 py-2.5 bg-[#2a2b2c] border border-[#37393b] rounded-lg text-white hover:bg-[#333537] transition-colors"
+                onClick={() => !disabled && setIsOpen(!isOpen)}
+                disabled={disabled}
+                className={`w-full flex items-center justify-between px-4 py-2.5 bg-[#2a2b2c] border border-[#37393b] rounded-lg text-white transition-colors ${!disabled && 'hover:bg-[#333537]'}`}
             >
                 <div className="flex items-center gap-2">
                     <Database className="w-4 h-4 text-gray-400" />
                     <span className="text-sm">
-                        {selectedExplore ? `${selectedExplore.model} › ${selectedExplore.label}` : 'Any Explore (Let AI Choose)'}
+                        {disabled ? 'POC Mode (Context Only)' : (selectedExplore ? `${selectedExplore.model} › ${selectedExplore.label}` : 'Any Explore (Let AI Choose)')}
                     </span>
                 </div>
-                <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                {!disabled && <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />}
             </button>
 
             {isOpen && (
