@@ -1,10 +1,35 @@
 import React, { useRef, useEffect, useMemo, memo, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
-import { Loader2, ChevronDown, Terminal, CheckCircle2, SendHorizontal, Image as ImageIcon, Mic, Sparkles } from "lucide-react";
+import { Loader2, ChevronDown, Terminal, CheckCircle2, SendHorizontal, Image as ImageIcon, Mic, Sparkles, Copy, Check } from "lucide-react";
 import ThinkingBlock from "./ThinkingBlock";
 import StableDashboardEmbed from "./StableDashboardEmbed";
 import ImageUpload from "./ImageUpload";
 import remarkGfm from "remark-gfm";
+import { getCurrentUser } from "../lib/userSettings";
+
+const CopyButton = ({ content }: { content: string }) => {
+    const [copied, setCopied] = React.useState(false);
+
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(content);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            console.error("Failed to copy", err);
+        }
+    };
+
+    return (
+        <button
+            onClick={handleCopy}
+            className="p-1.5 text-[#8E918F] hover:text-[#E3E3E3] hover:bg-[#333537] rounded-md transition-colors"
+            title="Copy response"
+        >
+            {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+        </button>
+    );
+};
 
 interface ToolStep {
     tool: string;
@@ -93,6 +118,15 @@ const ChatInterface = memo(function ChatInterface({
         }
     }, [inputValue]);
 
+    // Dynamic Greeting Logic (Top-Level)
+    const [greeting, setGreeting] = React.useState("Hello there!");
+    useEffect(() => {
+        const user = getCurrentUser();
+        if (user?.name) {
+            setGreeting(`Hi ${user.name.split(' ')[0]}`);
+        }
+    }, []);
+
     // Dynamic prompts... (omitted for brevity, keep existing)
     const prompts = mode === 'existing'
         ? [
@@ -155,17 +189,17 @@ const ChatInterface = memo(function ChatInterface({
     return (
         <div className="flex flex-col h-full bg-gradient-to-br from-[#131314] to-[#0a1929] text-[#E3E3E3] relative">
 
-            {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto px-40 py-8 space-y-8 scrollbar-thin scrollbar-thumb-[#444746] scrollbar-track-transparent">
+            {/* Messages Area - Responsive Padding */}
+            <div className="flex-1 overflow-y-auto px-4 md:px-20 lg:px-40 py-8 space-y-8 scrollbar-thin scrollbar-thumb-[#444746] scrollbar-track-transparent">
                 {messages.length === 0 && (
                     <div className="h-full flex flex-col items-start justify-center max-w-3xl mx-auto -mt-20">
                         <div className="mb-2">
                             <Sparkles className="w-12 h-12 text-[#4c8df6]" />
                         </div>
-                        <h1 className="text-6xl font-medium tracking-tight bg-gradient-to-r from-[#4c8df6] via-[#9c5af2] to-[#e47672] bg-clip-text text-transparent pb-4">
-                            Hi Francois
+                        <h1 className="text-4xl md:text-6xl font-medium tracking-tight bg-gradient-to-r from-[#4c8df6] via-[#9c5af2] to-[#e47672] bg-clip-text text-transparent pb-4">
+                            {greeting}
                         </h1>
-                        <h2 className="text-6xl font-medium text-[#444746] tracking-tight">
+                        <h2 className="text-4xl md:text-6xl font-medium text-[#444746] tracking-tight">
                             Where should we start?
                         </h2>
                     </div>
@@ -182,14 +216,19 @@ const ChatInterface = memo(function ChatInterface({
                                 <div className={`max-w-6xl w-full ${msg.role === "user" ? "bg-[#333537] rounded-[24px] px-6 py-4 rounded-tr-md" : "pr-6"}`}>
                                     {/* Assistant Avatar for AI messages */}
                                     {msg.role === "assistant" && (
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
-                                                <img
-                                                    src={getLogoForMessage(msg)}
-                                                    alt="AI"
-                                                    className={`w-full h-full object-cover ${msg.isThinking ? 'animate-pulse' : ''}`}
-                                                />
+                                        <div className="flex items-start justify-between mb-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
+                                                    <img
+                                                        src={getLogoForMessage(msg)}
+                                                        alt="AI"
+                                                        className={`w-full h-full object-cover ${msg.isThinking ? 'animate-pulse' : ''}`}
+                                                    />
+                                                </div>
                                             </div>
+                                            {!msg.isThinking && (
+                                                <CopyButton content={msg.content} />
+                                            )}
                                         </div>
                                     )}
 
@@ -256,8 +295,8 @@ const ChatInterface = memo(function ChatInterface({
                 <div ref={messagesEndRef} className="h-4" />
             </div>
 
-            {/* Input Area (Bottom Floating) */}
-            <div className="p-6 sticky bottom-0 z-10 bg-[#131314]">
+            {/* Input Area (Bottom Floating) - Transparent Gradient Background */}
+            <div className="p-4 md:p-6 sticky bottom-0 z-10 bg-gradient-to-t from-[#131314] via-[#131314]/95 to-transparent">
                 <div className="max-w-3xl mx-auto space-y-4">
 
                     {/* Suggestion Chips (only on empty state) */}

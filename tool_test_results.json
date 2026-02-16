@@ -1,0 +1,148 @@
+[
+  {
+    "tool": "dev_mode",
+    "status": "PASS",
+    "message": "Tool executed successfully",
+    "details": "Workspace set to: dev"
+  },
+  {
+    "tool": "get_connections",
+    "status": "PASS",
+    "message": "Tool executed successfully",
+    "details": [
+      {
+        "name": "sample_bigquery_connection",
+        "dialect": "bigquery_standard_sql",
+        "host": "looker-core-demo-ffrancois",
+        "database": "not_applicable_for_public_datasets"
+      },
+      {
+        "name": "ffrancois_-_ecomm_trial",
+        "dialect": "bigquery_standard_sql",
+        "host": "looker-core-demo-ffrancois",
+        "database": "query_insights"
+      },
+      {
+        "name": "test_dynamic_connection",
+        "dialect": "bigquery_standard_sql",
+        "host": "looker-core-demo-ffrancois",
+        "database": "thelook"
+      },
+      {
+        "name": "lookerdemos",
+        "dialect": "bigquery_standard_sql",
+        "host": "team-shared-instance",
+        "database": "thelook_public"
+      },
+      {
+        "name": "default_bigquery_connection",
+        "dialect": "bigquery_standard_sql",
+        "host": "looker-core-demo-ffrancois",
+        "database": "thelook_ecommerce"
+      },
+      {
+        "name": "test_oauth",
+        "dialect": "bigquery_standard_sql",
+        "host": "looker-core-demo-ffrancois",
+        "database": "thelook_ecommerce"
+      },
+      {
+        "name": "elevate_workshops",
+        "dialect": "bigquery_standard_sql",
+        "host": "looker-core-demo-ffrancois",
+        "database": "thelook_ecommerce"
+      }
+    ]
+  },
+  {
+    "tool": "get_project_files",
+    "status": "PASS",
+    "message": "Tool executed successfully",
+    "details": []
+  },
+  {
+    "tool": "get_git_branch_state",
+    "status": "PASS",
+    "message": "Tool executed successfully",
+    "details": "GitBranch(can={}, name='__LOOKER_PROD_5578e5feb21f9d65fa732b5f1bd7d084b224d7d7', remote='origin', remote_name='__LOOKER_PROD_5578e5feb21f9d65fa732b5f1bd7d084b224d7d7', error='', message='', owner_name='', readonly=False, personal=False, is_local=True, is_remote=False, is_production=False, ahead_count=None, behind_count=None, commit_at=1771160062, ref='5578e5feb21f9d65fa732b5f1bd7d084b224d7d7', remote_ref='')"
+  },
+  {
+    "tool": "validate_project",
+    "status": "PASS",
+    "message": "Tool executed successfully",
+    "details": "LookML is valid"
+  },
+  {
+    "tool": "create_project_file",
+    "status": "PASS",
+    "message": "Tool executed successfully",
+    "details": "Created test_view_mcp.view.lkml"
+  },
+  {
+    "tool": "register_lookml_manually",
+    "status": "PASS",
+    "message": "Tool executed successfully",
+    "details": "Registered view 'test_view_mcp' with 3 fields"
+  },
+  {
+    "tool": "get_connection_schemas",
+    "status": "PASS",
+    "message": "Tool executed successfully",
+    "details": [
+      "bigquery_audit_logs",
+      "constellation_testing",
+      "dataset01_ffrancois",
+      "dummy_finance_data",
+      "elevate_bqml",
+      "explore_assistant",
+      "geo_data",
+      "jira_dataset",
+      "log_analytics",
+      "logs_explorer",
+      "looker_bqml",
+      "lookml_modelling_data",
+      "query_insights",
+      "tempdataset01_ffrancois",
+      "thelook",
+      "thelook_US",
+      "thelook_ecommerce",
+      "thelook_ecommerce_pdt",
+      "thelook_pdt_US",
+      "valeo_data",
+      "writeback_function"
+    ]
+  },
+  {
+    "tool": "get_connection_tables",
+    "status": "SKIP",
+    "message": "Requires valid schema name",
+    "details": null
+  },
+  {
+    "tool": "get_connection_columns",
+    "status": "SKIP",
+    "message": "Requires valid schema and table name",
+    "details": null
+  },
+  {
+    "tool": "create_dashboard",
+    "status": "FAIL",
+    "message": "Failed to create dashboard: \n    message:           Validation Failed\n    documentation_url: https://docs.cloud.google.com/looker/docs/r/err/4.0/422/post/dashboards\n    error_doc_url:     \n    error details:\n    \n        *****\n        documentation_url: https://docs.cloud.google.com/looker/docs/r/err/4.0/422/post/dashboards\n        field:             [:title, :space_id]\n        code:              already_exists\n        message:           Dashboard with this title already exists.\n        error_doc_url:     \n        \n    ",
+    "details": {
+      "success": false,
+      "error": "Failed to create dashboard: \n    message:           Validation Failed\n    documentation_url: https://docs.cloud.google.com/looker/docs/r/err/4.0/422/post/dashboards\n    error_doc_url:     \n    error details:\n    \n        *****\n        documentation_url: https://docs.cloud.google.com/looker/docs/r/err/4.0/422/post/dashboards\n        field:             [:title, :space_id]\n        code:              already_exists\n        message:           Dashboard with this title already exists.\n        error_doc_url:     \n        \n    "
+    }
+  },
+  {
+    "tool": "search_web",
+    "status": "PASS",
+    "message": "Tool executed successfully",
+    "details": []
+  },
+  {
+    "tool": "health_pulse",
+    "status": "PASS",
+    "message": "Tool executed successfully",
+    "details": "Looker is healthy. Connected as: Super Admin (admin@ffrancois.altostrat.com)"
+  }
+]

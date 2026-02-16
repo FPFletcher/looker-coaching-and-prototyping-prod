@@ -56,7 +56,7 @@ CRITICAL: You MUST actually call the tools. Do not just describe what you will d
         
         response = client.messages.create(
             model="claude-sonnet-4-20250514",
-            max_tokens=4096,
+            max_tokens=16000,
             system=system_prompt,
             messages=messages,
             tools=claude_tools
