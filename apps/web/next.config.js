@@ -4,12 +4,19 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: "/(.*)",
+        // Apply COEP to all routes EXCEPT root (where Google Sign-In happens)
+        source: '/:path+', // Matches everything except the homepage
         headers: [
-          { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
-          { key: "Cross-Origin-Embedder-Policy", value: "credentialless" }
-        ]
-      }
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'credentialless',
+          },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin',
+          },
+        ],
+      },
     ];
   }
 };
