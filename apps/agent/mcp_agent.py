@@ -862,9 +862,11 @@ class MCPAgent:
             
             # Construct Explore URL (Standard Looker URL structure)
             # https://<instance>/embed/explore/<model>/<view>?qid=<slug>&toggle=dat,pik,vis
+            # ✅ SIMPLE PRIVATE EMBED URL
             base_url = url.rstrip("/")
-            # Use /embed/explore/ so it triggers the DashboardEmbed component
             explore_url = f"{base_url}/embed/explore/{model}/{explore}?qid={query_slug}&toggle=dat,pik,vis"
+            
+            logger.info(f"✅ Created explore URL: {explore_url}")
             
             logger.info(f"✅ [CREATE CHART] Chart created successfully: {explore_url}")
             
@@ -1734,8 +1736,11 @@ class MCPAgent:
                 folder_id=folder_id 
             ))
             
+            # ✅ SIMPLE PRIVATE EMBED URL
             base_url = url.rstrip("/")
-            embed_url = f"{base_url}/embed/dashboards/{dashboard.id}?theme=dark"
+            embed_url = f"{base_url}/embed/dashboards/{dashboard.id}"
+            
+            logger.info(f"✅ Created dashboard: {embed_url}")
             
             logger.info(f"✅ Created UDD: {dashboard.id} in folder {folder_id}")
             
@@ -1851,10 +1856,11 @@ class MCPAgent:
                 sdk.create_dashboard_element(body=element)
                 
             # 3. Construct URL
+            # ✅ SIMPLE PRIVATE EMBED URL
             base_url = url.rstrip("/")
-            # Use /embed/dashboards/ for embedding
-            # Note: User Defined Dashboards usually have numeric IDs
-            embed_url = f"{base_url}/embed/dashboards/{dashboard.id}?theme=dark"
+            embed_url = f"{base_url}/embed/dashboards/{dashboard.id}"
+            
+            logger.info(f"✅ Created dashboard: {embed_url}")
             
             return {
                 "success": True,
@@ -1916,8 +1922,11 @@ class MCPAgent:
             
             # Construct Explore Embed URL
             # This allows the user to see the result of their new LookML immediately
+            # ✅ SIMPLE PRIVATE EMBED URL
             base_url = url.rstrip("/")
-            explore_url = f"{base_url}/embed/explore/{model}/{explore}?qid={query_slug}&toggle=dat,pik,vis&theme=dark"
+            explore_url = f"{base_url}/embed/explore/{model}/{explore}?qid={query_slug}&toggle=dat,pik,vis"
+            
+            logger.info(f"✅ Created explore URL: {explore_url}")
             
             # Run Inline for Data Summary (Text)
             json_results = sdk.run_inline_query(

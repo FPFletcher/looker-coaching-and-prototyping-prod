@@ -10,18 +10,8 @@ interface StableDashboardEmbedProps {
  * to prevent unnecessary re-renders of the DashboardEmbed iframe
  */
 const StableDashboardEmbed: React.FC<StableDashboardEmbedProps> = ({ url }) => {
-    // Extract base URL once and memoize it based on the URL  
-    const baseUrl = useMemo(() => {
-        const extracted = url.split(/\/dashboards\/|\/embed\/|\/explore\//)[0];
-        console.log('[StableDashboardEmbed] 🔗 Extracted baseUrl:', extracted, 'from URL:', url);
-        return extracted;
-    }, [url]);
-
-    useEffect(() => {
-        console.log('[StableDashboardEmbed] 🎬 MOUNTED with URL:', url);
-    }, []);
-
-    return <DashboardEmbed url={url} lookerBaseUrl={baseUrl} />;
+    // Just pass the URL through - logic is simplified
+    return <DashboardEmbed url={url} />;
 };
 
 export default React.memo(StableDashboardEmbed, (prevProps, nextProps) => {

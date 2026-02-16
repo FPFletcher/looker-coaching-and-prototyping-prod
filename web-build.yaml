@@ -8,6 +8,6 @@ steps:
       - 'apps/web/Dockerfile'
       - '--build-arg'
       - 'NEXT_PUBLIC_API_URL=https://antigravity-backend-734857282249.europe-west1.run.app'
-      - '.'
+      - 'apps/web'
 images:
   - 'europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/antigravity-web'

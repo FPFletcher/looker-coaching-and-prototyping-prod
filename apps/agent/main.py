@@ -17,10 +17,7 @@ import logging
 try:
     from .mcp_agent import MCPAgent
     from .chat_history import ChatHistoryManager, GoogleOAuthHandler
-except ImportError as e:
-    import logging
-    logging.getLogger(__name__).error(f"Failed to import from relative path: {e}")
-    # Try absolute as fallback but we want to see the error
+except ImportError:
     from mcp_agent import MCPAgent
     from chat_history import ChatHistoryManager, GoogleOAuthHandler
 

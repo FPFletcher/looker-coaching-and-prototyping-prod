@@ -2,10 +2,9 @@ import React, { useEffect } from 'react';
 
 interface DashboardEmbedProps {
     url: string;
-    lookerBaseUrl: string;
 }
 
-const DashboardEmbed: React.FC<DashboardEmbedProps> = ({ url, lookerBaseUrl }) => {
+const DashboardEmbed: React.FC<DashboardEmbedProps> = ({ url }) => {
     // Extract valid ID or Slug for Dashboard or Explore
     const extractResourceId = (resource_url: string): { type: 'dashboard' | 'explore', id: string } | null => {
         // Check for Explore with qid
@@ -21,7 +20,7 @@ const DashboardEmbed: React.FC<DashboardEmbedProps> = ({ url, lookerBaseUrl }) =
         return null;
     };
 
-    const resource = extractResourceId(url);
+    const resource = extractResourceId(url) || { type: 'dashboard', id: 'unknown' };
 
     // DEBUG: Log when this component mounts/unmounts/re-renders
     useEffect(() => {
@@ -35,35 +34,8 @@ const DashboardEmbed: React.FC<DashboardEmbedProps> = ({ url, lookerBaseUrl }) =
         console.log('[DashboardEmbed] 🔄 RE-RENDERED - URL changed to:', url);
     }, [url]);
 
-    if (!resource) {
-        return (
-            <div className="mt-4 p-4 bg-red-900/20 border border-red-500/50 rounded-lg text-red-400">
-                Unable to load Looker content
-            </div>
-        );
-    }
-
-    // Build embed URL
-    let embedUrl = "";
-    if (resource.type === 'dashboard') {
-        embedUrl = `${lookerBaseUrl}/embed/dashboards/${resource.id}`;
-    } else {
-        // For explores, we need to preserve query params like qid and toggle
-        // incoming url might be .../explore/model/view?qid=...
-        // target embed url is .../embed/explore/model/view?qid=...
-        const pathPart = url.split('/explore/')[1];
-        embedUrl = `${lookerBaseUrl}/embed/explore/${pathPart}`;
-        // Ensure theme is dark if possible (optional, but good for UI)
-        if (!embedUrl.includes('theme=')) {
-            embedUrl += (embedUrl.includes('?') ? '&' : '?') + 'theme=dark';
-        }
-    }
-
-    // CRITICAL: Add embed_domain to allow iframe communication and pass CSP checks
-    if (typeof window !== 'undefined') {
-        const separator = embedUrl.includes('?') ? '&' : '?';
-        embedUrl += `${separator}embed_domain=${encodeURIComponent(window.location.origin)}`;
-    }
+    // ✅ GOOD - Use the URL as-is from backend (it's already signed or constructed correctly)
+    const embedUrl = url;
 
     // Use a stable key based on resource ID, not the full embedUrl
     // This prevents re-mounting when the URL changes but it's the same resource
@@ -105,11 +77,10 @@ const DashboardEmbed: React.FC<DashboardEmbedProps> = ({ url, lookerBaseUrl }) =
 
 // Memoize to prevent unnecessary re-renders that cause flickering
 export default React.memo(DashboardEmbed, (prevProps, nextProps) => {
-    const same = prevProps.url === nextProps.url && prevProps.lookerBaseUrl === nextProps.lookerBaseUrl;
+    const same = prevProps.url === nextProps.url;
     console.log('[DashboardEmbed] 🧐 Memo check:', same ? '✅ SAME (skip re-render)' : '❌ DIFFERENT (will re-render)', {
         prevUrl: prevProps.url,
         nextUrl: nextProps.url,
     });
     return same;
 });
-

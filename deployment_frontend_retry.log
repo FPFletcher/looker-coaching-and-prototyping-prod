@@ -1,0 +1,193 @@
+===============================================
+   🚀 Antigravity Auto-Deployer (Europe)      
+===============================================
+1. Deploy Backend Only (Python/FastAPI)
+2. Deploy Frontend Only (Next.js)
+3. Deploy EVERYTHING
+===============================================
+--------------------------------------
+📦 Building Frontend...
+Creating temporary archive of 454 file(s) totalling 174.2 MiB before compression.
+Some files were not included in the source upload.
+
+Check the gcloud log [/home/admin_ffrancois_altostrat_com/.config/gcloud/logs/2026.02.16/07.28.17.165351.log] to see which files and the contents of the
+default gcloudignore file used (see `$ gcloud topic gcloudignore` to learn
+more).
+
+Uploading tarball of [.] to [gs://antigravity-innovations_cloudbuild/source/1771226897.435883-6f813a2af51c4a608670cbacbeae7943.tgz]
+Created [https://cloudbuild.googleapis.com/v1/projects/antigravity-innovations/locations/global/builds/94e7516c-da73-428b-a01b-8a9502687482].
+Logs are available at [ https://console.cloud.google.com/cloud-build/builds/94e7516c-da73-428b-a01b-8a9502687482?project=734857282249 ].
+Waiting for build to complete. Polling interval: 1 second(s).
+ REMOTE BUILD OUTPUT -
+starting build "94e7516c-da73-428b-a01b-8a9502687482"
+
+FETCHSOURCE
+Fetching storage object: gs://antigravity-innovations_cloudbuild/source/1771226897.435883-6f813a2af51c4a608670cbacbeae7943.tgz#1771226913400986
+Copying gs://antigravity-innovations_cloudbuild/source/1771226897.435883-6f813a2af51c4a608670cbacbeae7943.tgz#1771226913400986...
+/ [0 files][    0.0 B/ 68.9 MiB]                                                -- [1 files][ 68.9 MiB/ 68.9 MiB]                                                
+Operation completed over 1 objects/68.9 MiB.
+BUILD
+Already have image (with digest): gcr.io/cloud-builders/docker
+Sending build context to Docker daemon  3.255MB
+Step 1/15 : FROM node:18-slim
+18-slim: Pulling from library/node
+61320b01ae5e: Pulling fs layer
+b98d3ae1ab80: Pulling fs layer
+b1831021e35a: Pulling fs layer
+c768ab8cba73: Pulling fs layer
+8c994cf49dd1: Pulling fs layer
+8c994cf49dd1: Download complete
+b98d3ae1ab80: Download complete
+c768ab8cba73: Verifying Checksum
+c768ab8cba73: Download complete
+61320b01ae5e: Verifying Checksum
+61320b01ae5e: Download complete
+b1831021e35a: Verifying Checksum
+b1831021e35a: Download complete
+61320b01ae5e: Pull complete
+b98d3ae1ab80: Pull complete
+b1831021e35a: Pull complete
+c768ab8cba73: Pull complete
+8c994cf49dd1: Pull complete
+Digest: sha256:f9ab18e354e6855ae56ef2b290dd225c1e51a564f87584b9bd21dd651838830e
+Status: Downloaded newer image for node:18-slim
+ ---> 101e0128c8ea
+Step 2/15 : WORKDIR /app
+ ---> Running in 5123c52913b6
+Removing intermediate container 5123c52913b6
+ ---> e6c927bf0431
+Step 3/15 : COPY package*.json ./
+ ---> aa9324a13c16
+Step 4/15 : RUN npm install --no-audit
+ ---> Running in b8cbe9445656
+
+added 211 packages in 15s
+
+108 packages are looking for funding
+  run `npm fund` for details
+[91mnpm notice
+npm notice New major version of npm available! 10.8.2 -> 11.10.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.10.0
+npm notice To update run: npm install -g npm@11.10.0
+npm notice
+[0mRemoving intermediate container b8cbe9445656
+ ---> cca606795d6b
+Step 5/15 : COPY . .
+ ---> f3cfede9d1e4
+Step 6/15 : ARG NEXT_PUBLIC_API_URL
+ ---> Running in fce16ec081d4
+Removing intermediate container fce16ec081d4
+ ---> 51ba1bba9f28
+Step 7/15 : ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ ---> Running in 03ec8bd8f983
+Removing intermediate container 03ec8bd8f983
+ ---> 85a6eb6adf8c
+Step 8/15 : RUN echo "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL" > .env.production
+ ---> Running in ad7f08e37c02
+Removing intermediate container ad7f08e37c02
+ ---> f46b1e7089eb
+Step 9/15 : RUN echo "NEXT_PUBLIC_GOOGLE_CLIENT_ID=826056756274-7653f7jteulh4en41u5oiupqe2stur2s.apps.googleusercontent.com" >> .env.production
+ ---> Running in 7ab4ea4aa554
+Removing intermediate container 7ab4ea4aa554
+ ---> 480923141506
+Step 10/15 : ENV NEXT_TELEMETRY_DISABLED 1
+ ---> Running in 00a4d047efa4
+Removing intermediate container 00a4d047efa4
+ ---> f7f8523b7358
+Step 11/15 : RUN npm run build
+ ---> Running in 8b2f10bf7d63
+
+> banana-prototype-agent@0.1.0 build
+> next build
+  ▲ Next.js 14.2.35
+  - Environments: .env.production
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/4) ...
+   Generating static pages (1/4) 
+   Generating static pages (2/4) 
+   Generating static pages (3/4) 
+ ✓ Generating static pages (4/4)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    56.4 kB         144 kB
+└ ○ /_not-found                          873 B          88.1 kB
++ First Load JS shared by all            87.2 kB
+  ├ chunks/117-ad212082154252fd.js       31.7 kB
+  ├ chunks/fd9d1056-02b6566fdd636601.js  53.6 kB
+  └ other shared chunks (total)          1.86 kB
+
+
+○  (Static)  prerendered as static content
+
+Removing intermediate container 8b2f10bf7d63
+ ---> 7203a16df2a8
+Step 12/15 : EXPOSE 8080
+ ---> Running in b19b468d3573
+Removing intermediate container b19b468d3573
+ ---> a6fa93225b90
+Step 13/15 : ENV PORT 8080
+ ---> Running in 618fe1acd4a7
+Removing intermediate container 618fe1acd4a7
+ ---> eff640988a3e
+Step 14/15 : ENV HOSTNAME "0.0.0.0"
+ ---> Running in db16e5c1e923
+Removing intermediate container db16e5c1e923
+ ---> d041b22aea0f
+Step 15/15 : CMD ["npm", "start"]
+ ---> Running in 8e6e2b9859e9
+Removing intermediate container 8e6e2b9859e9
+ ---> 62a4da9293ab
+Successfully built 62a4da9293ab
+Successfully tagged europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/antigravity-web:latest
+PUSH
+Pushing europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/antigravity-web
+The push refers to repository [europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/antigravity-web]
+5ebc5f6d844a: Preparing
+f2decdbdea3c: Preparing
+afddb3348796: Preparing
+c989321332ee: Preparing
+c9043ca50652: Preparing
+190ba88dab16: Preparing
+6190213fc865: Preparing
+e1e93a4fa4fd: Preparing
+9b95ddc8a140: Preparing
+cd1cd7c2e57b: Preparing
+206f13f5e317: Preparing
+ace34d1d784c: Preparing
+206f13f5e317: Waiting
+ace34d1d784c: Waiting
+190ba88dab16: Pushed
+afddb3348796: Pushed
+f2decdbdea3c: Pushed
+e1e93a4fa4fd: Pushed
+6190213fc865: Pushed
+c989321332ee: Pushed
+9b95ddc8a140: Pushed
+5ebc5f6d844a: Pushed
+206f13f5e317: Pushed
+cd1cd7c2e57b: Pushed
+ace34d1d784c: Pushed
+c9043ca50652: Pushed
+latest: digest: sha256:4016d2a5cfee0fc377141cddaeb0919911df6af40c75f5d625a7e237dee4609e size: 2833
+DONE
+----------------------
+ID                                    CREATE_TIME                DURATION  SOURCE                                                                                                 IMAGES                                                                                             STATUS
+94e7516c-da73-428b-a01b-8a9502687482  2026-02-16T07:28:33+00:00  2M18S     gs://antigravity-innovations_cloudbuild/source/1771226897.435883-6f813a2af51c4a608670cbacbeae7943.tgz  europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/antigravity-web (+1 more)  SUCCESS
+🚀 Deploying Frontend...
+Deploying container to Cloud Run service [[1mantigravity-web[m] in project [[1mantigravity-innovations[m] region [[1meurope-west1[m]
+Deploying...
+Setting IAM Policy.............done
+Creating Revision............................................................................................................................................................................................................................................................................................................done
+Routing traffic.....done
+Done.
+Service [[1mantigravity-web[m] revision [[1mantigravity-web-00015-5w5[m] has been deployed and is serving [1m100[m percent of traffic.
+Service URL: [1mhttps://antigravity-web-734857282249.europe-west1.run.app[m
+===============================================
+✅ Deployment Complete!
+===============================================
