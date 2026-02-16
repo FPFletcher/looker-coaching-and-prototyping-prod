@@ -32,7 +32,9 @@ case $choice in
         echo "🚀 Deploying Backend..."
         $GCLOUD run deploy antigravity-backend \
             --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/antigravity-backend \
-            --region ${REGION} || error_exit "Backend Deploy Failed"
+            --region ${REGION} \
+            --memory 2Gi \
+            --cpu 2 || error_exit "Backend Deploy Failed"
         ;;
 esac
 

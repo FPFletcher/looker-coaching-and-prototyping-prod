@@ -1,0 +1,22 @@
+===============================================
+   🚀 Antigravity Auto-Deployer (Europe)      
+===============================================
+1. Deploy Backend Only (Python/FastAPI)
+2. Deploy Frontend Only (Next.js)
+3. Deploy EVERYTHING
+===============================================
+--------------------------------------
+📦 Building Backend...
+ERROR: (gcloud.builds.submit) There was a problem refreshing your current auth tokens: Reauthentication failed. cannot prompt during non-interactive execution.
+Please run:
+
+  $ gcloud auth login
+
+to obtain new credentials.
+
+If you have already logged in with a different account, run:
+
+  $ gcloud config set account ACCOUNT
+
+to select an already authenticated account to use.
+❌ Error: Backend Build Failed

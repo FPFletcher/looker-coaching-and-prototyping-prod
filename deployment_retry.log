@@ -1,0 +1,241 @@
+===============================================
+   🚀 Antigravity Auto-Deployer (Europe)      
+===============================================
+1. Deploy Backend Only (Python/FastAPI)
+2. Deploy Frontend Only (Next.js)
+3. Deploy EVERYTHING
+===============================================
+--------------------------------------
+📦 Building Backend...
+Creating temporary archive of 446 file(s) totalling 174.0 MiB before compression.
+Some files were not included in the source upload.
+
+Check the gcloud log [/home/admin_ffrancois_altostrat_com/.config/gcloud/logs/2026.02.15/22.03.19.651252.log] to see which files and the contents of the
+default gcloudignore file used (see `$ gcloud topic gcloudignore` to learn
+more).
+
+Uploading tarball of [.] to [gs://antigravity-innovations_cloudbuild/source/1771192999.937154-0f812fe738f6410ba6f0c4687bdd4662.tgz]
+Created [https://cloudbuild.googleapis.com/v1/projects/antigravity-innovations/locations/global/builds/38976e3c-d9d6-4b94-ab36-98aadbdcef60].
+Logs are available at [ https://console.cloud.google.com/cloud-build/builds/38976e3c-d9d6-4b94-ab36-98aadbdcef60?project=734857282249 ].
+Waiting for build to complete. Polling interval: 1 second(s).
+ REMOTE BUILD OUTPUT
+starting build "38976e3c-d9d6-4b94-ab36-98aadbdcef60"
+
+FETCHSOURCE
+Fetching storage object: gs://antigravity-innovations_cloudbuild/source/1771192999.937154-0f812fe738f6410ba6f0c4687bdd4662.tgz#1771193019536514
+Copying gs://antigravity-innovations_cloudbuild/source/1771192999.937154-0f812fe738f6410ba6f0c4687bdd4662.tgz#1771193019536514...
+/ [0 files][    0.0 B/ 68.8 MiB]                                                / [1 files][ 68.8 MiB/ 68.8 MiB]                                                -
+Operation completed over 1 objects/68.8 MiB.
+BUILD
+Already have image (with digest): gcr.io/cloud-builders/docker
+Sending build context to Docker daemon  165.1MB
+Step 1/7 : FROM python:3.11-slim
+3.11-slim: Pulling from library/python
+0c8d55a45c0d: Already exists
+64faa99400e1: Pulling fs layer
+8cbc47ff628d: Pulling fs layer
+d85099f0969e: Pulling fs layer
+d85099f0969e: Download complete
+64faa99400e1: Verifying Checksum
+64faa99400e1: Download complete
+8cbc47ff628d: Verifying Checksum
+8cbc47ff628d: Download complete
+64faa99400e1: Pull complete
+8cbc47ff628d: Pull complete
+d85099f0969e: Pull complete
+Digest: sha256:0b23cfb7425d065008b778022a17b1551c82f8b4866ee5a7a200084b7e2eafbf
+Status: Downloaded newer image for python:3.11-slim
+ ---> 466c0182639b
+Step 2/7 : WORKDIR /app
+ ---> Running in 9ad00eaf1927
+Removing intermediate container 9ad00eaf1927
+ ---> a8955026d69c
+Step 3/7 : COPY requirements.txt .
+ ---> 14dbf2f79e77
+Step 4/7 : RUN pip install --no-cache-dir -r requirements.txt
+ ---> Running in 325c4ead122f
+Collecting firebase-admin (from -r requirements.txt (line 1))
+  Downloading firebase_admin-7.1.0-py3-none-any.whl.metadata (1.7 kB)
+Collecting cachecontrol>=0.14.3 (from firebase-admin->-r requirements.txt (line 1))
+  Downloading cachecontrol-0.14.4-py3-none-any.whl.metadata (3.1 kB)
+Collecting google-api-core<3.0.0dev,>=2.25.1 (from google-api-core[grpc]<3.0.0dev,>=2.25.1; platform_python_implementation != "PyPy"->firebase-admin->-r requirements.txt (line 1))
+  Downloading google_api_core-2.29.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting google-cloud-firestore>=2.21.0 (from firebase-admin->-r requirements.txt (line 1))
+  Downloading google_cloud_firestore-2.23.0-py3-none-any.whl.metadata (10 kB)
+Collecting google-cloud-storage>=3.1.1 (from firebase-admin->-r requirements.txt (line 1))
+  Downloading google_cloud_storage-3.9.0-py3-none-any.whl.metadata (15 kB)
+Collecting pyjwt>=2.10.1 (from pyjwt[crypto]>=2.10.1->firebase-admin->-r requirements.txt (line 1))
+  Downloading pyjwt-2.11.0-py3-none-any.whl.metadata (4.0 kB)
+Collecting httpx==0.28.1 (from httpx[http2]==0.28.1->firebase-admin->-r requirements.txt (line 1))
+  Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Collecting anyio (from httpx==0.28.1->httpx[http2]==0.28.1->firebase-admin->-r requirements.txt (line 1))
+  Downloading anyio-4.12.1-py3-none-any.whl.metadata (4.3 kB)
+Collecting certifi (from httpx==0.28.1->httpx[http2]==0.28.1->firebase-admin->-r requirements.txt (line 1))
+  Downloading certifi-2026.1.4-py3-none-any.whl.metadata (2.5 kB)
+Collecting httpcore==1.* (from httpx==0.28.1->httpx[http2]==0.28.1->firebase-admin->-r requirements.txt (line 1))
+  Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Collecting idna (from httpx==0.28.1->httpx[http2]==0.28.1->firebase-admin->-r requirements.txt (line 1))
+  Downloading idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+Collecting h2<5,>=3 (from httpx[http2]==0.28.1->firebase-admin->-r requirements.txt (line 1))
+  Downloading h2-4.3.0-py3-none-any.whl.metadata (5.1 kB)
+Collecting h11>=0.16 (from httpcore==1.*->httpx==0.28.1->httpx[http2]==0.28.1->firebase-admin->-r requirements.txt (line 1))
+  Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting requests>=2.16.0 (from cachecontrol>=0.14.3->firebase-admin->-r requirements.txt (line 1))
+  Downloading requests-2.32.5-py3-none-any.whl.metadata (4.9 kB)
+Collecting msgpack<2.0.0,>=0.5.2 (from cachecontrol>=0.14.3->firebase-admin->-r requirements.txt (line 1))
+  Downloading msgpack-1.1.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.1 kB)
+Collecting googleapis-common-protos<2.0.0,>=1.56.2 (from google-api-core<3.0.0dev,>=2.25.1->google-api-core[grpc]<3.0.0dev,>=2.25.1; platform_python_implementation != "PyPy"->firebase-admin->-r requirements.txt (line 1))
+  Downloading googleapis_common_protos-1.72.0-py3-none-any.whl.metadata (9.4 kB)
+Collecting protobuf!=3.20.0,!=3.20.1,!=4.21.0,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5,<7.0.0,>=3.19.5 (from google-api-core<3.0.0dev,>=2.25.1->google-api-core[grpc]<3.0.0dev,>=2.25.1; platform_python_implementation != "PyPy"->firebase-admin->-r requirements.txt (line 1))
+  Downloading protobuf-6.33.5-cp39-abi3-manylinux2014_x86_64.whl.metadata (593 bytes)
+Collecting proto-plus<2.0.0,>=1.22.3 (from google-api-core<3.0.0dev,>=2.25.1->google-api-core[grpc]<3.0.0dev,>=2.25.1; platform_python_implementation != "PyPy"->firebase-admin->-r requirements.txt (line 1))
+  Downloading proto_plus-1.27.1-py3-none-any.whl.metadata (2.2 kB)
+Collecting google-auth<3.0.0,>=2.14.1 (from google-api-core<3.0.0dev,>=2.25.1->google-api-core[grpc]<3.0.0dev,>=2.25.1; platform_python_implementation != "PyPy"->firebase-admin->-r requirements.txt (line 1))
+  Downloading google_auth-2.48.0-py3-none-any.whl.metadata (6.2 kB)
+Collecting grpcio<2.0.0,>=1.33.2 (from google-api-core[grpc]<3.0.0dev,>=2.25.1; platform_python_implementation != "PyPy"->firebase-admin->-r requirements.txt (line 1))
+  Downloading grpcio-1.78.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.8 kB)
+Collecting grpcio-status<2.0.0,>=1.33.2 (from google-api-core[grpc]<3.0.0dev,>=2.25.1; platform_python_implementation != "PyPy"->firebase-admin->-r requirements.txt (line 1))
+  Downloading grpcio_status-1.78.0-py3-none-any.whl.metadata (1.3 kB)
+Collecting google-cloud-core<3.0.0,>=1.4.1 (from google-cloud-firestore>=2.21.0->firebase-admin->-r requirements.txt (line 1))
+  Downloading google_cloud_core-2.5.0-py3-none-any.whl.metadata (3.1 kB)
+Collecting google-resumable-media<3.0.0,>=2.7.2 (from google-cloud-storage>=3.1.1->firebase-admin->-r requirements.txt (line 1))
+  Downloading google_resumable_media-2.8.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting google-crc32c<2.0.0,>=1.1.3 (from google-cloud-storage>=3.1.1->firebase-admin->-r requirements.txt (line 1))
+  Downloading google_crc32c-1.8.0-cp311-cp311-manylinux1_x86_64.manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_5_x86_64.whl.metadata (1.7 kB)
+Collecting cryptography>=3.4.0 (from pyjwt[crypto]>=2.10.1->firebase-admin->-r requirements.txt (line 1))
+  Downloading cryptography-46.0.5-cp311-abi3-manylinux_2_34_x86_64.whl.metadata (5.7 kB)
+Collecting cffi>=2.0.0 (from cryptography>=3.4.0->pyjwt[crypto]>=2.10.1->firebase-admin->-r requirements.txt (line 1))
+  Downloading cffi-2.0.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.6 kB)
+Collecting pyasn1-modules>=0.2.1 (from google-auth<3.0.0,>=2.14.1->google-api-core<3.0.0dev,>=2.25.1->google-api-core[grpc]<3.0.0dev,>=2.25.1; platform_python_implementation != "PyPy"->firebase-admin->-r requirements.txt (line 1))
+  Downloading pyasn1_modules-0.4.2-py3-none-any.whl.metadata (3.5 kB)
+Collecting rsa<5,>=3.1.4 (from google-auth<3.0.0,>=2.14.1->google-api-core<3.0.0dev,>=2.25.1->google-api-core[grpc]<3.0.0dev,>=2.25.1; platform_python_implementation != "PyPy"->firebase-admin->-r requirements.txt (line 1))
+  Downloading rsa-4.9.1-py3-none-any.whl.metadata (5.6 kB)
+Collecting typing-extensions~=4.12 (from grpcio<2.0.0,>=1.33.2->google-api-core[grpc]<3.0.0dev,>=2.25.1; platform_python_implementation != "PyPy"->firebase-admin->-r requirements.txt (line 1))
+  Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting hyperframe<7,>=6.1 (from h2<5,>=3->httpx[http2]==0.28.1->firebase-admin->-r requirements.txt (line 1))
+  Downloading hyperframe-6.1.0-py3-none-any.whl.metadata (4.3 kB)
+Collecting hpack<5,>=4.1 (from h2<5,>=3->httpx[http2]==0.28.1->firebase-admin->-r requirements.txt (line 1))
+  Downloading hpack-4.1.0-py3-none-any.whl.metadata (4.6 kB)
+Collecting charset_normalizer<4,>=2 (from requests>=2.16.0->cachecontrol>=0.14.3->firebase-admin->-r requirements.txt (line 1))
+  Downloading charset_normalizer-3.4.4-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (37 kB)
+Collecting urllib3<3,>=1.21.1 (from requests>=2.16.0->cachecontrol>=0.14.3->firebase-admin->-r requirements.txt (line 1))
+  Downloading urllib3-2.6.3-py3-none-any.whl.metadata (6.9 kB)
+Collecting pycparser (from cffi>=2.0.0->cryptography>=3.4.0->pyjwt[crypto]>=2.10.1->firebase-admin->-r requirements.txt (line 1))
+  Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+Collecting pyasn1<0.7.0,>=0.6.1 (from pyasn1-modules>=0.2.1->google-auth<3.0.0,>=2.14.1->google-api-core<3.0.0dev,>=2.25.1->google-api-core[grpc]<3.0.0dev,>=2.25.1; platform_python_implementation != "PyPy"->firebase-admin->-r requirements.txt (line 1))
+  Downloading pyasn1-0.6.2-py3-none-any.whl.metadata (8.4 kB)
+Downloading firebase_admin-7.1.0-py3-none-any.whl (137 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 137.1/137.1 kB 10.2 MB/s eta 0:00:00
+Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 73.5/73.5 kB 206.1 MB/s eta 0:00:00
+Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 78.8/78.8 kB 205.9 MB/s eta 0:00:00
+Downloading cachecontrol-0.14.4-py3-none-any.whl (22 kB)
+Downloading google_api_core-2.29.0-py3-none-any.whl (173 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 173.9/173.9 kB 90.9 MB/s eta 0:00:00
+Downloading google_cloud_firestore-2.23.0-py3-none-any.whl (411 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 411.2/411.2 kB 43.4 MB/s eta 0:00:00
+Downloading google_cloud_storage-3.9.0-py3-none-any.whl (321 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 321.3/321.3 kB 259.4 MB/s eta 0:00:00
+Downloading pyjwt-2.11.0-py3-none-any.whl (28 kB)
+Downloading cryptography-46.0.5-cp311-abi3-manylinux_2_34_x86_64.whl (4.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 136.5 MB/s eta 0:00:00
+Downloading google_auth-2.48.0-py3-none-any.whl (236 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 236.5/236.5 kB 206.0 MB/s eta 0:00:00
+Downloading google_cloud_core-2.5.0-py3-none-any.whl (29 kB)
+Downloading google_crc32c-1.8.0-cp311-cp311-manylinux1_x86_64.manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_5_x86_64.whl (33 kB)
+Downloading google_resumable_media-2.8.0-py3-none-any.whl (81 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 81.3/81.3 kB 210.6 MB/s eta 0:00:00
+Downloading googleapis_common_protos-1.72.0-py3-none-any.whl (297 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 297.5/297.5 kB 153.0 MB/s eta 0:00:00
+Downloading grpcio-1.78.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (6.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.7/6.7 MB 155.9 MB/s eta 0:00:00
+Downloading grpcio_status-1.78.0-py3-none-any.whl (14 kB)
+Downloading h2-4.3.0-py3-none-any.whl (61 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 61.8/61.8 kB 190.5 MB/s eta 0:00:00
+Downloading msgpack-1.1.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (426 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 426.2/426.2 kB 170.1 MB/s eta 0:00:00
+Downloading proto_plus-1.27.1-py3-none-any.whl (50 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50.5/50.5 kB 184.9 MB/s eta 0:00:00
+Downloading protobuf-6.33.5-cp39-abi3-manylinux2014_x86_64.whl (323 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 323.5/323.5 kB 273.0 MB/s eta 0:00:00
+Downloading requests-2.32.5-py3-none-any.whl (64 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 64.7/64.7 kB 200.5 MB/s eta 0:00:00
+Downloading certifi-2026.1.4-py3-none-any.whl (152 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 152.9/152.9 kB 226.6 MB/s eta 0:00:00
+Downloading idna-3.11-py3-none-any.whl (71 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 71.0/71.0 kB 211.8 MB/s eta 0:00:00
+Downloading anyio-4.12.1-py3-none-any.whl (113 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 113.6/113.6 kB 232.0 MB/s eta 0:00:00
+Downloading cffi-2.0.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (215 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 215.6/215.6 kB 265.2 MB/s eta 0:00:00
+Downloading charset_normalizer-3.4.4-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (151 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 151.6/151.6 kB 219.4 MB/s eta 0:00:00
+Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Downloading hpack-4.1.0-py3-none-any.whl (34 kB)
+Downloading hyperframe-6.1.0-py3-none-any.whl (13 kB)
+Downloading pyasn1_modules-0.4.2-py3-none-any.whl (181 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 181.3/181.3 kB 262.8 MB/s eta 0:00:00
+Downloading rsa-4.9.1-py3-none-any.whl (34 kB)
+Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.6/44.6 kB 187.8 MB/s eta 0:00:00
+Downloading urllib3-2.6.3-py3-none-any.whl (131 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 131.6/131.6 kB 207.3 MB/s eta 0:00:00
+Downloading pyasn1-0.6.2-py3-none-any.whl (83 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 83.4/83.4 kB 206.9 MB/s eta 0:00:00
+Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 48.2/48.2 kB 177.0 MB/s eta 0:00:00
+Installing collected packages: urllib3, typing-extensions, pyjwt, pycparser, pyasn1, protobuf, msgpack, idna, hyperframe, hpack, h11, google-crc32c, charset_normalizer, certifi, rsa, requests, pyasn1-modules, proto-plus, httpcore, h2, grpcio, googleapis-common-protos, google-resumable-media, cffi, anyio, httpx, grpcio-status, cryptography, cachecontrol, google-auth, google-api-core, google-cloud-core, google-cloud-storage, google-cloud-firestore, firebase-admin
+Successfully installed anyio-4.12.1 cachecontrol-0.14.4 certifi-2026.1.4 cffi-2.0.0 charset_normalizer-3.4.4 cryptography-46.0.5 firebase-admin-7.1.0 google-api-core-2.29.0 google-auth-2.48.0 google-cloud-core-2.5.0 google-cloud-firestore-2.23.0 google-cloud-storage-3.9.0 google-crc32c-1.8.0 google-resumable-media-2.8.0 googleapis-common-protos-1.72.0 grpcio-1.78.0 grpcio-status-1.78.0 h11-0.16.0 h2-4.3.0 hpack-4.1.0 httpcore-1.0.9 httpx-0.28.1 hyperframe-6.1.0 idna-3.11 msgpack-1.1.2 proto-plus-1.27.1 protobuf-6.33.5 pyasn1-0.6.2 pyasn1-modules-0.4.2 pycparser-3.0 pyjwt-2.11.0 requests-2.32.5 rsa-4.9.1 typing-extensions-4.15.0 urllib3-2.6.3
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0m[91m
+[notice] A new release of pip is available: 24.0 -> 26.0.1
+[notice] To update, run: pip install --upgrade pip
+[0mRemoving intermediate container 325c4ead122f
+ ---> 4648679e813e
+Step 5/7 : COPY . .
+ ---> 6b3d6c189a6b
+Step 6/7 : EXPOSE 8080
+ ---> Running in 942078ec46c1
+Removing intermediate container 942078ec46c1
+ ---> 67818101bc81
+Step 7/7 : CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+ ---> Running in 6612d6368adc
+Removing intermediate container 6612d6368adc
+ ---> 6a26be0e8c90
+Successfully built 6a26be0e8c90
+Successfully tagged europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/antigravity-backend:latest
+PUSH
+Pushing europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/antigravity-backend
+The push refers to repository [europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/antigravity-backend]
+6bed3ed458b9: Preparing
+bad39c3628b1: Preparing
+f68613d6fcb3: Preparing
+54dc7b7f71bb: Preparing
+b69aea4cac7d: Preparing
+40b88e8d19a2: Preparing
+dfd9efb4ec4c: Preparing
+a8ff6f8cbdfd: Preparing
+40b88e8d19a2: Layer already exists
+b69aea4cac7d: Layer already exists
+dfd9efb4ec4c: Layer already exists
+f68613d6fcb3: Pushed
+54dc7b7f71bb: Pushed
+bad39c3628b1: Pushed
+6bed3ed458b9: Pushed
+a8ff6f8cbdfd: Pushed
+latest: digest: sha256:feba23825394b9eed6a6f7706b581833af7daaed2138b5a556b1d73749c5ea6b size: 1997
+DONE
+--------------------
+ID                                    CREATE_TIME                DURATION  SOURCE                                                                                                 IMAGES                                                                                                 STATUS
+38976e3c-d9d6-4b94-ab36-98aadbdcef60  2026-02-15T22:03:39+00:00  51S       gs://antigravity-innovations_cloudbuild/source/1771192999.937154-0f812fe738f6410ba6f0c4687bdd4662.tgz  europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/antigravity-backend (+1 more)  SUCCESS
+🚀 Deploying Backend...
+Deploying container to Cloud Run service [[1mantigravity-backend[m] in project [[1mantigravity-innovations[m] region [[1meurope-west1[m]
+Deploying...
+Creating Revision........................................................................................failed
+Deployment failed
+ERROR: (gcloud.run.deploy) The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=antigravity-innovations&resource=cloud_run_revision/service_name/antigravity-backend/revision_name/antigravity-backend-00018-nt7&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22antigravity-backend%22%0Aresource.labels.revision_name%3D%22antigravity-backend-00018-nt7%22 
+For more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+❌ Error: Backend Deploy Failed

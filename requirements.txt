@@ -1,1 +1,10 @@
-firebase-admin
+fastapi>=0.109.0
+uvicorn>=0.27.0
+looker-sdk>=24.0.0
+google-generativeai>=0.3.0
+google-cloud-storage>=2.14.0
+python-dotenv>=1.0.0
+httpx>=0.26.0
+pydantic>=2.6.0
+requests>=2.31.0
+firebase-admin>=6.4.0

@@ -1,0 +1,336 @@
+===============================================
+   🚀 Antigravity Auto-Deployer (Europe)      
+===============================================
+1. Deploy Backend Only (Python/FastAPI)
+2. Deploy Frontend Only (Next.js)
+3. Deploy EVERYTHING
+===============================================
+--------------------------------------
+📦 Building Backend...
+Creating temporary archive of 452 file(s) totalling 174.2 MiB before compression.
+Some files were not included in the source upload.
+
+Check the gcloud log [/home/admin_ffrancois_altostrat_com/.config/gcloud/logs/2026.02.15/22.18.20.233958.log] to see which files and the contents of the
+default gcloudignore file used (see `$ gcloud topic gcloudignore` to learn
+more).
+
+Uploading tarball of [.] to [gs://antigravity-innovations_cloudbuild/source/1771193900.520206-6066baed701d40919c2a27f9ebe3e05e.tgz]
+Created [https://cloudbuild.googleapis.com/v1/projects/antigravity-innovations/locations/global/builds/05fb33f6-6558-4719-b53b-8435f10425f1].
+Logs are available at [ https://console.cloud.google.com/cloud-build/builds/05fb33f6-6558-4719-b53b-8435f10425f1?project=734857282249 ].
+Waiting for build to complete. Polling interval: 1 second(s).
+ REMOTE BUILD OUTPUT
+starting build "05fb33f6-6558-4719-b53b-8435f10425f1"
+
+FETCHSOURCE
+Fetching storage object: gs://antigravity-innovations_cloudbuild/source/1771193900.520206-6066baed701d40919c2a27f9ebe3e05e.tgz#1771193919359027
+Copying gs://antigravity-innovations_cloudbuild/source/1771193900.520206-6066baed701d40919c2a27f9ebe3e05e.tgz#1771193919359027...
+/ [0 files][    0.0 B/ 68.8 MiB]                                                -- [1 files][ 68.8 MiB/ 68.8 MiB]                                                
+Operation completed over 1 objects/68.8 MiB.
+BUILD
+Already have image (with digest): gcr.io/cloud-builders/docker
+Sending build context to Docker daemon  165.2MB
+Step 1/7 : FROM python:3.11-slim
+3.11-slim: Pulling from library/python
+0c8d55a45c0d: Already exists
+64faa99400e1: Pulling fs layer
+8cbc47ff628d: Pulling fs layer
+d85099f0969e: Pulling fs layer
+d85099f0969e: Verifying Checksum
+d85099f0969e: Download complete
+64faa99400e1: Verifying Checksum
+64faa99400e1: Download complete
+8cbc47ff628d: Verifying Checksum
+8cbc47ff628d: Download complete
+64faa99400e1: Pull complete
+8cbc47ff628d: Pull complete
+d85099f0969e: Pull complete
+Digest: sha256:0b23cfb7425d065008b778022a17b1551c82f8b4866ee5a7a200084b7e2eafbf
+Status: Downloaded newer image for python:3.11-slim
+ ---> 466c0182639b
+Step 2/7 : WORKDIR /app
+ ---> Running in a55e52130329
+Removing intermediate container a55e52130329
+ ---> 87c4139319fd
+Step 3/7 : COPY requirements.txt .
+ ---> 4a74c5f71273
+Step 4/7 : RUN pip install --no-cache-dir -r requirements.txt
+ ---> Running in 4cbec91df7e0
+Collecting fastapi>=0.109.0 (from -r requirements.txt (line 1))
+  Downloading fastapi-0.129.0-py3-none-any.whl.metadata (30 kB)
+Collecting uvicorn>=0.27.0 (from -r requirements.txt (line 2))
+  Downloading uvicorn-0.40.0-py3-none-any.whl.metadata (6.7 kB)
+Collecting looker-sdk>=24.0.0 (from -r requirements.txt (line 3))
+  Downloading looker_sdk-26.2.0-py3-none-any.whl.metadata (7.2 kB)
+Collecting google-generativeai>=0.3.0 (from -r requirements.txt (line 4))
+  Downloading google_generativeai-0.8.6-py3-none-any.whl.metadata (3.9 kB)
+Collecting google-cloud-storage>=2.14.0 (from -r requirements.txt (line 5))
+  Downloading google_cloud_storage-3.9.0-py3-none-any.whl.metadata (15 kB)
+Collecting python-dotenv>=1.0.0 (from -r requirements.txt (line 6))
+  Downloading python_dotenv-1.2.1-py3-none-any.whl.metadata (25 kB)
+Collecting httpx>=0.26.0 (from -r requirements.txt (line 7))
+  Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Collecting pydantic>=2.6.0 (from -r requirements.txt (line 8))
+  Downloading pydantic-2.12.5-py3-none-any.whl.metadata (90 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90.6/90.6 kB 9.2 MB/s eta 0:00:00
+Collecting requests>=2.31.0 (from -r requirements.txt (line 9))
+  Downloading requests-2.32.5-py3-none-any.whl.metadata (4.9 kB)
+Collecting firebase-admin>=6.4.0 (from -r requirements.txt (line 10))
+  Downloading firebase_admin-7.1.0-py3-none-any.whl.metadata (1.7 kB)
+Collecting starlette<1.0.0,>=0.40.0 (from fastapi>=0.109.0->-r requirements.txt (line 1))
+  Downloading starlette-0.52.1-py3-none-any.whl.metadata (6.3 kB)
+Collecting typing-extensions>=4.8.0 (from fastapi>=0.109.0->-r requirements.txt (line 1))
+  Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting typing-inspection>=0.4.2 (from fastapi>=0.109.0->-r requirements.txt (line 1))
+  Downloading typing_inspection-0.4.2-py3-none-any.whl.metadata (2.6 kB)
+Collecting annotated-doc>=0.0.2 (from fastapi>=0.109.0->-r requirements.txt (line 1))
+  Downloading annotated_doc-0.0.4-py3-none-any.whl.metadata (6.6 kB)
+Collecting click>=7.0 (from uvicorn>=0.27.0->-r requirements.txt (line 2))
+  Downloading click-8.3.1-py3-none-any.whl.metadata (2.6 kB)
+Collecting h11>=0.8 (from uvicorn>=0.27.0->-r requirements.txt (line 2))
+  Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting attrs>=20.1.0 (from looker-sdk>=24.0.0->-r requirements.txt (line 3))
+  Downloading attrs-25.4.0-py3-none-any.whl.metadata (10 kB)
+Collecting cattrs>=1.3 (from looker-sdk>=24.0.0->-r requirements.txt (line 3))
+  Downloading cattrs-25.3.0-py3-none-any.whl.metadata (8.4 kB)
+Collecting google-ai-generativelanguage==0.6.15 (from google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading google_ai_generativelanguage-0.6.15-py3-none-any.whl.metadata (5.7 kB)
+Collecting google-api-core (from google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading google_api_core-2.29.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting google-api-python-client (from google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading google_api_python_client-2.190.0-py3-none-any.whl.metadata (7.0 kB)
+Collecting google-auth>=2.15.0 (from google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading google_auth-2.48.0-py3-none-any.whl.metadata (6.2 kB)
+Collecting protobuf (from google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading protobuf-6.33.5-cp39-abi3-manylinux2014_x86_64.whl.metadata (593 bytes)
+Collecting tqdm (from google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading tqdm-4.67.3-py3-none-any.whl.metadata (57 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 57.7/57.7 kB 192.5 MB/s eta 0:00:00
+Collecting proto-plus<2.0.0dev,>=1.22.3 (from google-ai-generativelanguage==0.6.15->google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading proto_plus-1.27.1-py3-none-any.whl.metadata (2.2 kB)
+Collecting protobuf (from google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading protobuf-5.29.6-cp38-abi3-manylinux2014_x86_64.whl.metadata (592 bytes)
+Collecting google-cloud-core<3.0.0,>=2.4.2 (from google-cloud-storage>=2.14.0->-r requirements.txt (line 5))
+  Downloading google_cloud_core-2.5.0-py3-none-any.whl.metadata (3.1 kB)
+Collecting google-resumable-media<3.0.0,>=2.7.2 (from google-cloud-storage>=2.14.0->-r requirements.txt (line 5))
+  Downloading google_resumable_media-2.8.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting google-crc32c<2.0.0,>=1.1.3 (from google-cloud-storage>=2.14.0->-r requirements.txt (line 5))
+  Downloading google_crc32c-1.8.0-cp311-cp311-manylinux1_x86_64.manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_5_x86_64.whl.metadata (1.7 kB)
+Collecting anyio (from httpx>=0.26.0->-r requirements.txt (line 7))
+  Downloading anyio-4.12.1-py3-none-any.whl.metadata (4.3 kB)
+Collecting certifi (from httpx>=0.26.0->-r requirements.txt (line 7))
+  Downloading certifi-2026.1.4-py3-none-any.whl.metadata (2.5 kB)
+Collecting httpcore==1.* (from httpx>=0.26.0->-r requirements.txt (line 7))
+  Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Collecting idna (from httpx>=0.26.0->-r requirements.txt (line 7))
+  Downloading idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+Collecting annotated-types>=0.6.0 (from pydantic>=2.6.0->-r requirements.txt (line 8))
+  Downloading annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic-core==2.41.5 (from pydantic>=2.6.0->-r requirements.txt (line 8))
+  Downloading pydantic_core-2.41.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (7.3 kB)
+Collecting charset_normalizer<4,>=2 (from requests>=2.31.0->-r requirements.txt (line 9))
+  Downloading charset_normalizer-3.4.4-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (37 kB)
+Collecting urllib3<3,>=1.21.1 (from requests>=2.31.0->-r requirements.txt (line 9))
+  Downloading urllib3-2.6.3-py3-none-any.whl.metadata (6.9 kB)
+Collecting cachecontrol>=0.14.3 (from firebase-admin>=6.4.0->-r requirements.txt (line 10))
+  Downloading cachecontrol-0.14.4-py3-none-any.whl.metadata (3.1 kB)
+Collecting google-cloud-firestore>=2.21.0 (from firebase-admin>=6.4.0->-r requirements.txt (line 10))
+  Downloading google_cloud_firestore-2.23.0-py3-none-any.whl.metadata (10 kB)
+Collecting pyjwt>=2.10.1 (from pyjwt[crypto]>=2.10.1->firebase-admin>=6.4.0->-r requirements.txt (line 10))
+  Downloading pyjwt-2.11.0-py3-none-any.whl.metadata (4.0 kB)
+Collecting h2<5,>=3 (from httpx[http2]==0.28.1->firebase-admin>=6.4.0->-r requirements.txt (line 10))
+  Downloading h2-4.3.0-py3-none-any.whl.metadata (5.1 kB)
+Collecting msgpack<2.0.0,>=0.5.2 (from cachecontrol>=0.14.3->firebase-admin>=6.4.0->-r requirements.txt (line 10))
+  Downloading msgpack-1.1.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.1 kB)
+Collecting googleapis-common-protos<2.0.0,>=1.56.2 (from google-api-core->google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading googleapis_common_protos-1.72.0-py3-none-any.whl.metadata (9.4 kB)
+Collecting grpcio<2.0.0,>=1.33.2 (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.10.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,<3.0.0dev,>=1.34.1->google-ai-generativelanguage==0.6.15->google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading grpcio-1.78.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.8 kB)
+Collecting grpcio-status<2.0.0,>=1.33.2 (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.10.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,<3.0.0dev,>=1.34.1->google-ai-generativelanguage==0.6.15->google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading grpcio_status-1.78.0-py3-none-any.whl.metadata (1.3 kB)
+Collecting pyasn1-modules>=0.2.1 (from google-auth>=2.15.0->google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading pyasn1_modules-0.4.2-py3-none-any.whl.metadata (3.5 kB)
+Collecting cryptography>=38.0.3 (from google-auth>=2.15.0->google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading cryptography-46.0.5-cp311-abi3-manylinux_2_34_x86_64.whl.metadata (5.7 kB)
+Collecting rsa<5,>=3.1.4 (from google-auth>=2.15.0->google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading rsa-4.9.1-py3-none-any.whl.metadata (5.6 kB)
+Collecting httplib2<1.0.0,>=0.19.0 (from google-api-python-client->google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading httplib2-0.31.2-py3-none-any.whl.metadata (2.2 kB)
+Collecting google-auth-httplib2<1.0.0,>=0.2.0 (from google-api-python-client->google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading google_auth_httplib2-0.3.0-py3-none-any.whl.metadata (3.1 kB)
+Collecting uritemplate<5,>=3.0.1 (from google-api-python-client->google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading uritemplate-4.2.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting cffi>=2.0.0 (from cryptography>=38.0.3->google-auth>=2.15.0->google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading cffi-2.0.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.6 kB)
+INFO: pip is looking at multiple versions of grpcio-status to determine which version is compatible with other requirements. This could take a while.
+Collecting grpcio-status<2.0.0,>=1.33.2 (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.10.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,<3.0.0dev,>=1.34.1->google-ai-generativelanguage==0.6.15->google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading grpcio_status-1.76.0-py3-none-any.whl.metadata (1.1 kB)
+  Downloading grpcio_status-1.75.1-py3-none-any.whl.metadata (1.1 kB)
+  Downloading grpcio_status-1.75.0-py3-none-any.whl.metadata (1.1 kB)
+  Downloading grpcio_status-1.74.0-py3-none-any.whl.metadata (1.1 kB)
+  Downloading grpcio_status-1.73.1-py3-none-any.whl.metadata (1.1 kB)
+  Downloading grpcio_status-1.73.0-py3-none-any.whl.metadata (1.1 kB)
+  Downloading grpcio_status-1.72.2-py3-none-any.whl.metadata (1.1 kB)
+INFO: pip is still looking at multiple versions of grpcio-status to determine which version is compatible with other requirements. This could take a while.
+  Downloading grpcio_status-1.72.1-py3-none-any.whl.metadata (1.1 kB)
+  Downloading grpcio_status-1.71.2-py3-none-any.whl.metadata (1.1 kB)
+Collecting hyperframe<7,>=6.1 (from h2<5,>=3->httpx[http2]==0.28.1->firebase-admin>=6.4.0->-r requirements.txt (line 10))
+  Downloading hyperframe-6.1.0-py3-none-any.whl.metadata (4.3 kB)
+Collecting hpack<5,>=4.1 (from h2<5,>=3->httpx[http2]==0.28.1->firebase-admin>=6.4.0->-r requirements.txt (line 10))
+  Downloading hpack-4.1.0-py3-none-any.whl.metadata (4.6 kB)
+Collecting pyparsing<4,>=3.1 (from httplib2<1.0.0,>=0.19.0->google-api-python-client->google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading pyparsing-3.3.2-py3-none-any.whl.metadata (5.8 kB)
+Collecting pyasn1<0.7.0,>=0.6.1 (from pyasn1-modules>=0.2.1->google-auth>=2.15.0->google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading pyasn1-0.6.2-py3-none-any.whl.metadata (8.4 kB)
+Collecting pycparser (from cffi>=2.0.0->cryptography>=38.0.3->google-auth>=2.15.0->google-generativeai>=0.3.0->-r requirements.txt (line 4))
+  Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+Downloading fastapi-0.129.0-py3-none-any.whl (102 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 103.0/103.0 kB 214.9 MB/s eta 0:00:00
+Downloading uvicorn-0.40.0-py3-none-any.whl (68 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 68.5/68.5 kB 40.8 MB/s eta 0:00:00
+Downloading looker_sdk-26.2.0-py3-none-any.whl (242 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 242.6/242.6 kB 79.3 MB/s eta 0:00:00
+Downloading google_generativeai-0.8.6-py3-none-any.whl (155 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 155.1/155.1 kB 248.9 MB/s eta 0:00:00
+Downloading google_ai_generativelanguage-0.6.15-py3-none-any.whl (1.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 83.0 MB/s eta 0:00:00
+Downloading google_cloud_storage-3.9.0-py3-none-any.whl (321 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 321.3/321.3 kB 268.9 MB/s eta 0:00:00
+Downloading python_dotenv-1.2.1-py3-none-any.whl (21 kB)
+Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 73.5/73.5 kB 210.0 MB/s eta 0:00:00
+Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 78.8/78.8 kB 225.7 MB/s eta 0:00:00
+Downloading pydantic-2.12.5-py3-none-any.whl (463 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 463.6/463.6 kB 274.0 MB/s eta 0:00:00
+Downloading pydantic_core-2.41.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 152.8 MB/s eta 0:00:00
+Downloading requests-2.32.5-py3-none-any.whl (64 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 64.7/64.7 kB 214.6 MB/s eta 0:00:00
+Downloading firebase_admin-7.1.0-py3-none-any.whl (137 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 137.1/137.1 kB 258.9 MB/s eta 0:00:00
+Downloading annotated_doc-0.0.4-py3-none-any.whl (5.3 kB)
+Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+Downloading attrs-25.4.0-py3-none-any.whl (67 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 67.6/67.6 kB 204.5 MB/s eta 0:00:00
+Downloading cachecontrol-0.14.4-py3-none-any.whl (22 kB)
+Downloading cattrs-25.3.0-py3-none-any.whl (70 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 70.7/70.7 kB 157.2 MB/s eta 0:00:00
+Downloading certifi-2026.1.4-py3-none-any.whl (152 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 152.9/152.9 kB 261.0 MB/s eta 0:00:00
+Downloading charset_normalizer-3.4.4-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (151 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 151.6/151.6 kB 261.4 MB/s eta 0:00:00
+Downloading click-8.3.1-py3-none-any.whl (108 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 108.3/108.3 kB 252.2 MB/s eta 0:00:00
+Downloading google_api_core-2.29.0-py3-none-any.whl (173 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 173.9/173.9 kB 278.1 MB/s eta 0:00:00
+Downloading google_auth-2.48.0-py3-none-any.whl (236 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 236.5/236.5 kB 283.0 MB/s eta 0:00:00
+Downloading google_cloud_core-2.5.0-py3-none-any.whl (29 kB)
+Downloading google_cloud_firestore-2.23.0-py3-none-any.whl (411 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 411.2/411.2 kB 204.4 MB/s eta 0:00:00
+Downloading google_crc32c-1.8.0-cp311-cp311-manylinux1_x86_64.manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_5_x86_64.whl (33 kB)
+Downloading google_resumable_media-2.8.0-py3-none-any.whl (81 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 81.3/81.3 kB 226.5 MB/s eta 0:00:00
+Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Downloading idna-3.11-py3-none-any.whl (71 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 71.0/71.0 kB 210.5 MB/s eta 0:00:00
+Downloading protobuf-5.29.6-cp38-abi3-manylinux2014_x86_64.whl (320 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 320.5/320.5 kB 276.6 MB/s eta 0:00:00
+Downloading pyjwt-2.11.0-py3-none-any.whl (28 kB)
+Downloading starlette-0.52.1-py3-none-any.whl (74 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 74.3/74.3 kB 216.7 MB/s eta 0:00:00
+Downloading anyio-4.12.1-py3-none-any.whl (113 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 113.6/113.6 kB 259.4 MB/s eta 0:00:00
+Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.6/44.6 kB 200.6 MB/s eta 0:00:00
+Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+Downloading urllib3-2.6.3-py3-none-any.whl (131 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 131.6/131.6 kB 259.0 MB/s eta 0:00:00
+Downloading google_api_python_client-2.190.0-py3-none-any.whl (14.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.7/14.7 MB 164.0 MB/s eta 0:00:00
+Downloading tqdm-4.67.3-py3-none-any.whl (78 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 78.4/78.4 kB 228.7 MB/s eta 0:00:00
+Downloading cryptography-46.0.5-cp311-abi3-manylinux_2_34_x86_64.whl (4.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 226.2 MB/s eta 0:00:00
+Downloading google_auth_httplib2-0.3.0-py3-none-any.whl (9.5 kB)
+Downloading googleapis_common_protos-1.72.0-py3-none-any.whl (297 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 297.5/297.5 kB 187.8 MB/s eta 0:00:00
+Downloading grpcio-1.78.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (6.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.7/6.7 MB 164.0 MB/s eta 0:00:00
+Downloading grpcio_status-1.71.2-py3-none-any.whl (14 kB)
+Downloading h2-4.3.0-py3-none-any.whl (61 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 61.8/61.8 kB 185.0 MB/s eta 0:00:00
+Downloading httplib2-0.31.2-py3-none-any.whl (91 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 91.1/91.1 kB 219.3 MB/s eta 0:00:00
+Downloading msgpack-1.1.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (426 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 426.2/426.2 kB 294.1 MB/s eta 0:00:00
+Downloading proto_plus-1.27.1-py3-none-any.whl (50 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50.5/50.5 kB 205.2 MB/s eta 0:00:00
+Downloading pyasn1_modules-0.4.2-py3-none-any.whl (181 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 181.3/181.3 kB 225.5 MB/s eta 0:00:00
+Downloading rsa-4.9.1-py3-none-any.whl (34 kB)
+Downloading uritemplate-4.2.0-py3-none-any.whl (11 kB)
+Downloading cffi-2.0.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (215 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 215.6/215.6 kB 281.2 MB/s eta 0:00:00
+Downloading hpack-4.1.0-py3-none-any.whl (34 kB)
+Downloading hyperframe-6.1.0-py3-none-any.whl (13 kB)
+Downloading pyasn1-0.6.2-py3-none-any.whl (83 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 83.4/83.4 kB 241.5 MB/s eta 0:00:00
+Downloading pyparsing-3.3.2-py3-none-any.whl (122 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 122.8/122.8 kB 220.2 MB/s eta 0:00:00
+Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 48.2/48.2 kB 128.6 MB/s eta 0:00:00
+Installing collected packages: urllib3, uritemplate, typing-extensions, tqdm, python-dotenv, pyparsing, pyjwt, pycparser, pyasn1, protobuf, msgpack, idna, hyperframe, hpack, h11, google-crc32c, click, charset_normalizer, certifi, attrs, annotated-types, annotated-doc, uvicorn, typing-inspection, rsa, requests, pydantic-core, pyasn1-modules, proto-plus, httplib2, httpcore, h2, grpcio, googleapis-common-protos, google-resumable-media, cffi, cattrs, anyio, starlette, pydantic, looker-sdk, httpx, grpcio-status, cryptography, cachecontrol, google-auth, fastapi, google-auth-httplib2, google-api-core, google-cloud-core, google-api-python-client, google-cloud-storage, google-cloud-firestore, google-ai-generativelanguage, google-generativeai, firebase-admin
+Successfully installed annotated-doc-0.0.4 annotated-types-0.7.0 anyio-4.12.1 attrs-25.4.0 cachecontrol-0.14.4 cattrs-25.3.0 certifi-2026.1.4 cffi-2.0.0 charset_normalizer-3.4.4 click-8.3.1 cryptography-46.0.5 fastapi-0.129.0 firebase-admin-7.1.0 google-ai-generativelanguage-0.6.15 google-api-core-2.29.0 google-api-python-client-2.190.0 google-auth-2.48.0 google-auth-httplib2-0.3.0 google-cloud-core-2.5.0 google-cloud-firestore-2.23.0 google-cloud-storage-3.9.0 google-crc32c-1.8.0 google-generativeai-0.8.6 google-resumable-media-2.8.0 googleapis-common-protos-1.72.0 grpcio-1.78.0 grpcio-status-1.71.2 h11-0.16.0 h2-4.3.0 hpack-4.1.0 httpcore-1.0.9 httplib2-0.31.2 httpx-0.28.1 hyperframe-6.1.0 idna-3.11 looker-sdk-26.2.0 msgpack-1.1.2 proto-plus-1.27.1 protobuf-5.29.6 pyasn1-0.6.2 pyasn1-modules-0.4.2 pycparser-3.0 pydantic-2.12.5 pydantic-core-2.41.5 pyjwt-2.11.0 pyparsing-3.3.2 python-dotenv-1.2.1 requests-2.32.5 rsa-4.9.1 starlette-0.52.1 tqdm-4.67.3 typing-extensions-4.15.0 typing-inspection-0.4.2 uritemplate-4.2.0 urllib3-2.6.3 uvicorn-0.40.0
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0m[91m
+[notice] A new release of pip is available: 24.0 -> 26.0.1
+[notice] To update, run: pip install --upgrade pip
+[0mRemoving intermediate container 4cbec91df7e0
+ ---> 8ac11f886173
+Step 5/7 : COPY . .
+ ---> 8c56a630aa34
+Step 6/7 : EXPOSE 8080
+ ---> Running in 1f4f52df4832
+Removing intermediate container 1f4f52df4832
+ ---> 90b95f0b3737
+Step 7/7 : CMD ["sh", "-c", "uvicorn apps.agent.main:app --host 0.0.0.0 --port ${PORT:-8080}"]
+ ---> Running in 14ce1578fb5e
+Removing intermediate container 14ce1578fb5e
+ ---> 543d1f64149d
+Successfully built 543d1f64149d
+Successfully tagged europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/antigravity-backend:latest
+PUSH
+Pushing europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/antigravity-backend
+The push refers to repository [europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/antigravity-backend]
+cd46544124c0: Preparing
+91f89fa90eb7: Preparing
+aa937939f89c: Preparing
+a452f049a3dd: Preparing
+b69aea4cac7d: Preparing
+40b88e8d19a2: Preparing
+dfd9efb4ec4c: Preparing
+a8ff6f8cbdfd: Preparing
+dfd9efb4ec4c: Layer already exists
+b69aea4cac7d: Layer already exists
+40b88e8d19a2: Layer already exists
+a452f049a3dd: Pushed
+aa937939f89c: Pushed
+cd46544124c0: Pushed
+a8ff6f8cbdfd: Pushed
+91f89fa90eb7: Pushed
+latest: digest: sha256:d4a91b636a3a386566f431eab32d2f286de88888cb0f406382bdfdf70583c92a size: 1997
+DONE
+--------------------
+ID                                    CREATE_TIME                DURATION  SOURCE                                                                                                 IMAGES                                                                                                 STATUS
+05fb33f6-6558-4719-b53b-8435f10425f1  2026-02-15T22:18:39+00:00  1M13S     gs://antigravity-innovations_cloudbuild/source/1771193900.520206-6066baed701d40919c2a27f9ebe3e05e.tgz  europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/antigravity-backend (+1 more)  SUCCESS
+🚀 Deploying Backend...
+Deploying container to Cloud Run service [[1mantigravity-backend[m] in project [[1mantigravity-innovations[m] region [[1meurope-west1[m]
+Deploying...
+Creating Revision...........................................................................................................................failed
+Deployment failed
+ERROR: (gcloud.run.deploy) The user-provided container failed to start and listen on the port defined provided by the PORT=8080 environment variable within the allocated timeout. This can happen when the container port is misconfigured or if the timeout is too short. The health check timeout can be extended. Logs for this revision might contain more information.
+
+Logs URL: https://console.cloud.google.com/logs/viewer?project=antigravity-innovations&resource=cloud_run_revision/service_name/antigravity-backend/revision_name/antigravity-backend-00023-8fn&advancedFilter=resource.type%3D%22cloud_run_revision%22%0Aresource.labels.service_name%3D%22antigravity-backend%22%0Aresource.labels.revision_name%3D%22antigravity-backend-00023-8fn%22 
+For more troubleshooting guidance, see https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start
+❌ Error: Backend Deploy Failed

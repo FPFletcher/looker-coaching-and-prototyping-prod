@@ -12,7 +12,8 @@ import sqlite3
 from pathlib import Path
 
 # Database setup
-DB_PATH = Path(__file__).parent / "chat_history.db"
+# Use /tmp for Cloud Run compatibility (ephemeral)
+DB_PATH = Path("/tmp") / "chat_history.db"
 
 def init_database():
     """Initialize SQLite database for chat history"""

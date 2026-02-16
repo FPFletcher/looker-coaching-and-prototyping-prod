@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Antigravity Deployer
+Comment=Launch Antigravity Deployment (Backend & Frontend)
+Exec=gnome-terminal -- /bin/bash -c "/home/admin_ffrancois_altostrat_com/Desktop/Antigravity\\ projects/deploy_cloud_run.sh; exec bash"
+Icon=/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/web/public/gemini-icon.png
+Path=/home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects
+Terminal=false
+StartupNotify=true
