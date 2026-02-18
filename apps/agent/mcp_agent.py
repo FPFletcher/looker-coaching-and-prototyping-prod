@@ -5,6 +5,7 @@ import asyncio
 from typing import Dict, List, Any, Optional, AsyncGenerator
 import google.generativeai as genai
 from anthropic import AsyncAnthropic
+import httpx
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from duckduckgo_search import DDGS
@@ -129,7 +130,17 @@ class MCPAgent:
         if self.is_claude:
             if not os.getenv("ANTHROPIC_API_KEY"):
                 raise Exception("ANTHROPIC_API_KEY not found in environment")
-            self.client = AsyncAnthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+            
+            # Configure extended timeouts to prevent 60s read timeout from killing long requests
+            self.client = AsyncAnthropic(
+                api_key=os.getenv("ANTHROPIC_API_KEY"),
+                timeout=httpx.Timeout(
+                    connect=10.0,    # Connection timeout
+                    read=600.0,      # Read timeout - 10 minutes (was 60s default)
+                    write=10.0,      # Write timeout
+                    pool=10.0        # Pool timeout
+                )
+            )
         else:
             if not os.getenv("GOOGLE_API_KEY"):
                 raise Exception("GOOGLE_API_KEY not found in environment")
@@ -1592,6 +1603,15 @@ class MCPAgent:
                 "**REFUSAL PROTOCOL**:\n"
                 "If the user asks for existing/production data analysis, you MUST refuse and say:\n"
                 "'I am in POC Mode and can only work with new/uncommitted LookML. To analyze existing data, please disable POC mode.'\n\n"
+                
+                "🔒 **LOCKED DISCOVERY PROTOCOL** (MANDATORY):\\n\\n"
+                "After calling get_connection_tables, you MUST:\\n"
+                "1. Create locked inventory: '✅ LOCKED TABLES: [list exact names]'\\n"
+                "2. State: '⚠️ ONLY these tables exist. Cannot reference others.'\\n"
+                "3. If user mentions unlisted table: STOP and ASK for clarification\\n"
+                "4. Before creating LookML: Verify table is in locked inventory\\n\\n"
+                "❌ FORBIDDEN: Using tables from memory, context, or assumptions\\n"
+                "✅ REQUIRED: ALL tables MUST come from get_connection_tables\\n\\n"
             )
         else:
             system_prompt += (
@@ -1604,13 +1624,27 @@ class MCPAgent:
         system_prompt += (
             "CRITICAL: URL AND ID INTEGRITY PROTOCOL (PREVENTS HALLUCINATION)\n\n"
             
-            "**DASHBOARD CREATION WORKFLOW:**\n"
-            "1. Call `create_dashboard` with title\n"
-            "2. EXTRACT and SAVE these values from the response:\n"
-            "   - `dashboard_id`: Use in ALL `add_dashboard_element` calls\n"
-            "   - `base_url`: Use to construct final URL\n"
-            "3. For each tile, call `add_dashboard_element` with the extracted `dashboard_id`\n"
-            "4. Present to user: `{extracted_base_url}/embed/dashboards/{extracted_dashboard_id}`\n\n"
+            "**DASHBOARD CREATION WORKFLOW:**\\n"
+            "1. Call `create_dashboard` with title\\n"
+            "2. EXTRACT and SAVE these values from the response:\\n"
+            "   - `dashboard_id`: Use in ALL `add_dashboard_element` calls\\n"
+            "   - `full_url`: The COMPLETE embed URL to present to user\\n"
+            "3. For each tile, call `add_dashboard_element` with the extracted `dashboard_id`\\n"
+            "4. 🔒 MANDATORY: Call `create_dashboard_filter` to add at least ONE filter\\n"
+            "   - Recommended: Date range filter (field: created_date, type: date)\\n"
+            "   - Other options: Category filters, dimension filters\\n"
+            "   - NEVER skip this step - filters improve user experience\\n"
+            "5. Present to user: Use the `full_url` from step 2 (already contains /embed/)\\n\\n"
+            
+            "**CRITICAL - EMBED URL REQUIREMENT:**\\n"
+            "❌ NEVER use: `{base_url}/dashboards/{id}` (causes X-Frame-Options error)\\n"
+            "✅ ALWAYS use: `{base_url}/embed/dashboards/{id}` (from full_url field)\\n"
+            "The tool response includes `full_url` - USE IT DIRECTLY, don't construct your own!\\n\\n"
+            
+            "**CRITICAL - FILTER REQUIREMENT:**\\n"
+            "❌ NEVER create dashboards without filters\\n"
+            "✅ ALWAYS add at least 1 filter (date range recommended)\\n"
+            "Filters enable users to explore data interactively - they are MANDATORY!\\n\\n"
             
             "**NEVER:**\n"
             "- Invent or guess dashboard IDs\n"
@@ -1632,24 +1666,37 @@ class MCPAgent:
             "   - Do NOT guess the metric.\n\n"
             
             "CRITICAL: DATA PRESENTATION PROTOCOLS:\n"
-            "**INSIGHTS FORMAT** (REQUIRED FOR ALL OUTPUTS):\n"
-            "   🔎 INSIGHTS\n"
-            "   - Bottom line impact (no descriptions)\n"
-            "   - Example: 'Conversion dropped 15% in Q3 due to mobile checkout latency.'\n\n"
+            "**INSIGHTS FORMAT** (MANDATORY - ALL 4 SECTIONS REQUIRED):\n"
+            "\n"
+            "⚠️ EVERY response with data analysis MUST include ALL 4 sections:\n"
+            "\n"
+            "🔎 INSIGHTS (What happened?)\n"
+            "   - Bottom-line business impact with numbers\n"
+            "   - Quantified findings, no fluff\n"
+            "   - Example: 'Revenue dropped 23% ($450K) in Q3 vs Q2.'\n"
+            "   - Example: 'Top 3 customers account for 67% of revenue ($2.1M).'\n\n"
             
-            "   📊 TRENDS\n"
-            "   - What patterns drive this?\n"
-            "   - Example: 'Mobile traffic up 40%, but conversion down 20%.'\n\n"
+            "📊 TRENDS (Why did it happen?)\n"
+            "   - Patterns, correlations, root causes\n"
+            "   - Data-driven explanations\n"
+            "   - Example: 'Mobile traffic +40%, but mobile conversion -35%.'\n"
+            "   - Example: 'Churn spiked after pricing change (correlation: 0.89).'\n\n"
             
-            "   🎯 RECOMMENDATIONS\n"
-            "   - Actionable & specific steps\n"
-            "   - Example: 'Revert checkout UI change and cache static assets.'\n\n"
+            "🎯 RECOMMENDATIONS (What should we do?)\n"
+            "   - Specific, actionable steps\n"
+            "   - Prioritized by estimated impact\n"
+            "   - Example: '1. Fix mobile checkout (est. +$200K/mo) 2. A/B test pricing'\n"
+            "   - Example: 'Launch retention campaign targeting high-value segment.'\n\n"
             
-            "   ❓ FOLLOW-UP QUESTIONS\n"
-            "   - What to explore next\n"
-            "   - Example: 'Compare mobile vs desktop funnel drop-off points.'\n\n"
+            "❓ FOLLOW-UP QUESTIONS (What should we explore next?)\n"
+            "   - Deeper analysis opportunities\n"
+            "   - Related metrics to investigate\n"
+            "   - Example: 'Compare mobile vs desktop funnel drop-off by step.'\n"
+            "   - Example: 'Analyze customer cohorts by acquisition channel.'\n\n"
             
-            "**FORBIDDEN**: Do NOT simply describe charts. Provide ANALYSIS.\n\n"
+            "❌ FORBIDDEN: Chart descriptions without analysis\n"
+            "❌ FORBIDDEN: Missing any of the 4 sections\n"
+            "✅ REQUIRED: Business insights with quantified impact\n\n"
             
             "CRITICAL: LOOKML FILE CREATION PROTOCOL:\n"
             "1. **ALWAYS** create LookML files at ROOT LEVEL using flat paths\n"
@@ -1682,25 +1729,60 @@ class MCPAgent:
             
             "**Rule: ONE dashboard per request unless user asks for multiple**\n\n"
             
-            "CRITICAL: FIELD VALIDATION PROTOCOL (PREVENTS FIELD HALLUCINATION):\n"
-            "Before creating ANY chart/dashboard tile:\n"
-            "1. Call `get_explore_fields_from_context`\n"
-            "2. Verify EVERY field you plan to use exists in the response\n"
-            "3. If field missing, STOP and either:\n"
-            "   a) Choose a different field that exists\n"
-            "   b) Explain what's missing\n"
-            "4. Create a field checklist:\n"
-            "   Fields to use: [list]\n"
-            "   ✓ Verified in explore: [yes/no for each]\n\n"
+            "CRITICAL: MANDATORY FIELD VERIFICATION (NO EXCEPTIONS):\n"
+            "\n"
+            "⛔ STOP - READ THIS BEFORE ANY DASHBOARD/CHART CREATION:\n"
+            "\n"
+            "STEP 1: VERIFY FIELDS (REQUIRED)\n"
+            "   POC Mode (uncommitted LookML): Call `get_explore_fields_from_context`\n"
+            "   Production Mode: Call `get_explore_fields`\n"
+            "\n"
+            "STEP 2: CREATE VERIFICATION CHECKLIST\n"
+            "   List EXACT field names you plan to use:\n"
+            "   ✅ orders.count (verified in explore)\n"
+            "   ✅ orders.total_revenue (verified in explore)\n"
+            "   ✅ orders.created_date (verified in explore)\n"
+            "\n"
+            "STEP 3: USE ONLY VERIFIED FIELDS\n"
+            "   ❌ FORBIDDEN: Inventing fields like 'revenue', 'sales', 'total'\n"
+            "   ✅ REQUIRED: Using exact names from verification\n"
+            "\n"
+            "⛔ IF YOU SKIP VERIFICATION, THE TOOL WILL FAIL\n"
+            "⛔ IF FIELD NOT IN VERIFIED LIST, STOP AND ASK USER\n\n"
             
-            "**NEVER assume a field exists - ALWAYS verify first**\n\n"
+            "VISUALIZATION TYPE CONFIGURATION:\n"
+            "\n"
+            "VALID TYPES & WHEN TO USE:\n"
+            "   📈 looker_line: Time series, trends\n"
+            "      - Requires: date dimension + measures\n"
+            "      - Config: x_axis=[date], y_axis=[measures]\n"
+            "\n"
+            "   📊 looker_column: Comparisons, categories\n"
+            "      - Requires: dimension + measures\n"
+            "      - Config: x_axis=[dimension], y_axis=[measures]\n"
+            "\n"
+            "   📉 looker_bar: Rankings, horizontal comparisons\n"
+            "      - Requires: dimension + measures\n"
+            "      - Config: x_axis=[measures], y_axis=[dimension]\n"
+            "\n"
+            "   🥧 looker_pie: Part-to-whole (MAX 7 slices)\n"
+            "      - Requires: 1 dimension + 1 measure\n"
+            "      - Config: dimension=[category], measure=[value]\n"
+            "      - If >7 categories, use TOP 7 or choose different viz\n"
+            "\n"
+            "   📋 looker_grid: Tables, detailed data\n"
+            "      - Use for: raw data, multiple dimensions\n"
+            "\n"
+            "   🎯 looker_single_value: KPIs, single metrics\n"
+            "      - Requires: ONLY 1 measure, NO dimensions\n"
+            "      - Config: measure=[single_metric]\n\n"
             
             "**CRITICAL: KEEP IT BRIEF**\n"
             "- Do NOT explain thought process unless asked\n"
             "- Do NOT say 'I will now run...'. JUST RUN THE TOOL.\n"
         )
         
-        if explore_context:
+        if explore_context and not poc_mode:
             system_prompt += f"\\n**Context**: {explore_context}\\n"
             
         return system_prompt
@@ -1806,7 +1888,8 @@ class MCPAgent:
         looker_url: str,
         client_id: str,
         client_secret: str,
-        system_prompt: str = ""
+        system_prompt: str = "",
+        images: Optional[List[str]] = None
     ) -> AsyncGenerator[Dict[str, Any], None]:
         """Process message with Claude (streaming, tool use)."""
         
@@ -1824,32 +1907,74 @@ class MCPAgent:
         for msg in history:
             role = "user" if msg["role"] == "user" else "assistant"
             messages.append({"role": role, "content": msg["content"]})
-        messages.append({"role": "user", "content": user_message})
+        
+        # Build user message with images if provided
+        if images and len(images) > 0:
+            # Format message with images for Claude vision API
+            content_parts = []
+            
+            # Add images first
+            for img_data in images:
+                # Remove data URL prefix if present
+                if img_data.startswith('data:image'):
+                    # Extract base64 data and media type
+                    header, base64_data = img_data.split(',', 1)
+                    media_type = header.split(';')[0].split(':')[1]  # e.g., "image/jpeg"
+                else:
+                    # Assume it's already base64
+                    base64_data = img_data
+                    media_type = "image/jpeg"  # Default
+                
+                content_parts.append({
+                    "type": "image",
+                    "source": {
+                        "type": "base64",
+                        "media_type": media_type,
+                        "data": base64_data
+                    }
+                })
+            
+            # Add text message
+            content_parts.append({
+                "type": "text",
+                "text": user_message
+            })
+            
+            messages.append({"role": "user", "content": content_parts})
+        else:
+            # No images, just text
+            messages.append({"role": "user", "content": user_message})
 
         try:
             max_turns = 10
+            last_activity = __import__('time').time()  # Track last activity for keepalive
             
             for turn in range(max_turns):
                 logger.info(f"Claude Turn {turn + 1}/{max_turns}")
                 
-                response = await self.client.messages.create(
+                # Use streaming API to prevent timeout issues with long responses
+                async with self.client.messages.stream(
                     model=self.model_name,
-                    max_tokens=16000,
+                    max_tokens=20000,  # Reduced from 30K to 20K for better performance
                     system=system_prompt,
                     messages=messages,
                     tools=claude_tools
-                )
+                ) as stream:
+                    # Stream text in real-time
+                    async for text in stream.text_stream:
+                        yield {"type": "text", "content": text}
+                        last_activity = __import__('time').time()  # Update activity time
+                    
+                    # Get final message with tool calls
+                    response = await stream.get_final_message()
                 
                 logger.info(f"Stop Reason: {response.stop_reason}")
                 
                 turn_tool_blocks = []
                 
-                # Yield text and identify tool use
+                # Process tool calls from final message (text already streamed)
                 for content_block in response.content:
-                    if content_block.type == "text":
-                        yield {"type": "text", "content": content_block.text}
-                        
-                    elif content_block.type == "tool_use":
+                    if content_block.type == "tool_use":
                         logger.info(f"Tool Use: {content_block.name}")
                         turn_tool_blocks.append(content_block)
                         yield {
@@ -1865,6 +1990,11 @@ class MCPAgent:
                 # Execute tools
                 tool_results = []
                 for tool_block in turn_tool_blocks:
+                    # Send keepalive if no activity for 20 seconds
+                    if __import__('time').time() - last_activity > 20:
+                        yield {"type": "keepalive"}
+                        last_activity = __import__('time').time()
+                    
                     logger.info(f"Executing: {tool_block.name}")
                     tool_result = await self.execute_tool(
                         tool_block.name,
@@ -1873,6 +2003,8 @@ class MCPAgent:
                         client_id,
                         client_secret
                     )
+                    
+                    last_activity = __import__('time').time()  # Update after tool execution
                     
                     # Serialize result
                     result_str = ""
@@ -1965,7 +2097,8 @@ class MCPAgent:
                 async for event in self._process_with_claude(
                     full_message, history, available_tools,
                     looker_url, client_id, client_secret,
-                    system_prompt=system_instruction
+                    system_prompt=system_instruction,
+                    images=images
                 ):
                     yield event
             else:

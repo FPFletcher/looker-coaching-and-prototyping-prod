@@ -33,6 +33,8 @@ case $choice in
         $GCLOUD run deploy antigravity-backend \
             --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/antigravity-backend \
             --region ${REGION} \
+            --allow-unauthenticated \
+            --timeout=600 \
             --memory 2Gi \
             --cpu 2 || error_exit "Backend Deploy Failed"
         ;;
@@ -50,6 +52,7 @@ case $choice in
             --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/antigravity-web \
             --region ${REGION} \
             --allow-unauthenticated \
+            --timeout=600 \
             --set-env-vars="NEXT_PUBLIC_API_URL=${BACKEND_URL}" || error_exit "Frontend Deploy Failed"
         ;;
 esac

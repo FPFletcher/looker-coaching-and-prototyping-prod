@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, ImageIcon } from 'lucide-react';
 
 interface ImageUploadProps {
@@ -9,6 +9,13 @@ interface ImageUploadProps {
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ images, onImagesChange, maxImages = 5 }) => {
     const [previews, setPreviews] = useState<string[]>([]);
+
+    // Sync previews with images prop - clear previews when images are cleared
+    useEffect(() => {
+        if (images.length === 0) {
+            setPreviews([]);
+        }
+    }, [images]);
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || []);

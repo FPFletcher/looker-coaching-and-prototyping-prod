@@ -3,7 +3,7 @@ import ReactMarkdown from "react-markdown";
 import { Loader2, ChevronDown, Terminal, CheckCircle2, SendHorizontal, Image as ImageIcon, Mic, Sparkles, Copy, Check } from "lucide-react";
 import ThinkingBlock from "./ThinkingBlock";
 import StableDashboardEmbed from "./StableDashboardEmbed";
-import ImageUpload from "./ImageUpload";
+import FileUpload from "./FileUpload";
 import remarkGfm from "remark-gfm";
 import { getCurrentUser } from "../lib/userSettings";
 
@@ -62,6 +62,8 @@ export interface Message {
     parts?: MessagePart[]; // New field for interleaved content
     thinkingSteps?: ToolStep[]; // Keep for backward compat
     isThinking?: boolean;
+    images?: string[]; // Base64 image data for display
+    files?: { name: string; type: string; data: string }[]; // File attachments
 }
 
 interface ChatInterfaceProps {
@@ -163,7 +165,7 @@ const ChatInterface = memo(function ChatInterface({
                         <a {...props} className="text-[#A8C7FA] hover:underline block mb-2" target="_blank" rel="noreferrer">
                             {props.children}
                         </a>
-                        <StableDashboardEmbed url={href} />
+                        <StableDashboardEmbed url={embedUrl} />
                     </div>
                 );
             }
@@ -190,9 +192,9 @@ const ChatInterface = memo(function ChatInterface({
         <div className="flex flex-col h-full bg-gradient-to-br from-[#131314] to-[#0a1929] text-[#E3E3E3] relative">
 
             {/* Messages Area - Responsive Padding */}
-            <div className="flex-1 overflow-y-auto px-4 md:px-20 lg:px-40 py-8 space-y-8 scrollbar-thin scrollbar-thumb-[#444746] scrollbar-track-transparent">
+            <div className="flex-1 overflow-y-auto px-4 md:px-8 lg:px-12 py-6 md:py-8 space-y-6 md:space-y-8 scrollbar-thin scrollbar-thumb-[#444746] scrollbar-track-transparent">
                 {messages.length === 0 && (
-                    <div className="h-full flex flex-col items-start justify-center max-w-3xl mx-auto -mt-20">
+                    <div className="h-full flex flex-col items-start justify-center max-w-4xl mx-auto -mt-12 md:-mt-20 px-2">
                         <div className="mb-2">
                             <Sparkles className="w-12 h-12 text-[#4c8df6]" />
                         </div>
@@ -256,6 +258,20 @@ const ChatInterface = memo(function ChatInterface({
                                         </div>
                                     ) : (
                                         <>
+                                            {/* Display attached images for user messages */}
+                                            {msg.role === "user" && msg.images && msg.images.length > 0 && (
+                                                <div className="flex flex-wrap gap-2 mb-3">
+                                                    {msg.images.map((img, imgIdx) => (
+                                                        <img
+                                                            key={imgIdx}
+                                                            src={img}
+                                                            alt={`Attachment ${imgIdx + 1}`}
+                                                            className="max-w-xs max-h-64 rounded-lg border border-[#444746] object-cover"
+                                                        />
+                                                    ))}
+                                                </div>
+                                            )}
+
                                             {/* Legacy Rendering Fallback */}
                                             {msg.role === "assistant" && msg.thinkingSteps && msg.thinkingSteps.length > 0 && (
                                                 <div className="mb-4 space-y-2">
@@ -296,17 +312,17 @@ const ChatInterface = memo(function ChatInterface({
             </div>
 
             {/* Input Area (Bottom Floating) - Transparent Gradient Background */}
-            <div className="p-4 md:p-6 sticky bottom-0 z-10 bg-gradient-to-t from-[#131314] via-[#131314]/95 to-transparent">
-                <div className="max-w-3xl mx-auto space-y-4">
+            <div className="p-3 md:p-4 lg:p-6 sticky bottom-0 z-10 bg-gradient-to-t from-[#131314] via-[#131314]/95 to-transparent">
+                <div className="max-w-4xl mx-auto space-y-3 md:space-y-4">
 
                     {/* Suggestion Chips (only on empty state) */}
                     {messages.length === 0 && (
-                        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0">
                             {prompts.map((prompt, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => handlePromptClick(prompt.text)}
-                                    className="whitespace-nowrap flex items-center gap-2 px-4 py-3 bg-[#1E1F20] hover:bg-[#333537] rounded-xl text-[#E3E3E3] border border-[#333537] transition-colors text-sm"
+                                    className="whitespace-nowrap flex items-center gap-2 px-4 py-3 min-h-[44px] bg-[#1E1F20] hover:bg-[#333537] rounded-xl text-[#E3E3E3] border border-[#333537] transition-colors text-sm snap-start"
                                 >
                                     <prompt.icon className="w-4 h-4 text-[#C4C7C5]" />
                                     {prompt.text}
@@ -329,17 +345,17 @@ const ChatInterface = memo(function ChatInterface({
                                     }
                                 }}
                                 placeholder="Ask Selo"
-                                className="w-full bg-transparent text-[#E3E3E3] p-5 pr-14 rounded-[28px] focus:outline-none resize-none min-h-[56px] max-h-[200px] placeholder-[#8E918F] text-[16px]"
+                                className="w-full bg-transparent text-[#E3E3E3] p-4 md:p-5 pr-12 md:pr-14 rounded-[28px] focus:outline-none resize-none min-h-[56px] max-h-[200px] placeholder-[#8E918F] text-[16px] leading-relaxed"
                                 rows={1}
                             />
 
                             <div className="absolute right-4 bottom-3 flex items-center gap-2">
                                 {/* Image Upload and Action Buttons */}
                                 <div className="flex items-center gap-1">
-                                    <ImageUpload
-                                        images={selectedImages}
-                                        onImagesChange={onImagesChange}
-                                        maxImages={3}
+                                    <FileUpload
+                                        files={selectedImages}
+                                        onFilesChange={onImagesChange}
+                                        maxFiles={3}
                                     />
                                 </div>
 

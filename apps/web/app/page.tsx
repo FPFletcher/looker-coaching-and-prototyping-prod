@@ -242,9 +242,24 @@ export default function Home() {
         const userMessage = input.trim();
         setInput("");
 
-        // Add user message with stable ID
+        // Convert images to base64 for display and API
+        const imagePromises = selectedImages.map(file => {
+            return new Promise<string>((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result as string);
+                reader.readAsDataURL(file);
+            });
+        });
+        const base64Images = await Promise.all(imagePromises);
+
+        // Add user message with stable ID and images
         const userMsgId = `user-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-        setMessages((prev) => [...prev, { id: userMsgId, role: "user", content: userMessage }]);
+        setMessages((prev) => [...prev, {
+            id: userMsgId,
+            role: "user",
+            content: userMessage,
+            images: base64Images.length > 0 ? base64Images : undefined
+        }]);
         setIsLoading(true);
         setSelectedImages([]); // Clear images after sending
 
@@ -259,15 +274,6 @@ export default function Home() {
             // Create abort controller for this request
             const controller = new AbortController();
             setAbortController(controller);
-            // Convert images to base64
-            const imagePromises = selectedImages.map(file => {
-                return new Promise<string>((resolve) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result as string);
-                    reader.readAsDataURL(file);
-                });
-            });
-            const base64Images = await Promise.all(imagePromises);
 
             const response = await fetch(`${getApiUrl()}/api/chat`, {
                 method: "POST",
@@ -286,7 +292,7 @@ export default function Home() {
                     model: selectedModel,
                     session_id: sessionId,
                     explore: selectedExplore, // Send selected explore
-                    images: base64Images,      // Send images as base64
+                    images: base64Images,      // Send images as base64 (already converted above)
                     gcp_project: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.gcpProject,
                     gcp_location: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.gcpLocation,
                     poc_mode: isPocMode
@@ -423,6 +429,11 @@ export default function Home() {
     const handlePocModeChange = (newMode: boolean) => {
         setIsPocMode(newMode);
         saveUserSetting('poc_mode', newMode, currentUser?.id);
+        
+        // Clear explore context when entering POC mode to prevent contamination
+        if (newMode) {
+            setSelectedExplore(null);
+        }
     };
 
     const handleExploreChange = (explore: Explore | null) => {
