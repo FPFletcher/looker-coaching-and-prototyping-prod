@@ -35,8 +35,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize agent
-agent = MCPAgent()
+# Initialize agent - Global for stateless ops, but preferred to be per-request
+# agent = MCPAgent()
 
 # Initialize chat history manager
 chat_manager = ChatHistoryManager()
@@ -53,6 +53,7 @@ class LookerCredentials(BaseModel):
 
 class ConfigureRequest(BaseModel):
     credentials: LookerCredentials
+    session_id: Optional[str] = None
 
 class ChatMessage(BaseModel):
     role: str  # "user" or "assistant"
@@ -85,6 +86,11 @@ async def configure_looker(request: ConfigureRequest):
     """
     try:
         creds = request.credentials
+        session_id = request.session_id or "default"
+        
+        # Instantiate session-specific agent
+        agent = MCPAgent(session_id=session_id)
+        
         tools = await agent.list_available_tools(
             creds.url,
             creds.client_id,
@@ -115,7 +121,7 @@ async def chat(request: ChatRequest):
             }
         
         # Instantiate agent
-        chat_agent = MCPAgent(model_name=request.model)
+        chat_agent = MCPAgent(session_id=session_id, model_name=request.model)
 
         async def event_generator():
             try:
@@ -203,26 +209,31 @@ async def google_auth(request: Dict[str, Any]):
     try:
         token = request.get("token")
         if not token:
-            return {"error": "No token provided"}
+            raise HTTPException(status_code=400, detail="No token provided")
         
         # Initialize OAuth handler
+        # Use fallback Client ID if env var is missing (matches frontend)
+        client_id = os.getenv("GOOGLE_CLIENT_ID") or "826056756274-7653f7jteulh4en41u5oiupqe2stur2s.apps.googleusercontent.com"
+        
         oauth_handler = GoogleOAuthHandler(
-            client_id=os.getenv("GOOGLE_CLIENT_ID", ""),
+            client_id=client_id,
             client_secret=os.getenv("GOOGLE_CLIENT_SECRET", "")
         )
         
         # Verify token
         user_info = oauth_handler.verify_token(token)
         if not user_info:
-            return {"error": "Invalid token"}
+            raise HTTPException(status_code=401, detail="Invalid token")
         
         # Create or update user
         oauth_handler.create_or_update_user(user_info)
         
         return {"user": user_info}
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Google auth failed: {str(e)}")
-        return {"error": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/history/sessions")
 async def get_sessions(request: Dict[str, Any]):

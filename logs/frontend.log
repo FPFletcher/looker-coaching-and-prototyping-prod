@@ -1295,3 +1295,6 @@ Require stack:
  ✓ Compiled in 1670ms (1300 modules)
  ✓ Compiled in 1536ms (1300 modules)
  ✓ Compiled in 1026ms (1300 modules)
+ GET / 200 in 178ms
+ GET / 200 in 34ms
+[?25h

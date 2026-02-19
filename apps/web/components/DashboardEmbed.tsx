@@ -61,8 +61,8 @@ const DashboardEmbed: React.FC<DashboardEmbedProps> = ({ url }) => {
     console.log('[DashboardEmbed] 🔑 Using stable key:', stableKey, 'for URL:', embedUrl);
 
     return (
-        <div className="mt-4 rounded-lg overflow-hidden border border-[#37393b] bg-[#1e1f20]">
-            <div className="px-4 py-2 bg-[#2a2b2c] border-b border-[#37393b] flex items-center justify-between">
+        <span className="block mt-4 rounded-lg overflow-hidden border border-[#37393b] bg-[#1e1f20]">
+            <span className="block px-4 py-2 bg-[#2a2b2c] border-b border-[#37393b] flex items-center justify-between">
                 <span className="text-sm text-gray-400">{resource.type === 'dashboard' ? 'Dashboard' : 'Explore'} Preview</span>
                 <a
                     href={url}
@@ -72,12 +72,12 @@ const DashboardEmbed: React.FC<DashboardEmbedProps> = ({ url }) => {
                 >
                     Open in Looker ↗
                 </a>
-            </div>
-            <div className="relative" style={{ paddingBottom: '56.25%' }}>
+            </span>
+            <span className="block relative" style={{ paddingBottom: '56.25%' }}>
                 {embedError ? (
-                    <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-[#1e1f20] p-8">
-                        <div className="text-center max-w-md">
-                            <div className="text-4xl mb-4">🔒</div>
+                    <span className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-[#1e1f20] p-8">
+                        <span className="block text-center max-w-md">
+                            <span className="block text-4xl mb-4">🔒</span>
                             <h3 className="text-lg font-semibold text-gray-200 mb-2">
                                 Dashboard Cannot Be Embedded
                             </h3>
@@ -96,8 +96,8 @@ const DashboardEmbed: React.FC<DashboardEmbedProps> = ({ url }) => {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                 </svg>
                             </a>
-                        </div>
-                    </div>
+                        </span>
+                    </span>
                 ) : (
                     <iframe
                         key={stableKey}
@@ -117,8 +117,8 @@ const DashboardEmbed: React.FC<DashboardEmbedProps> = ({ url }) => {
                         }}
                     />
                 )}
-            </div>
-        </div>
+            </span>
+        </span>
     );
 };
 

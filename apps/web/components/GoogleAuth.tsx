@@ -108,6 +108,13 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({ onAuthChange }) => {
 
             if (res.ok) {
                 const userData = await res.json();
+
+                if (userData.error || !userData.user) {
+                    console.error('Backend verification returned error:', userData);
+                    alert('Authentication failed: ' + (userData.error || 'Invalid response'));
+                    return;
+                }
+
                 console.log('Backend verification successful:', userData);
 
                 setUser(userData.user);

@@ -1,3 +1,4 @@
+nohup: ignoring input
 
 > banana-prototype-agent@0.1.0 dev
 > next dev
@@ -7,24 +8,4 @@
   - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 2.1s
- ○ Compiling / ...
- ✓ Compiled / in 6.7s (1069 modules)
- HEAD / 200 in 7180ms
- GET / 200 in 79ms
- ○ Compiling /_not-found ...
- ✓ Compiled /_not-found in 1206ms (1072 modules)
- GET /.well-known/appspecific/com.chrome.devtools.json 404 in 1354ms
- GET / 200 in 192ms
- GET /.well-known/appspecific/com.chrome.devtools.json 404 in 88ms
- GET / 200 in 63ms
- GET /.well-known/appspecific/com.chrome.devtools.json 404 in 64ms
- GET / 200 in 51ms
- ⚠ Found a change in next.config.js. Restarting the server to apply the changes...
-  ▲ Next.js 14.2.35
-  - Local:        http://localhost:3000
-  - Environments: .env.local
-
- ✓ Starting...
- ✓ Ready in 2.1s
-[?25h
+ ✓ Ready in 2.6s

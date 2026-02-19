@@ -1,0 +1,2439 @@
+{
+  "views": {
+    "cdp_users": {
+      "name": "cdp_users",
+      "fields": [
+        {
+          "name": "user_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "User Id",
+          "sql": null
+        },
+        {
+          "name": "email",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Email",
+          "sql": null
+        },
+        {
+          "name": "first_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "First Name",
+          "sql": null
+        },
+        {
+          "name": "last_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Last Name",
+          "sql": null
+        },
+        {
+          "name": "age",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Age",
+          "sql": null
+        },
+        {
+          "name": "age_tier",
+          "type": "dimension",
+          "field_type": "tier",
+          "label": "Age Tier",
+          "sql": null
+        },
+        {
+          "name": "gender",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Gender",
+          "sql": null
+        },
+        {
+          "name": "country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Country",
+          "sql": null
+        },
+        {
+          "name": "state",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "State",
+          "sql": null
+        },
+        {
+          "name": "city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "City",
+          "sql": null
+        },
+        {
+          "name": "traffic_source",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Traffic Source",
+          "sql": null
+        },
+        {
+          "name": "customer_tenure_days",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer Tenure Days",
+          "sql": null
+        },
+        {
+          "name": "customer_tenure_tier",
+          "type": "dimension",
+          "field_type": "tier",
+          "label": "Customer Tenure Tier",
+          "sql": null
+        },
+        {
+          "name": "customer_tenure_segment",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Tenure Segment",
+          "sql": null
+        },
+        {
+          "name": "count",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count",
+          "sql": null
+        },
+        {
+          "name": "average_age",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Age",
+          "sql": null
+        }
+      ],
+      "sql_table_name": "thelook_ecommerce.users"
+    },
+    "cdp_orders": {
+      "name": "cdp_orders",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Id",
+          "sql": null
+        },
+        {
+          "name": "user_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "User Id",
+          "sql": null
+        },
+        {
+          "name": "status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Status",
+          "sql": null
+        },
+        {
+          "name": "num_of_item",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Num Of Item",
+          "sql": null
+        },
+        {
+          "name": "count",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count",
+          "sql": null
+        },
+        {
+          "name": "count_returned",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count Returned",
+          "sql": null
+        },
+        {
+          "name": "return_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Return Rate",
+          "sql": null
+        }
+      ],
+      "sql_table_name": "thelook_ecommerce.orders"
+    },
+    "cdp_order_items": {
+      "name": "cdp_order_items",
+      "fields": [
+        {
+          "name": "order_item_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Item Id",
+          "sql": null
+        },
+        {
+          "name": "order_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Id",
+          "sql": null
+        },
+        {
+          "name": "user_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "User Id",
+          "sql": null
+        },
+        {
+          "name": "product_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Product Id",
+          "sql": null
+        },
+        {
+          "name": "sale_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Sale Price",
+          "sql": null
+        },
+        {
+          "name": "status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Status",
+          "sql": null
+        },
+        {
+          "name": "count",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count",
+          "sql": null
+        },
+        {
+          "name": "total_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Revenue",
+          "sql": null
+        },
+        {
+          "name": "average_order_value",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Order Value",
+          "sql": null
+        },
+        {
+          "name": "total_revenue_k",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Total Revenue K",
+          "sql": null
+        }
+      ],
+      "sql_table_name": "thelook_ecommerce.order_items"
+    },
+    "cdp_user_facts": {
+      "name": "cdp_user_facts",
+      "fields": [
+        {
+          "name": "user_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "User Id",
+          "sql": null
+        },
+        {
+          "name": "lifetime_orders",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Lifetime Orders",
+          "sql": null
+        },
+        {
+          "name": "repeat_purchase_behavior",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Repeat Purchase Behavior",
+          "sql": null
+        },
+        {
+          "name": "is_repeat_customer",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Repeat Customer",
+          "sql": null
+        },
+        {
+          "name": "lifetime_revenue",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Lifetime Revenue",
+          "sql": null
+        },
+        {
+          "name": "user_segment_ltv",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "User Segment Ltv",
+          "sql": null
+        },
+        {
+          "name": "days_since_last_order",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Days Since Last Order",
+          "sql": null
+        },
+        {
+          "name": "customer_status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Status",
+          "sql": null
+        },
+        {
+          "name": "active_months",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Active Months",
+          "sql": null
+        },
+        {
+          "name": "total_customers",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Total Customers",
+          "sql": null
+        },
+        {
+          "name": "total_lifetime_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Lifetime Revenue",
+          "sql": null
+        },
+        {
+          "name": "average_lifetime_value",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Lifetime Value",
+          "sql": null
+        },
+        {
+          "name": "average_orders_per_customer",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Orders Per Customer",
+          "sql": null
+        },
+        {
+          "name": "repeat_customer_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Repeat Customer Rate",
+          "sql": null
+        }
+      ],
+      "sql_table_name": null
+    },
+    "cdp_period_comparison": {
+      "name": "cdp_period_comparison",
+      "fields": [
+        {
+          "name": "current_period_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Current Period Revenue",
+          "sql": null
+        },
+        {
+          "name": "current_period_orders",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Current Period Orders",
+          "sql": null
+        },
+        {
+          "name": "current_period_customers",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Current Period Customers",
+          "sql": null
+        },
+        {
+          "name": "prior_period_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Prior Period Revenue",
+          "sql": null
+        },
+        {
+          "name": "prior_period_orders",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Prior Period Orders",
+          "sql": null
+        },
+        {
+          "name": "prior_period_customers",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Prior Period Customers",
+          "sql": null
+        },
+        {
+          "name": "revenue_pop_change",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Revenue Pop Change",
+          "sql": null
+        },
+        {
+          "name": "revenue_pop_change_pct",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Revenue Pop Change Pct",
+          "sql": null
+        },
+        {
+          "name": "orders_pop_change_pct",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Orders Pop Change Pct",
+          "sql": null
+        },
+        {
+          "name": "customers_pop_change_pct",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Customers Pop Change Pct",
+          "sql": null
+        },
+        {
+          "name": "yoy_revenue_growth",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Yoy Revenue Growth",
+          "sql": null
+        }
+      ],
+      "sql_table_name": null
+    },
+    "users_cdp": {
+      "name": "users_cdp",
+      "fields": [
+        {
+          "name": "id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "age",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Age",
+          "sql": null
+        },
+        {
+          "name": "age_tier",
+          "type": "dimension",
+          "field_type": "tier",
+          "label": "Age Tier",
+          "sql": null
+        },
+        {
+          "name": "gender",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Gender",
+          "sql": null
+        },
+        {
+          "name": "state",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "State",
+          "sql": null
+        },
+        {
+          "name": "country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Country",
+          "sql": null
+        },
+        {
+          "name": "city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "City",
+          "sql": null
+        },
+        {
+          "name": "postal_code",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Postal Code",
+          "sql": null
+        },
+        {
+          "name": "email",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Email",
+          "sql": null
+        },
+        {
+          "name": "traffic_source",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Traffic Source",
+          "sql": null
+        },
+        {
+          "name": "customer_tenure_days",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer Tenure Days",
+          "sql": null
+        },
+        {
+          "name": "customer_tenure_tier",
+          "type": "dimension",
+          "field_type": "tier",
+          "label": "Customer Tenure Tier",
+          "sql": null
+        },
+        {
+          "name": "customer_lifecycle_stage",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Lifecycle Stage",
+          "sql": null
+        },
+        {
+          "name": "count",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count",
+          "sql": null
+        },
+        {
+          "name": "average_age",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Age",
+          "sql": null
+        },
+        {
+          "name": "count_new_users",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count New Users",
+          "sql": null
+        },
+        {
+          "name": "count_returning_users",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count Returning Users",
+          "sql": null
+        }
+      ],
+      "sql_table_name": "thelook_ecommerce.users"
+    },
+    "orders_cdp": {
+      "name": "orders_cdp",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Id",
+          "sql": null
+        },
+        {
+          "name": "user_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "User Id",
+          "sql": null
+        },
+        {
+          "name": "status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Status",
+          "sql": null
+        },
+        {
+          "name": "count",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count",
+          "sql": null
+        },
+        {
+          "name": "count_completed",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count Completed",
+          "sql": null
+        },
+        {
+          "name": "count_pending",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count Pending",
+          "sql": null
+        },
+        {
+          "name": "count_cancelled",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count Cancelled",
+          "sql": null
+        }
+      ],
+      "sql_table_name": "thelook_ecommerce.orders"
+    },
+    "order_items_cdp": {
+      "name": "order_items_cdp",
+      "fields": [
+        {
+          "name": "id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "id",
+          "sql": null
+        },
+        {
+          "name": "order_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "order_id",
+          "sql": null
+        },
+        {
+          "name": "user_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "user_id",
+          "sql": null
+        },
+        {
+          "name": "sale_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "sale_price",
+          "sql": null
+        },
+        {
+          "name": "status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "status",
+          "sql": null
+        },
+        {
+          "name": "created_date",
+          "type": "dimension",
+          "field_type": "date",
+          "label": "created_date",
+          "sql": null
+        },
+        {
+          "name": "created_month",
+          "type": "dimension",
+          "field_type": "date",
+          "label": "created_month",
+          "sql": null
+        },
+        {
+          "name": "created_year",
+          "type": "dimension",
+          "field_type": "date",
+          "label": "created_year",
+          "sql": null
+        },
+        {
+          "name": "count",
+          "type": "measure",
+          "field_type": "count",
+          "label": "count",
+          "sql": null
+        },
+        {
+          "name": "total_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "total_revenue",
+          "sql": null
+        },
+        {
+          "name": "average_sale_price",
+          "type": "measure",
+          "field_type": "average",
+          "label": "average_sale_price",
+          "sql": null
+        }
+      ],
+      "sql_table_name": null
+    },
+    "user_facts_cdp": {
+      "name": "user_facts_cdp",
+      "fields": [
+        {
+          "name": "user_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "User Id",
+          "sql": null
+        },
+        {
+          "name": "lifetime_orders",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Lifetime Orders",
+          "sql": null
+        },
+        {
+          "name": "customer_type",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Type",
+          "sql": null
+        },
+        {
+          "name": "lifetime_revenue",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Lifetime Revenue",
+          "sql": null
+        },
+        {
+          "name": "user_segment",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "User Segment",
+          "sql": null
+        },
+        {
+          "name": "purchase_days",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Purchase Days",
+          "sql": null
+        },
+        {
+          "name": "avg_order_value",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Avg Order Value",
+          "sql": null
+        },
+        {
+          "name": "total_lifetime_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Lifetime Revenue",
+          "sql": null
+        },
+        {
+          "name": "average_lifetime_value",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Lifetime Value",
+          "sql": null
+        },
+        {
+          "name": "total_customers",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Total Customers",
+          "sql": null
+        }
+      ],
+      "sql_table_name": null
+    },
+    "period_over_period": {
+      "name": "period_over_period",
+      "fields": [
+        {
+          "name": "new_users",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "New Users",
+          "sql": null
+        },
+        {
+          "name": "orders",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Orders",
+          "sql": null
+        },
+        {
+          "name": "revenue",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Revenue",
+          "sql": null
+        },
+        {
+          "name": "prior_new_users",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Prior New Users",
+          "sql": null
+        },
+        {
+          "name": "prior_orders",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Prior Orders",
+          "sql": null
+        },
+        {
+          "name": "prior_revenue",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Prior Revenue",
+          "sql": null
+        },
+        {
+          "name": "user_growth_rate",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "User Growth Rate",
+          "sql": null
+        },
+        {
+          "name": "order_growth_rate",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Growth Rate",
+          "sql": null
+        },
+        {
+          "name": "revenue_growth_rate",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Revenue Growth Rate",
+          "sql": null
+        },
+        {
+          "name": "total_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Revenue",
+          "sql": null
+        },
+        {
+          "name": "total_orders",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Orders",
+          "sql": null
+        },
+        {
+          "name": "total_new_users",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total New Users",
+          "sql": null
+        },
+        {
+          "name": "avg_user_growth",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg User Growth",
+          "sql": null
+        }
+      ],
+      "sql_table_name": null
+    },
+    "user_order_facts_cdp": {
+      "name": "user_order_facts_cdp",
+      "fields": [
+        {
+          "name": "user_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "user_id",
+          "sql": null
+        },
+        {
+          "name": "lifetime_orders",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "lifetime_orders",
+          "sql": null
+        },
+        {
+          "name": "lifetime_revenue",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "lifetime_revenue",
+          "sql": null
+        },
+        {
+          "name": "ltv_segment",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "ltv_segment",
+          "sql": null
+        },
+        {
+          "name": "customer_type",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "customer_type",
+          "sql": null
+        },
+        {
+          "name": "recency_segment",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "recency_segment",
+          "sql": null
+        },
+        {
+          "name": "repeat_purchase_tier",
+          "type": "dimension",
+          "field_type": "tier",
+          "label": "repeat_purchase_tier",
+          "sql": null
+        },
+        {
+          "name": "first_order_date",
+          "type": "dimension",
+          "field_type": "date",
+          "label": "first_order_date",
+          "sql": null
+        },
+        {
+          "name": "latest_order_date",
+          "type": "dimension",
+          "field_type": "date",
+          "label": "latest_order_date",
+          "sql": null
+        },
+        {
+          "name": "days_since_last_order",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "days_since_last_order",
+          "sql": null
+        },
+        {
+          "name": "total_lifetime_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "total_lifetime_revenue",
+          "sql": null
+        },
+        {
+          "name": "average_lifetime_revenue",
+          "type": "measure",
+          "field_type": "average",
+          "label": "average_lifetime_revenue",
+          "sql": null
+        },
+        {
+          "name": "average_lifetime_orders",
+          "type": "measure",
+          "field_type": "average",
+          "label": "average_lifetime_orders",
+          "sql": null
+        }
+      ],
+      "sql_table_name": null
+    },
+    "users": {
+      "name": "users",
+      "fields": [
+        {
+          "name": "id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "age_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Age Tier",
+          "sql": null
+        },
+        {
+          "name": "city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "City",
+          "sql": null
+        },
+        {
+          "name": "country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Country",
+          "sql": null
+        },
+        {
+          "name": "email",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Email",
+          "sql": null
+        },
+        {
+          "name": "first_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "First Name",
+          "sql": null
+        },
+        {
+          "name": "gender",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Gender",
+          "sql": null
+        },
+        {
+          "name": "last_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Last Name",
+          "sql": null
+        },
+        {
+          "name": "latitude",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Latitude",
+          "sql": null
+        },
+        {
+          "name": "longitude",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Longitude",
+          "sql": null
+        },
+        {
+          "name": "state",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "State",
+          "sql": null
+        },
+        {
+          "name": "traffic_source",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Traffic Source",
+          "sql": null
+        },
+        {
+          "name": "zip",
+          "type": "dimension",
+          "field_type": "zipcode",
+          "label": "Zip",
+          "sql": null
+        },
+        {
+          "name": "count_id",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count Id",
+          "sql": null
+        }
+      ],
+      "sql_table_name": "thelook_ecommerce.users"
+    },
+    "orders": {
+      "name": "orders",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Id",
+          "sql": null
+        },
+        {
+          "name": "user_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "User Id",
+          "sql": null
+        },
+        {
+          "name": "gender",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Gender",
+          "sql": null
+        },
+        {
+          "name": "num_of_item",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Num Of Item",
+          "sql": null
+        },
+        {
+          "name": "status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Status",
+          "sql": null
+        },
+        {
+          "name": "count_of_orders",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count Of Orders",
+          "sql": null
+        },
+        {
+          "name": "days_since_last_order",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Days Since Last Order",
+          "sql": null
+        }
+      ],
+      "sql_table_name": "thelook_ecommerce.orders"
+    },
+    "order_items": {
+      "name": "order_items",
+      "fields": [
+        {
+          "name": "id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "order_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Id",
+          "sql": null
+        },
+        {
+          "name": "user_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "User Id",
+          "sql": null
+        },
+        {
+          "name": "inventory_item_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Inventory Item Id",
+          "sql": null
+        },
+        {
+          "name": "sale_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Sale Price",
+          "sql": null
+        },
+        {
+          "name": "status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Status",
+          "sql": null
+        },
+        {
+          "name": "count_order_items",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count Order Items",
+          "sql": null
+        },
+        {
+          "name": "total_sale_price",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Sale Price",
+          "sql": null
+        },
+        {
+          "name": "avg_sale_price",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Sale Price",
+          "sql": null
+        },
+        {
+          "name": "min_sale_price",
+          "type": "measure",
+          "field_type": "min",
+          "label": "Min Sale Price",
+          "sql": null
+        },
+        {
+          "name": "max_sale_price",
+          "type": "measure",
+          "field_type": "max",
+          "label": "Max Sale Price",
+          "sql": null
+        }
+      ],
+      "sql_table_name": "thelook_ecommerce.order_items"
+    },
+    "inventory_items": {
+      "name": "inventory_items",
+      "fields": [
+        {
+          "name": "id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "product_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Product Id",
+          "sql": null
+        },
+        {
+          "name": "cost",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Cost",
+          "sql": null
+        },
+        {
+          "name": "product_brand",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Product Brand",
+          "sql": null
+        },
+        {
+          "name": "product_category",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Product Category",
+          "sql": null
+        },
+        {
+          "name": "product_department",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Product Department",
+          "sql": null
+        },
+        {
+          "name": "product_distribution_center_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Product Distribution Center Id",
+          "sql": null
+        },
+        {
+          "name": "product_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Product Name",
+          "sql": null
+        },
+        {
+          "name": "product_retail_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Product Retail Price",
+          "sql": null
+        },
+        {
+          "name": "product_sku",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Product Sku",
+          "sql": null
+        },
+        {
+          "name": "count_inventory_items",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count Inventory Items",
+          "sql": null
+        },
+        {
+          "name": "total_cost",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Cost",
+          "sql": null
+        },
+        {
+          "name": "avg_cost",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Cost",
+          "sql": null
+        },
+        {
+          "name": "total_retail_price",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Retail Price",
+          "sql": null
+        }
+      ],
+      "sql_table_name": "thelook_ecommerce.inventory_items"
+    },
+    "products": {
+      "name": "products",
+      "fields": [
+        {
+          "name": "id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "brand",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Brand",
+          "sql": null
+        },
+        {
+          "name": "category",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Category",
+          "sql": null
+        },
+        {
+          "name": "cost",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Cost",
+          "sql": null
+        },
+        {
+          "name": "department",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Department",
+          "sql": null
+        },
+        {
+          "name": "distribution_center_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Distribution Center Id",
+          "sql": null
+        },
+        {
+          "name": "name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Name",
+          "sql": null
+        },
+        {
+          "name": "retail_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Retail Price",
+          "sql": null
+        },
+        {
+          "name": "sku",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Sku",
+          "sql": null
+        },
+        {
+          "name": "count_brand",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Count Brand",
+          "sql": null
+        },
+        {
+          "name": "count_category",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Count Category",
+          "sql": null
+        },
+        {
+          "name": "count_id",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count Id",
+          "sql": null
+        }
+      ],
+      "sql_table_name": "thelook_ecommerce.products"
+    },
+    "distribution_centers": {
+      "name": "distribution_centers",
+      "fields": [
+        {
+          "name": "id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "location",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Location",
+          "sql": null
+        },
+        {
+          "name": "name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Name",
+          "sql": null
+        },
+        {
+          "name": "count_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Count Id",
+          "sql": null
+        },
+        {
+          "name": "count",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count",
+          "sql": null
+        }
+      ],
+      "sql_table_name": "thelook_ecommerce.distribution_centers"
+    }
+  },
+  "models": {
+    "cdp_analytics": {
+      "name": "cdp_analytics",
+      "connection": "ffrancois_-_ecomm_trial",
+      "explores": [
+        "cdp_customer_360",
+        "cdp_demographics"
+      ],
+      "includes": [
+        "/cdp_*.view.lkml"
+      ]
+    },
+    "cdp_executive_model": {
+      "name": "cdp_executive_model",
+      "connection": "ffrancois_-_ecomm_trial",
+      "explores": [
+        "order_items",
+        "period_growth"
+      ],
+      "includes": [
+        "*.view.lkml"
+      ]
+    },
+    "cdp_golden_explore": {
+      "name": "cdp_golden_explore",
+      "connection": "ffrancois_-_ecomm_trial",
+      "explores": [
+        "cdp_golden_explore"
+      ],
+      "includes": [
+        "*.view.lkml"
+      ]
+    },
+    "ecommerce": {
+      "name": "ecommerce",
+      "connection": "ffrancois_-_ecomm_trial",
+      "explores": [
+        "order_items",
+        "users",
+        "products"
+      ],
+      "includes": [
+        "*.view.lkml"
+      ]
+    }
+  },
+  "explores": {
+    "cdp_analytics.cdp_customer_360": {
+      "model_name": "cdp_analytics",
+      "explore_name": "cdp_customer_360",
+      "base_view": "cdp_users",
+      "joins": [
+        {
+          "name": "cdp_user_facts",
+          "sql_on": "${cdp_users.user_id} = ${cdp_user_facts.user_id}",
+          "relationship": "one_to_one"
+        },
+        {
+          "name": "cdp_orders",
+          "sql_on": "${cdp_users.user_id} = ${cdp_orders.user_id}",
+          "relationship": "one_to_many"
+        },
+        {
+          "name": "cdp_order_items",
+          "sql_on": "${cdp_orders.order_id} = ${cdp_order_items.order_id}",
+          "relationship": "one_to_many"
+        },
+        {
+          "name": "cdp_period_comparison",
+          "sql_on": null,
+          "relationship": "many_to_one"
+        }
+      ],
+      "fields": [
+        {
+          "name": "user_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "User Id",
+          "sql": null
+        },
+        {
+          "name": "email",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Email",
+          "sql": null
+        },
+        {
+          "name": "first_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "First Name",
+          "sql": null
+        },
+        {
+          "name": "last_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Last Name",
+          "sql": null
+        },
+        {
+          "name": "age",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Age",
+          "sql": null
+        },
+        {
+          "name": "age_tier",
+          "type": "dimension",
+          "field_type": "tier",
+          "label": "Age Tier",
+          "sql": null
+        },
+        {
+          "name": "gender",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Gender",
+          "sql": null
+        },
+        {
+          "name": "country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Country",
+          "sql": null
+        },
+        {
+          "name": "state",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "State",
+          "sql": null
+        },
+        {
+          "name": "city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "City",
+          "sql": null
+        },
+        {
+          "name": "traffic_source",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Traffic Source",
+          "sql": null
+        },
+        {
+          "name": "customer_tenure_days",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer Tenure Days",
+          "sql": null
+        },
+        {
+          "name": "customer_tenure_tier",
+          "type": "dimension",
+          "field_type": "tier",
+          "label": "Customer Tenure Tier",
+          "sql": null
+        },
+        {
+          "name": "customer_tenure_segment",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Tenure Segment",
+          "sql": null
+        },
+        {
+          "name": "count",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count",
+          "sql": null
+        },
+        {
+          "name": "average_age",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Age",
+          "sql": null
+        }
+      ],
+      "field_source": "parsed"
+    },
+    "cdp_analytics.cdp_demographics": {
+      "model_name": "cdp_analytics",
+      "explore_name": "cdp_demographics",
+      "base_view": "cdp_users",
+      "joins": [
+        {
+          "name": "cdp_user_facts",
+          "sql_on": "${cdp_users.user_id} = ${cdp_user_facts.user_id}",
+          "relationship": "one_to_one"
+        }
+      ],
+      "fields": [
+        {
+          "name": "user_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "User Id",
+          "sql": null
+        },
+        {
+          "name": "email",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Email",
+          "sql": null
+        },
+        {
+          "name": "first_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "First Name",
+          "sql": null
+        },
+        {
+          "name": "last_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Last Name",
+          "sql": null
+        },
+        {
+          "name": "age",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Age",
+          "sql": null
+        },
+        {
+          "name": "age_tier",
+          "type": "dimension",
+          "field_type": "tier",
+          "label": "Age Tier",
+          "sql": null
+        },
+        {
+          "name": "gender",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Gender",
+          "sql": null
+        },
+        {
+          "name": "country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Country",
+          "sql": null
+        },
+        {
+          "name": "state",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "State",
+          "sql": null
+        },
+        {
+          "name": "city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "City",
+          "sql": null
+        },
+        {
+          "name": "traffic_source",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Traffic Source",
+          "sql": null
+        },
+        {
+          "name": "customer_tenure_days",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer Tenure Days",
+          "sql": null
+        },
+        {
+          "name": "customer_tenure_tier",
+          "type": "dimension",
+          "field_type": "tier",
+          "label": "Customer Tenure Tier",
+          "sql": null
+        },
+        {
+          "name": "customer_tenure_segment",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Tenure Segment",
+          "sql": null
+        },
+        {
+          "name": "count",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count",
+          "sql": null
+        },
+        {
+          "name": "average_age",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Age",
+          "sql": null
+        }
+      ],
+      "field_source": "parsed"
+    },
+    "cdp_executive_model.order_items": {
+      "model_name": "cdp_executive_model",
+      "explore_name": "order_items",
+      "base_view": "order_items_cdp",
+      "joins": [
+        {
+          "name": "users",
+          "from": "users_cdp",
+          "sql_on": "${order_items.user_id} = ${users.id}",
+          "relationship": "many_to_one"
+        },
+        {
+          "name": "orders",
+          "from": "orders_cdp",
+          "sql_on": "${order_items.order_id} = ${orders.order_id}",
+          "relationship": "many_to_one"
+        },
+        {
+          "name": "user_facts",
+          "from": "user_facts_cdp",
+          "sql_on": "${order_items.user_id} = ${user_facts.user_id}",
+          "relationship": "many_to_one"
+        }
+      ],
+      "fields": [
+        {
+          "name": "id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "order_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Id",
+          "sql": null
+        },
+        {
+          "name": "user_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "User Id",
+          "sql": null
+        },
+        {
+          "name": "product_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Product Id",
+          "sql": null
+        },
+        {
+          "name": "inventory_item_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Inventory Item Id",
+          "sql": null
+        },
+        {
+          "name": "status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Status",
+          "sql": null
+        },
+        {
+          "name": "sale_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Sale Price",
+          "sql": null
+        },
+        {
+          "name": "count",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count",
+          "sql": null
+        },
+        {
+          "name": "total_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Revenue",
+          "sql": null
+        },
+        {
+          "name": "average_sale_price",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Sale Price",
+          "sql": null
+        },
+        {
+          "name": "total_orders",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Total Orders",
+          "sql": null
+        }
+      ],
+      "field_source": "parsed"
+    },
+    "cdp_executive_model.period_growth": {
+      "model_name": "cdp_executive_model",
+      "explore_name": "period_growth",
+      "base_view": "period_over_period",
+      "joins": [],
+      "fields": [
+        {
+          "name": "new_users",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "New Users",
+          "sql": null
+        },
+        {
+          "name": "orders",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Orders",
+          "sql": null
+        },
+        {
+          "name": "revenue",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Revenue",
+          "sql": null
+        },
+        {
+          "name": "prior_new_users",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Prior New Users",
+          "sql": null
+        },
+        {
+          "name": "prior_orders",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Prior Orders",
+          "sql": null
+        },
+        {
+          "name": "prior_revenue",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Prior Revenue",
+          "sql": null
+        },
+        {
+          "name": "user_growth_rate",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "User Growth Rate",
+          "sql": null
+        },
+        {
+          "name": "order_growth_rate",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Growth Rate",
+          "sql": null
+        },
+        {
+          "name": "revenue_growth_rate",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Revenue Growth Rate",
+          "sql": null
+        },
+        {
+          "name": "total_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Revenue",
+          "sql": null
+        },
+        {
+          "name": "total_orders",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Orders",
+          "sql": null
+        },
+        {
+          "name": "total_new_users",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total New Users",
+          "sql": null
+        },
+        {
+          "name": "avg_user_growth",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg User Growth",
+          "sql": null
+        }
+      ],
+      "field_source": "parsed"
+    },
+    "cdp_golden_explore.cdp_golden_explore": {
+      "model_name": "cdp_golden_explore",
+      "explore_name": "cdp_golden_explore",
+      "base_view": "users_cdp",
+      "joins": [
+        {
+          "name": "order_items_cdp",
+          "sql_on": "${users_cdp.id} = ${order_items_cdp.user_id}",
+          "relationship": "one_to_many"
+        },
+        {
+          "name": "orders_cdp",
+          "sql_on": "${order_items_cdp.order_id} = ${orders_cdp.order_id}",
+          "relationship": "many_to_one"
+        },
+        {
+          "name": "user_order_facts_cdp",
+          "sql_on": "${users_cdp.id} = ${user_order_facts_cdp.user_id}",
+          "relationship": "one_to_one"
+        },
+        {
+          "name": "pop_metrics",
+          "sql_on": "${users_cdp.id} = ${pop_metrics.user_id}\n      AND ${pop_metrics.created_date} >= DATE_SUB(${order_items_cdp.created_date}, INTERVAL 1 MONTH)\n      AND ${pop_metrics.created_date} < ${order_items_cdp.created_date}",
+          "relationship": "one_to_many"
+        }
+      ],
+      "fields": [
+        {
+          "name": "id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "age",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Age",
+          "sql": null
+        },
+        {
+          "name": "age_tier",
+          "type": "dimension",
+          "field_type": "tier",
+          "label": "Age Tier",
+          "sql": null
+        },
+        {
+          "name": "gender",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Gender",
+          "sql": null
+        },
+        {
+          "name": "state",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "State",
+          "sql": null
+        },
+        {
+          "name": "country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Country",
+          "sql": null
+        },
+        {
+          "name": "city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "City",
+          "sql": null
+        },
+        {
+          "name": "postal_code",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Postal Code",
+          "sql": null
+        },
+        {
+          "name": "email",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Email",
+          "sql": null
+        },
+        {
+          "name": "traffic_source",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Traffic Source",
+          "sql": null
+        },
+        {
+          "name": "customer_tenure_days",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer Tenure Days",
+          "sql": null
+        },
+        {
+          "name": "customer_tenure_tier",
+          "type": "dimension",
+          "field_type": "tier",
+          "label": "Customer Tenure Tier",
+          "sql": null
+        },
+        {
+          "name": "customer_lifecycle_stage",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Lifecycle Stage",
+          "sql": null
+        },
+        {
+          "name": "count",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count",
+          "sql": null
+        },
+        {
+          "name": "average_age",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Age",
+          "sql": null
+        },
+        {
+          "name": "count_new_users",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count New Users",
+          "sql": null
+        },
+        {
+          "name": "count_returning_users",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count Returning Users",
+          "sql": null
+        }
+      ],
+      "field_source": "parsed"
+    },
+    "ecommerce.order_items": {
+      "model_name": "ecommerce",
+      "explore_name": "order_items",
+      "base_view": "order_items",
+      "joins": [
+        {
+          "name": "orders",
+          "sql_on": "${order_items.order_id} = ${orders.order_id}",
+          "relationship": "many_to_one"
+        },
+        {
+          "name": "users",
+          "sql_on": "${order_items.user_id} = ${users.id}",
+          "relationship": "many_to_one"
+        },
+        {
+          "name": "inventory_items",
+          "sql_on": "${order_items.inventory_item_id} = ${inventory_items.id}",
+          "relationship": "many_to_one"
+        },
+        {
+          "name": "products",
+          "sql_on": "${inventory_items.product_id} = ${products.id}",
+          "relationship": "many_to_one"
+        },
+        {
+          "name": "distribution_centers",
+          "sql_on": "${products.distribution_center_id} = ${distribution_centers.id}",
+          "relationship": "many_to_one"
+        }
+      ],
+      "fields": [
+        {
+          "name": "id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "order_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Id",
+          "sql": null
+        },
+        {
+          "name": "user_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "User Id",
+          "sql": null
+        },
+        {
+          "name": "inventory_item_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Inventory Item Id",
+          "sql": null
+        },
+        {
+          "name": "sale_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Sale Price",
+          "sql": null
+        },
+        {
+          "name": "status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Status",
+          "sql": null
+        },
+        {
+          "name": "count_order_items",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count Order Items",
+          "sql": null
+        },
+        {
+          "name": "total_sale_price",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Sale Price",
+          "sql": null
+        },
+        {
+          "name": "avg_sale_price",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Sale Price",
+          "sql": null
+        },
+        {
+          "name": "min_sale_price",
+          "type": "measure",
+          "field_type": "min",
+          "label": "Min Sale Price",
+          "sql": null
+        },
+        {
+          "name": "max_sale_price",
+          "type": "measure",
+          "field_type": "max",
+          "label": "Max Sale Price",
+          "sql": null
+        }
+      ],
+      "field_source": "parsed"
+    },
+    "ecommerce.users": {
+      "model_name": "ecommerce",
+      "explore_name": "users",
+      "base_view": "users",
+      "joins": [],
+      "fields": [
+        {
+          "name": "id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "age_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Age Tier",
+          "sql": null
+        },
+        {
+          "name": "city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "City",
+          "sql": null
+        },
+        {
+          "name": "country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Country",
+          "sql": null
+        },
+        {
+          "name": "email",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Email",
+          "sql": null
+        },
+        {
+          "name": "first_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "First Name",
+          "sql": null
+        },
+        {
+          "name": "gender",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Gender",
+          "sql": null
+        },
+        {
+          "name": "last_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Last Name",
+          "sql": null
+        },
+        {
+          "name": "latitude",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Latitude",
+          "sql": null
+        },
+        {
+          "name": "longitude",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Longitude",
+          "sql": null
+        },
+        {
+          "name": "state",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "State",
+          "sql": null
+        },
+        {
+          "name": "traffic_source",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Traffic Source",
+          "sql": null
+        },
+        {
+          "name": "zip",
+          "type": "dimension",
+          "field_type": "zipcode",
+          "label": "Zip",
+          "sql": null
+        },
+        {
+          "name": "count_id",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count Id",
+          "sql": null
+        }
+      ],
+      "field_source": "parsed"
+    },
+    "ecommerce.products": {
+      "model_name": "ecommerce",
+      "explore_name": "products",
+      "base_view": "products",
+      "joins": [
+        {
+          "name": "distribution_centers",
+          "sql_on": "${products.distribution_center_id} = ${distribution_centers.id}",
+          "relationship": "many_to_one"
+        }
+      ],
+      "fields": [
+        {
+          "name": "id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "brand",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Brand",
+          "sql": null
+        },
+        {
+          "name": "category",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Category",
+          "sql": null
+        },
+        {
+          "name": "cost",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Cost",
+          "sql": null
+        },
+        {
+          "name": "department",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Department",
+          "sql": null
+        },
+        {
+          "name": "distribution_center_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Distribution Center Id",
+          "sql": null
+        },
+        {
+          "name": "name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Name",
+          "sql": null
+        },
+        {
+          "name": "retail_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Retail Price",
+          "sql": null
+        },
+        {
+          "name": "sku",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Sku",
+          "sql": null
+        },
+        {
+          "name": "count_brand",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Count Brand",
+          "sql": null
+        },
+        {
+          "name": "count_category",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Count Category",
+          "sql": null
+        },
+        {
+          "name": "count_id",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Count Id",
+          "sql": null
+        }
+      ],
+      "field_source": "parsed"
+    }
+  }
+}

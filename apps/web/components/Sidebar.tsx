@@ -110,11 +110,15 @@ export default function Sidebar({
                     {/* Explore Selector & POC Toggle - Only when open */}
                     {isOpen && (
                         <div className="px-4 mb-6 space-y-4">
-                            {/* Explore Selector */}
-                            <div className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
-                                Context
-                            </div>
-                            {exploreSelector}
+                            {/* Explore Selector - Hidden in POC Mode */}
+                            {!isPocMode && (
+                                <>
+                                    <div className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+                                        Context
+                                    </div>
+                                    {exploreSelector}
+                                </>
+                            )}
 
                             {/* POC Mode Toggle */}
                             <div className="flex items-center justify-between bg-[#2A2B2D] p-3 rounded-lg border border-[#37393b]">

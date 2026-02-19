@@ -18,7 +18,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
     // Sync previews with files prop - clear previews when files are cleared
     useEffect(() => {
-        if (files.length === 0) {
+        if (files.length === 0 && previews.length > 0) {
             // Revoke all object URLs to prevent memory leaks
             previews.forEach(preview => {
                 if (preview.url.startsWith('blob:')) {

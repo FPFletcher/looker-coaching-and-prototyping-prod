@@ -12,6 +12,7 @@ from duckduckgo_search import DDGS
 import base64
 import requests
 import re
+import html
 import google.auth
 import google.auth.transport.requests
 from datetime import datetime
@@ -32,7 +33,10 @@ except ImportError:
         LookMLParser = None
         Field = None
 
-GLOBAL_LOOKML_CONTEXT = LookMLContext() if LookMLContext else None
+# Initialize global context - REMOVED for Session Isolation
+# GLOBAL_LOOKML_CONTEXT = LookMLContext() if LookMLContext else None
+# if GLOBAL_LOOKML_CONTEXT:
+#     GLOBAL_LOOKML_CONTEXT.load_from_file()
 
 # ==========================================
 # POC MODE CONFIGURATION
@@ -65,7 +69,10 @@ POC_SAFE_TOOLS = {
     "get_connection_columns",           # Get column details
     
     # Utility
-    "search_web"                        # External context/research
+    "search_web",                       # External context/research
+    "read_url_content",                 # Read website content
+    "deep_search",                      # Search + Read content
+    "check_internet_connection"         # Health check
 }
 
 # Tools that require PRODUCTION/COMMITTED LookML (forbidden in POC mode)
@@ -118,12 +125,17 @@ class MCPAgent:
     Supports both POC mode (uncommitted LookML only) and Production mode.
     """
     
-    def __init__(self, model_name: str = "gemini-2.0-flash"):
+    def __init__(self, session_id: str = "default", model_name: str = "gemini-2.0-flash"):
         self.model_name = model_name
+        self.session_id = session_id
         self.created_files_cache = {}
         
-        # Use the global singleton for persistence across requests
-        self.lookml_context = GLOBAL_LOOKML_CONTEXT
+        # Initialize session-specific context
+        if LookMLContext:
+            self.lookml_context = LookMLContext(session_id)
+            self.lookml_context.load_from_file()
+        else:
+            self.lookml_context = None
         
         self.is_claude = model_name.startswith("claude-")
         
@@ -207,143 +219,144 @@ class MCPAgent:
         # ===========================================
         # These are implemented in Python for better control and work with uncommitted LookML
         
-        # --- File Operations ---
-        
-        tools.append({
-            "name": "create_project_file",
-            "description": "Creates and auto-registers a new file in a project. REQUIRED context for models: connection name. Auto-registers views/models/explores in session. WORKS WITH UNCOMMITTED LOOKML.",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "project_id": {"type": "string", "description": "Project ID"},
-                    "path": {"type": "string", "description": "File path (e.g. views/users.view.lkml)"},
-                    "source": {"type": "string", "description": "File content"}
-                },
-                "required": ["project_id", "path", "source"]
-            }
-        })
-        
-        tools.append({
-            "name": "get_project_files",
-            "description": "List files in a LookML project. Can also read a specific file by providing file_id parameter.",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "project_id": {"type": "string", "description": "Project ID"},
-                    "file_id": {"type": "string", "description": "Optional: specific file path to read (e.g. 'views/users.view.lkml')"}
-                },
-                "required": ["project_id"]
-            }
-        })
-        
-        # --- LookML Management ---
-        
-        tools.append({
-            "name": "dev_mode",
-            "description": "Enter or exit Development Mode. Required for editing LookML.",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "enable": {"type": "boolean", "description": "True to enter dev mode, False to exit"}
-                },
-                "required": ["enable"]
-            }
-        })
-        
-        tools.append({
-            "name": "validate_project",
-            "description": "Validates LookML syntax in a project and returns any errors. Call this after creating/updating LookML files.",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "project_id": {"type": "string", "description": "Project ID to validate"}
-                },
-                "required": ["project_id"]
-            }
-        })
-        
-        tools.append({
-            "name": "get_git_branch_state",
-            "description": "Get git branch state including uncommitted changes. Critical for finding newly created LookML files.",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "project_id": {"type": "string", "description": "Project ID"}
-                },
-                "required": ["project_id"]
-            }
-        })
-        
-        # --- Context Management ---
-
-        tools.append({
-            "name": "get_explore_fields_from_context",
-            "description": "Get available dimensions/measures from the CURRENT SESSION'S uncommitted LookML. Use this to validate fields before querying.",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "model_name": {"type": "string"},
-                    "explore_name": {"type": "string"}
-                },
-                "required": ["model_name", "explore_name"]
-            }
-        })
-        
-        tools.append({
-            "name": "register_lookml_manually",
-            "description": "Manually register LookML artifacts in context. USE AS FALLBACK ONLY when auto-registration fails.",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "type": {"type": "string", "enum": ["view", "model", "explore"], "description": "Type of artifact to register"},
-                    "view_name": {"type": "string", "description": "View name (required if type=view)"},
-                    "fields": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "name": {"type": "string"},
-                                "type": {"type": "string", "enum": ["dimension", "measure"]},
-                                "field_type": {"type": "string", "description": "string, number, date, count, sum, etc."},
-                                "label": {"type": "string"}
-                            },
-                            "required": ["name"]
-                        },
-                        "description": "List of fields (required if type=view)"
+        if poc_mode:
+            # --- File Operations ---
+            
+            tools.append({
+                "name": "create_project_file",
+                "description": "Creates and auto-registers a new file in a project. REQUIRED context for models: connection name. Auto-registers views/models/explores in session. WORKS WITH UNCOMMITTED LOOKML.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "project_id": {"type": "string", "description": "Project ID"},
+                        "path": {"type": "string", "description": "File path (e.g. views/users.view.lkml)"},
+                        "source": {"type": "string", "description": "File content"}
                     },
-                    "sql_table_name": {"type": "string", "description": "SQL table name (optional for view)"},
-                    "model_name": {"type": "string", "description": "Model name (required if type=model)"},
-                    "connection": {"type": "string", "description": "Connection name (required if type=model)"},
-                    "explores": {"type": "array", "items": {"type": "string"}, "description": "List of explore names (required if type=model)"},
-                    "includes": {"type": "array", "items": {"type": "string"}, "description": "Include patterns (optional for model)"},
-                    "model": {"type": "string", "description": "Model name (required if type=explore)"},
-                    "explore": {"type": "string", "description": "Explore name (required if type=explore)"},
-                    "base_view": {"type": "string", "description": "Base view name (required if type=explore)"},
-                    "joins": {"type": "array", "items": {"type": "object"}, "description": "Join configurations (optional for explore)"}
-                },
-                "required": ["type"]
-            }
-        })
-        
-        # --- Visualization Tools (POC-safe) ---
-        
-        tools.append({
-            "name": "create_chart_from_context",
-            "description": "Generate a SINGLE chart/visualization for uncommitted LookML. Use this for simple single-visual questions in POC mode.",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "model_name": {"type": "string"},
-                    "explore_name": {"type": "string"},
-                    "fields": {"type": "array", "items": {"type": "string"}, "description": "List of fields (dimensions/measures)"},
-                    "filters": {"type": "object", "description": "Dictionary where keys are field names and values are filter expressions"},
-                    "sorts": {"type": "array", "items": {"type": "string"}, "description": "List of fields to sort by"},
-                    "limit": {"type": "string", "description": "Row limit (default 500)"},
-                    "vis_type": {"type": "string", "description": "Visualization type (looker_line, looker_column, looker_grid, looker_pie)"}
-                },
-                "required": ["model_name", "explore_name", "fields"]
-            }
-        })
+                    "required": ["project_id", "path", "source"]
+                }
+            })
+            
+            tools.append({
+                "name": "get_project_files",
+                "description": "List files in a LookML project. Can also read a specific file by providing file_id parameter.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "project_id": {"type": "string", "description": "Project ID"},
+                        "file_id": {"type": "string", "description": "Optional: specific file path to read (e.g. 'views/users.view.lkml')"}
+                    },
+                    "required": ["project_id"]
+                }
+            })
+            
+            # --- LookML Management ---
+            
+            tools.append({
+                "name": "dev_mode",
+                "description": "Enter or exit Development Mode. Required for editing LookML.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "enable": {"type": "boolean", "description": "True to enter dev mode, False to exit"}
+                    },
+                    "required": ["enable"]
+                }
+            })
+            
+            tools.append({
+                "name": "validate_project",
+                "description": "Validates LookML syntax in a project and returns any errors. Call this after creating/updating LookML files.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "project_id": {"type": "string", "description": "Project ID to validate"}
+                    },
+                    "required": ["project_id"]
+                }
+            })
+            
+            tools.append({
+                "name": "get_git_branch_state",
+                "description": "Get git branch state including uncommitted changes. Critical for finding newly created LookML files.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "project_id": {"type": "string", "description": "Project ID"}
+                    },
+                    "required": ["project_id"]
+                }
+            })
+            
+            # --- Context Management ---
+
+            tools.append({
+                "name": "get_explore_fields_from_context",
+                "description": "Get available dimensions/measures from the CURRENT SESSION'S uncommitted LookML. Use this to validate fields before querying.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "model_name": {"type": "string"},
+                        "explore_name": {"type": "string"}
+                    },
+                    "required": ["model_name", "explore_name"]
+                }
+            })
+            
+            tools.append({
+                "name": "register_lookml_manually",
+                "description": "Manually register LookML artifacts in context. USE AS FALLBACK ONLY when auto-registration fails.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "type": {"type": "string", "enum": ["view", "model", "explore"], "description": "Type of artifact to register"},
+                        "view_name": {"type": "string", "description": "View name (required if type=view)"},
+                        "fields": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {"type": "string"},
+                                    "type": {"type": "string", "enum": ["dimension", "measure"]},
+                                    "field_type": {"type": "string", "description": "string, number, date, count, sum, etc."},
+                                    "label": {"type": "string"}
+                                },
+                                "required": ["name"]
+                            },
+                            "description": "List of fields (required if type=view)"
+                        },
+                        "sql_table_name": {"type": "string", "description": "SQL table name (optional for view)"},
+                        "model_name": {"type": "string", "description": "Model name (required if type=model)"},
+                        "connection": {"type": "string", "description": "Connection name (required if type=model)"},
+                        "explores": {"type": "array", "items": {"type": "string"}, "description": "List of explore names (required if type=model)"},
+                        "includes": {"type": "array", "items": {"type": "string"}, "description": "Include patterns (optional for model)"},
+                        "model": {"type": "string", "description": "Model name (required if type=explore)"},
+                        "explore": {"type": "string", "description": "Explore name (required if type=explore)"},
+                        "base_view": {"type": "string", "description": "Base view name (required if type=explore)"},
+                        "joins": {"type": "array", "items": {"type": "object"}, "description": "Join configurations (optional for explore)"}
+                    },
+                    "required": ["type"]
+                }
+            })
+            
+            # --- Visualization Tools (POC-safe) ---
+            
+            tools.append({
+                "name": "create_chart_from_context",
+                "description": "Generate a SINGLE chart/visualization for uncommitted LookML. Use this for simple single-visual questions in POC mode.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "model_name": {"type": "string"},
+                        "explore_name": {"type": "string"},
+                        "fields": {"type": "array", "items": {"type": "string"}, "description": "List of fields (dimensions/measures)"},
+                        "filters": {"type": "object", "description": "Dictionary where keys are field names and values are filter expressions"},
+                        "sorts": {"type": "array", "items": {"type": "string"}, "description": "List of fields to sort by"},
+                        "limit": {"type": "string", "description": "Row limit (default 500)"},
+                        "vis_type": {"type": "string", "description": "Visualization type (looker_line, looker_column, looker_grid, looker_pie)"}
+                    },
+                    "required": ["model_name", "explore_name", "fields"]
+                }
+            })
         
         tools.append({
             "name": "create_dashboard",
@@ -414,6 +427,41 @@ class MCPAgent:
                     "query": {"type": "string", "description": "Search query"}
                 },
                 "required": ["query"]
+            }
+        })
+
+        tools.append({
+            "name": "read_url_content",
+            "description": "Read and extract text content from a specific URL.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "url": {"type": "string", "description": "URL to read"}
+                },
+                "required": ["url"]
+            }
+        })
+
+        tools.append({
+            "name": "deep_search",
+            "description": "Perform a deep search: searches the web AND reads the content of the top results.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string", "description": "Search query"},
+                    "max_results": {"type": "integer", "description": "Number of results to read (default 3, max 5)"}
+                },
+                "required": ["query"]
+            }
+        })
+
+        tools.append({
+            "name": "check_internet_connection",
+            "description": "Check if the agent has active internet connectivity. Use this if web searches fail.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {},
+                "required": []
             }
         })
         
@@ -583,7 +631,13 @@ class MCPAgent:
         
         # Utilities
         elif tool_name == "search_web":
-            return self._execute_search_web(arguments)
+            return await self._execute_search_web(arguments)
+        elif tool_name == "read_url_content":
+            return await self._execute_read_url_content(arguments)
+        elif tool_name == "deep_search":
+            return await self._execute_deep_search(arguments)
+        elif tool_name == "check_internet_connection":
+            return await self._execute_check_internet_connection(arguments)
         
         # GCP Data Agents (only in production mode - but keeping implementation for backwards compatibility)
         elif tool_name == "list_data_agents":
@@ -614,6 +668,10 @@ class MCPAgent:
             return self._execute_get_connection_tables(arguments, looker_url, client_id, client_secret)
         elif tool_name == "get_connection_columns":
             return self._execute_get_connection_columns(arguments, looker_url, client_id, client_secret)
+        
+        # New Python implementation for query_url ensuring full URLs
+        elif tool_name == "query_url":
+            return self._execute_query_url(arguments, looker_url, client_id, client_secret)
         
         # ===========================================
         # ROUTE TO BINARY (fallback for all other tools)
@@ -668,9 +726,9 @@ class MCPAgent:
                      "error": "Missing Connection Name. Please ask the user which database connection to use."
                  }
                  
-            # Resolve deploy_lookml.py path correctly
+            # Resolve deploy_lookml.py path correctly (moved to scripts/)
             root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-            deploy_script = os.path.join(root_dir, "deploy_lookml.py")
+            deploy_script = os.path.join(root_dir, "scripts", "deploy_lookml.py")
             
             if not os.path.exists(deploy_script):
                 logger.error(f"Deploy script not found at {deploy_script}")
@@ -796,6 +854,58 @@ class MCPAgent:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
+    def _execute_query_url(self, args: Dict[str, Any], url: str, client_id: str, client_secret: str) -> Dict[str, Any]:
+        """
+        Generate an explore URL for a query.
+        Replaces binary implementation to ensure we return a FULL URL (not /x/ short link)
+        that can be correctly embedded by the frontend.
+        """
+        try:
+            from looker_sdk import models40
+            sdk = self._init_sdk(url, client_id, client_secret)
+            
+            # Map arguments to WriteQuery
+            model = args.get("model")
+            view = args.get("view") or args.get("explore") # 'explore' is commonly used key
+            fields = args.get("fields", [])
+            filters = args.get("filters", {})
+            sorts = args.get("sorts", [])
+            limit = args.get("limit", "500")
+            
+            if not model or not view:
+                return {"success": False, "error": "Missing model or view/explore"}
+
+            query_body = models40.WriteQuery(
+                model=model,
+                view=view,
+                fields=fields,
+                filters=filters,
+                sorts=sorts,
+                limit=limit
+            )
+            
+            query = sdk.create_query(body=query_body)
+            
+            # Construct the FULL URL manually to ensure it works for embedding
+            # Format: <base_url>/explore/<model>/<view>?qid=<client_id>
+            
+            # Ensure base URL has protocol
+            base_url = url.rstrip('/')
+            if not base_url.startswith('http'):
+                base_url = f"https://{base_url}"
+                
+            # Add &toggle=dat,pik,vis to ensure Data, Picker, and Visualization are visible
+            long_url = f"{base_url}/explore/{model}/{view}?qid={query.client_id}&toggle=dat,pik,vis"
+            
+            return {
+                "success": True,
+                "result": f"The query URL is: {long_url}"
+            }
+            
+        except Exception as e:
+            logger.error(f"query_url failed: {e}")
+            return {"success": False, "error": str(e)}
+
     def _execute_get_git_branch_state(self, args: Dict[str, Any], url: str, client_id: str, client_secret: str) -> Dict[str, Any]:
         """Get git branch state."""
         try:
@@ -831,6 +941,9 @@ class MCPAgent:
 
     def _execute_get_explore_fields_from_context(self, args: Dict[str, Any], url: str, client_id: str, client_secret: str) -> Dict[str, Any]:
         """Fetch available fields for an uncommitted explore from the session context."""
+        if not getattr(self, 'poc_mode', False):
+             return {"success": False, "error": "❌ This tool is only available in POC Mode."}
+
         try:
             if not self.lookml_context:
                 return {"success": False, "error": "LookMLContext not available"}
@@ -865,6 +978,9 @@ class MCPAgent:
 
     def _execute_register_lookml_manually(self, args: Dict[str, Any], url: str, client_id: str, client_secret: str) -> Dict[str, Any]:
         """Manually register LookML artifacts to the context."""
+        if not getattr(self, 'poc_mode', False):
+             return {"success": False, "error": "❌ This tool is only available in POC Mode."}
+
         try:
             if not self.lookml_context or not Field:
                 return {"success": False, "error": "LookMLContext not available"}
@@ -916,6 +1032,9 @@ class MCPAgent:
 
     def _execute_create_chart_from_context(self, args: Dict[str, Any], url: str, client_id: str, client_secret: str) -> Dict[str, Any]:
         """Create a single chart using uncommitted LookML."""
+        if not getattr(self, 'poc_mode', False):
+             return {"success": False, "error": "❌ This tool is only available in POC Mode."}
+
         try:
             from looker_sdk import models40
             sdk = self._init_sdk(url, client_id, client_secret)
@@ -1006,14 +1125,15 @@ class MCPAgent:
             
             logger.info(f"✅ Created dashboard: ID={dashboard.id}, URL={full_url}")
             
+            # RETURN LOCKED URL TO PREVENT HALLUCINATION
             return {
                 "success": True,
                 "result": {
                     "dashboard_id": dashboard.id,
+                    "title": dashboard.title,
                     "base_url": base_url,
                     "full_url": full_url,
-                    "title": dashboard.title,
-                    "message": f"Dashboard '{title}' created successfully. Use dashboard_id={dashboard.id} for add_dashboard_element calls."
+                    "message": f"Dashboard created. ID: {dashboard.id}. Proceed to add tiles."
                 }
             }
         except Exception as e:
@@ -1102,22 +1222,413 @@ class MCPAgent:
             logger.error(f"Failed to create filter: {e}")
             return {"success": False, "error": str(e)}
 
-    def _execute_search_web(self, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Search the web."""
+    def _search_web_manual_fallback(self, query: str) -> List[Dict[str, str]]:
+        """Fallback search using manual requests to DuckDuckGo HTML endpoint."""
+        try:
+            url = "https://html.duckduckgo.com/html/"
+            data = {"q": query}
+            headers = {
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36"
+            }
+            
+            logger.info(f"Attempting manual search fallback for: {query}")
+            resp = requests.post(url, data=data, headers=headers, timeout=10)
+            if resp.status_code != 200:
+                logger.warning(f"Manual fallback status code: {resp.status_code}")
+                return []
+
+            # Regex to find results (title and link)
+            content = resp.text
+            pattern = r'<a[^>]*class="result__a"[^>]*href="([^"]+)"[^>]*>(.*?)</a>'
+            matches = re.findall(pattern, content)
+            
+            results = []
+            for url, title_html in matches:
+                title = html.unescape(re.sub(r'<[^>]+>', '', title_html)).strip()
+                # Basic result structure matching DDGS
+                results.append({"title": title, "href": url, "body": title}) # Body is same as title in this simple fallback
+            
+            return results[:5]
+        except Exception as e:
+            logger.error(f"Manual fallback failed: {e}")
+            return []
+
+    async def _search_web_manual_fallback(self, query: str) -> List[Dict[str, str]]:
+        """Fallback search using manual requests to DuckDuckGo HTML endpoint."""
+        try:
+            url = "https://html.duckduckgo.com/html/"
+            data = {"q": query}
+            headers = {
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36"
+            }
+            
+            logger.info(f"Attempting manual search fallback for: {query}")
+            
+            # Run blocking request in thread
+            def do_request():
+                return requests.post(url, data=data, headers=headers, timeout=10)
+
+            resp = await asyncio.to_thread(do_request)
+            
+            if resp.status_code != 200:
+                logger.warning(f"Manual fallback status code: {resp.status_code}")
+                return []
+
+            # Regex to find results (title and link)
+            content = resp.text
+            # Basic pattern for DDG HTML results
+            pattern = r'<a[^>]*class="result__a"[^>]*href="([^"]+)"[^>]*>(.*?)</a>'
+            matches = re.findall(pattern, content)
+            
+            results = []
+            for url, title_html in matches:
+                title = html.unescape(re.sub(r'<[^>]+>', '', title_html)).strip()
+                # Basic result structure matching DDGS
+                results.append({"title": title, "href": url, "body": title}) # Body is same as title in this simple fallback
+            
+            return results[:5]
+        except Exception as e:
+            logger.error(f"Manual fallback failed: {e}")
+            return []
+
+    async def _execute_search_web(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """Search the web with timeout and error handling."""
         try:
             query = args.get("query")
             if not query:
-                return {"success": False, "error": "No query provided"}
+                return {
+                    "error": True,
+                    "error_type": "INVALID_INPUT",
+                    "message": "No query provided"
+                }
             
-            results = DDGS().text(query, max_results=5)
-            
+            # Helper for searching to run in thread
+            def do_search():
+                last_error = None
+                # Attempt 1: Specific region and safesearch off
+                try:
+                    gen = DDGS().text(query, max_results=8, region="wt-wt", safesearch="off")
+                    results = list(gen) if gen else []
+                    if results: return results, None
+                except Exception as e:
+                    last_error = e
+                    logger.warning(f"DDGS Attempt 1 failed: {e}")
+
+                # Attempt 2: Broad search (no region)
+                try:
+                    logger.info("Retrying search without region...")
+                    gen = DDGS().text(query, max_results=8)
+                    results = list(gen) if gen else []
+                    if results: return results, None
+                except Exception as e:
+                    last_error = e
+                    logger.warning(f"DDGS Attempt 2 failed: {e}")
+                
+                # Attempt 3: Try splitting query if long (simple heuristic)
+                if len(query.split()) > 5:
+                     simple_query = " ".join(query.split()[:5])
+                     try:
+                        logger.info(f"Retrying with simplified query: {simple_query}")
+                        gen = DDGS().text(simple_query, max_results=5)
+                        results = list(gen) if gen else []
+                        if results: return results, None
+                     except Exception as e:
+                        last_error = e
+                        logger.warning(f"DDGS Attempt 3 failed: {e}")
+                
+                return [], last_error
+
+            # Run with timeout
+            try:
+                # 10 second timeout
+                results, error = await asyncio.wait_for(asyncio.to_thread(do_search), timeout=10.0)
+            except asyncio.TimeoutError:
+                # TIMEOUT: Try manual fallback
+                logger.warning("DDGS timed out, attempting manual fallback...")
+                results = await self._search_web_manual_fallback(query)
+                if results:
+                     return {
+                        "success": True,
+                        "result": results
+                    }
+                
+                return {
+                    "error": True,
+                    "error_type": "TIMEOUT",
+                    "message": "Web search timed out (10s limit)",
+                    "details": "The search service did not respond in time."
+                }
+            except Exception as e:
+                # ERROR: Try manual fallback
+                logger.warning(f"DDGS failed ({e}), attempting manual fallback...")
+                results = await self._search_web_manual_fallback(query)
+                if results:
+                    return {
+                        "success": True,
+                        "result": results
+                    }
+
+                return {
+                    "error": True,
+                    "error_type": "SEARCH_FAILED",
+                    "message": f"Web search unavailable: {str(e)}",
+                    "details": str(e)
+                }
+
+            if not results:
+                # NO RESULTS: Try manual fallback if error present or strict failure
+                if error:
+                    logger.warning(f"DDGS returned no results with error ({error}), attempting manual fallback...")
+                    results = await self._search_web_manual_fallback(query)
+                    if results:
+                        return {
+                            "success": True,
+                            "result": results
+                        }
+                    
+                    return {
+                        "error": True, 
+                        "error_type": "SEARCH_FAILED", 
+                        "message": f"Web search unavailable: {error}",
+                        "details": str(error)
+                    }
+                
+                # Double check manual fallback even for "no results" just in case DDGS is being weird
+                logger.info("DDGS returned no results (safe), attempting manual fallback to be sure...")
+                results = await self._search_web_manual_fallback(query)
+                if results:
+                     return {
+                        "success": True,
+                        "result": results
+                    }
+
+                return {
+                    "error": True,
+                    "error_type": "NO_RESULTS",
+                    "message": "The web search returned no results. Try a broader query."
+                }
+                return {
+                    "error": True,
+                    "error_type": "NO_RESULTS",
+                    "message": "The web search returned no results. Try a broader query."
+                }
+
             return {
                 "success": True,
                 "result": results
             }
         except Exception as e:
-            logger.error(f"Search failed: {e}")
-            return {"success": False, "error": str(e)}
+            logger.error(f"Search wrapper failed: {e}")
+            return {
+                "error": True,
+                "error_type": "SYSTEM_ERROR",
+                "message": f"Web search system error: {str(e)}",
+                "details": str(e)
+            }
+
+    async def _execute_check_internet_connection(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """Check external internet connectivity."""
+        try:
+            logger.info("Checking internet connection...")
+            def do_check():
+                try:
+                    requests.get("https://www.google.com", timeout=5)
+                    return True, "Connected to Google"
+                except:
+                    try:
+                        requests.get("https://1.1.1.1", timeout=5)
+                        return True, "Connected to Cloudflare DNS"
+                    except Exception as e:
+                        return False, str(e)
+
+            success, msg = await asyncio.to_thread(do_check)
+            if success:
+                return {"success": True, "message": "Internet connection active", "details": msg}
+            else:
+                return {
+                    "error": True, 
+                    "error_code": "NO_CONNECTION", 
+                    "message": "No internet connection", 
+                    "details": msg
+                }
+        except Exception as e:
+             return {"error": True, "message": str(e)}
+
+    async def _execute_check_internet_connection(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """Check external internet connectivity."""
+        try:
+            logger.info("Checking internet connection...")
+            def do_check():
+                try:
+                    requests.get("https://www.google.com", timeout=5)
+                    return True, "Connected to Google"
+                except:
+                    try:
+                        requests.get("https://1.1.1.1", timeout=5)
+                        return True, "Connected to Cloudflare DNS"
+                    except Exception as e:
+                        return False, str(e)
+
+            success, msg = await asyncio.to_thread(do_check)
+            if success:
+                return {"success": True, "message": "Internet connection active", "details": msg}
+            else:
+                return {
+                    "error": True, 
+                    "error_code": "NO_CONNECTION", 
+                    "message": "No internet connection", 
+                    "details": msg
+                }
+        except Exception as e:
+             return {"error": True, "message": str(e)}
+
+
+    async def _execute_read_url_content(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """Read content from a URL with robust error handling."""
+        url = args.get("url")
+        if not url:
+            return {"error": True, "message": "No URL provided", "error_code": "INVALID_INPUT"}
+            
+        logger.info(f"Reading content from: {url}")
+        
+        def do_read():
+            headers = {
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36"
+            }
+            try:
+                # 15s timeout
+                resp = requests.get(url, headers=headers, timeout=15)
+                
+                if resp.status_code != 200:
+                    raise requests.exceptions.HTTPError(f"HTTP {resp.status_code}")
+                
+                # Simple HTML to Text conversion
+                from html.parser import HTMLParser
+                
+                class TextExtractor(HTMLParser):
+                    def __init__(self):
+                        super().__init__()
+                        self.text_parts = []
+                        self.ignore = False
+                        
+                    def handle_starttag(self, tag, attrs):
+                        if tag in ['script', 'style', 'head', 'title', 'meta', 'link']:
+                            self.ignore = True
+                            
+                    def handle_endtag(self, tag):
+                        if tag in ['script', 'style', 'head', 'title', 'meta', 'link']:
+                            self.ignore = False
+                            
+                    def handle_data(self, data):
+                        if not self.ignore and data.strip():
+                            self.text_parts.append(data.strip())
+                            
+                    def get_text(self):
+                        return " ".join(self.text_parts)
+
+                parser = TextExtractor()
+                parser.feed(resp.text)
+                text = parser.get_text()
+                
+                # Limit content
+                return text[:8000] + "..." if len(text) > 8000 else text
+
+            except requests.exceptions.Timeout:
+                raise TimeoutError("Connection timed out")
+            except requests.exceptions.ConnectionError:
+                raise ConnectionError("Failed to connect to server")
+            except Exception as e:
+                raise e
+
+        try:
+            content = await asyncio.to_thread(do_read)
+            return {
+                "success": True,
+                "url": url,
+                "content": content
+            }
+        except TimeoutError:
+            return {
+                "error": True,
+                "error_code": "TIMEOUT",
+                "message": "Request timed out (15s)",
+                "details": "Server took too long to respond. Try a different source."
+            }
+        except ConnectionError:
+            return {
+                "error": True,
+                "error_code": "CONNECTION_ERROR",
+                "message": "Failed to connect to server",
+                "details": "Check domain name or usage of VPN/Proxy."
+            }
+        except requests.exceptions.HTTPError as e:
+            return {
+                "error": True,
+                "error_code": "HTTP_ERROR",
+                "message": str(e),
+                "details": "Server returned an error code."
+            }
+        except Exception as e:
+            logger.error(f"Read URL failed: {e}")
+            return {
+                "error": True,
+                "error_code": "SYSTEM_ERROR",
+                "message": f"Failed to read URL: {str(e)}",
+                "details": str(e)
+            }
+
+    async def _execute_deep_search(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """Perform a search and read the content of top results."""
+        try:
+            query = args.get("query")
+            max_results = min(args.get("max_results", 3), 5) # Cap at 5
+            
+            # Step 1: Search
+            search_args = {"query": query}
+            search_result = await self._execute_search_web(search_args)
+            
+            if search_result.get("error"):
+                return search_result
+            
+            results = search_result.get("result", [])
+            if not results:
+                return {
+                    "error": True,
+                    "error_code": "NO_RESULTS",
+                    "message": "Search returned no results",
+                    "details": "Try a broader query or checked internet connection."
+                }
+
+            top_results = results[:max_results]
+            
+            # Step 2: Read content for each result
+            rich_results = []
+            for item in top_results:
+                url = item.get("href")
+                if url:
+                    content_res = await self._execute_read_url_content({"url": url})
+                    if content_res.get("success"):
+                         item["content"] = content_res.get("content")
+                    else:
+                         # Preserve error info
+                         item["content_error"] = content_res.get("message")
+                         item["content_error_code"] = content_res.get("error_code")
+                         item["content"] = f"[Failed to read: {content_res.get('message')}]"
+                    
+                    rich_results.append(item)
+            
+            return {
+                "success": True,
+                "query": query,
+                "results": rich_results
+            }
+            
+        except Exception as e:
+            logger.error(f"Deep search failed: {e}")
+            return {
+                "error": True, 
+                "message": f"Deep search failed: {str(e)}"
+            }
 
     # === GCP DATA AGENTS (Production only - kept for backwards compatibility) ===
     def _get_gcp_token(self):
@@ -1226,41 +1737,36 @@ class MCPAgent:
             return {"success": False, "error": str(e)}
 
     def _execute_get_models_enhanced(self, url: str, client_id: str, client_secret: str) -> Dict[str, Any]:
-        """Enhanced get_models that summarizes large lists."""
+        """
+        Get all models with detailed information using all_lookml_models.
+        """
         try:
             sdk = self._init_sdk(url, client_id, client_secret)
-            try:
-                session = sdk.session()
-                workspace = session.workspace_id
-            except:
-                workspace = "unknown"
             
+            # Use all_lookml_models as requested/verified
+            # Specifying subfields is safer: explores(name)
             models = sdk.all_lookml_models(fields="name,project_name,explores(name)")
-            formatted = []
-            for m in models:
-                explores = [e.name for e in (m.explores or [])]
-                if not self.is_claude and len(explores) > 20:
-                    explores_summary = f"{len(explores)} explores (use get_explores to list)"
-                else:
-                    explores_summary = explores
-                formatted.append({
-                    "name": m.name, 
-                    "project_name": m.project_name, 
-                    "explores": explores_summary
+            
+            model_list = []
+            for model in models:
+                explores = [explore.name for explore in (model.explores or [])]
+                model_list.append({
+                    "name": model.name,
+                    "project_name": model.project_name,
+                    "explores": explores,
+                    "explore_count": len(explores)
                 })
             
-            if not self.is_claude and len(formatted) > 30:
-                summary_models = formatted[:30]
-                summary_models.append({"message": f"... and {len(formatted) - 30} more models."})
-                return {
-                    "success": True, 
-                    "workspace": workspace, 
-                    "models": summary_models, 
-                    "note": "Truncated for Gemini safety."
+            return {
+                "success": True,
+                "result": {
+                    "models": model_list,
+                    "count": len(model_list),
+                    "message": f"Found {len(model_list)} models in project"
                 }
-            
-            return {"success": True, "workspace": workspace, "models": formatted}
+            }
         except Exception as e:
+            logger.error(f"Failed to get models: {e}")
             return {"success": False, "error": str(e)}
 
     def _execute_get_lookml_model_explore(self, args: Dict[str, Any], url: str, client_id: str, client_secret: str) -> Dict[str, Any]:
@@ -1567,6 +2073,88 @@ class MCPAgent:
             f"Active GCP Project: {gcp_project}, Location: {gcp_location}\n\n"
         )
 
+        # TOOL INTEGRITY RULES (applies to ALL modes)
+        system_prompt += (
+            "🛡️ TOOL INTEGRITY RULES (MANDATORY - READ BEFORE ANY TOOL CALL)\n\n"
+
+            "RULE 1 - CONTEXT EXISTENCE CHECK (_from_context tools):\n"
+            "BEFORE using ANY '_from_context' tool (get_explore_fields_from_context, "
+            "create_query_from_context, create_chart_from_context), verify:\n"
+            "  ✅ USE _from_context IF: You created LookML files THIS session, OR previously "
+            "queried this model/explore THIS session, OR called register_lookml_manually.\n"
+            "  ❌ DO NOT USE _from_context IF: This is the first mention of the model/explore, "
+            "OR the user referenced it but you haven't accessed it yet.\n"
+            "  → Instead use: get_models → get_explore_fields (production) or get_project_files → "
+            "register_lookml_manually → then _from_context.\n\n"
+
+            "RULE 2 - NAMING DISAMBIGUATION (CRITICAL):\n"
+            "  A. PROJECT vs MODEL:\n"
+            "     PROJECT = Repository name (e.g. 'my_project')\n"
+            "     MODEL = .model.lkml file (e.g. 'marketing')\n"
+            "     NEVER substitute model name as project_id.\n\n"
+            "  B. EXPLORE vs BASE VIEW (THE #1 CAUSE OF BROKEN TILES):\n"
+            "     EXPLORE NAME = The name defined in `explore: name {}`.\n"
+            "     BASE VIEW = The `from` parameter (or explore name if missing).\n"
+            "     ❌ INCORRECT: `explore: orders { from: order_items }` -> Using 'order_items' as explore name.\n"
+            "     ✅ CORRECT: Use 'orders' (the EXPLORE NAME) in all API calls and URLs.\n"
+            "     WHEN DEFINING QUERY: `model='model_name', view='EXPLORE_NAME'` (NOT base view!)\n"
+            "     ALWAYS check the `explore:` definition line, NOT the `from:` line.\n\n"
+
+            "RULE 3 - MANDATORY RESPONSE REPORTING:\n"
+            "  After EVERY tool call, you MUST state the outcome before deciding next steps:\n"
+            "    ✅ Success with data: '✅ get_models returned 47 models'\n"
+            "    ⚠️ Success but empty: '⚠️ get_models returned no data (could be API issue, "
+            "permissions, or no models deployed)'\n"
+            "    ❌ Error: '❌ get_project_files failed: 404 - project X not found'\n"
+            "  ❌ FORBIDDEN: Silent tool calls, jumping to workarounds without explaining why "
+            "the primary path failed, or saying 'I see the issue...' without showing what you saw.\n\n"
+        )
+        
+        # AUTOMATIC QUERY VISUALIZATION PROTOCOL (MANDATORY)
+        system_prompt += (
+            "📊 **AUTOMATIC QUERY VISUALIZATION PROTOCOL** (MANDATORY)\n"
+            "For ALL data analysis requests resulting in a single query/chart:\n"
+            "1. **Run Query:** Use `query` or `run_look` to get data.\n"
+            "2. **Get Embed URL:** IMMEDIATELY call `query_url` with IDENTICAL parameters.\n"
+            "3. **Extract URL:** Use the EXACT `result` from `query_url` response.\n"
+            "   ✅ DO: Use the exact string provided (it contains /explore/...)\n"
+            "   ❌ DON'T: Construct URLs, assume domains, or modify the returned URL.\n"
+            "4. **Present Link:** Format as Markdown: `[Interactive Chart]({exact_url_from_response})`\n"
+            "5. **Provide Insights:** Analyze the data returned in Step 1.\n\n"
+        )
+        
+        # MANDATORY DASHBOARD CREATION SEQUENCE
+        system_prompt += (
+            "🏗️ **MANDATORY DASHBOARD CREATION SEQUENCE** (PREVENTS HALLUCINATIONS)\n"
+            "When creating a dashboard, you MUST follow this strict sequence:\n"
+            "STEP 1: <invoke name='create_dashboard'> [STOP - WAIT FOR RESPONSE]\n"
+            "STEP 2: EXTRACT these values from the response:\n"
+            "   - `dashboard_id`: Use in ALL `add_dashboard_element` calls\n"
+            "   - `full_url`: The COMPLETE embed URL to present to user\n"
+            "STEP 3: Loop for EACH tile:\n"
+            "   - <invoke name='add_dashboard_element'> with `dashboard_id=X`, `query_def` or `query_id`.\n"
+            "   - [STOP - WAIT FOR RESPONSE] - verify success.\n"
+            "STEP 4: <invoke name='create_dashboard_filter'> with `dashboard_id=X`. (MANDATORY: At least 1 filter).\n"
+            "STEP 5: ONLY AFTER ALL TILES ADDED: Present link using the `full_url` from Step 2.\n"
+            "   ✅ CORRECT: `[Interactive Dashboard](https://your-instance.com/embed/dashboards/123)` (from tool output)\n"
+            "   ❌ INCORRECT: `[Interactive Dashboard](https://googledemo.looker.com/...)` (Hallucinated domain)\n"
+            "❌ **STRICTLY FORBIDDEN:**\n"
+            "   - Claiming 'Tile added' without an actual successful tool call.\n"
+            "   - Generating text like '✅ Tile 1 added... ✅ Tile 2 added...' in a single turn without intermediate tool calls.\n"
+            "   - Embedding the dashboard link before tiles are added.\n"
+            "   - ⛔ **Creating a dashboard for a single visualization.** Use `query_url` (or `create_chart_from_context` in POC) instead.\n\n"
+        )
+        
+        # URL INTEGRITY RULES
+        system_prompt += (
+            "🔒 **URL INTEGRITY RULES** (ZERO TOLERANCE)\n"
+            "⛔ NEVER invent domain names (googledemo, looker-demo, etc.)\n"
+            "⛔ NEVER construct URLs from memory or patterns\n"
+            "⛔ NEVER use Looker Short Links (`/x/...`) - they break authentication.\n"
+            "✅ ALWAYS extract from tool response fields (especially `query_url` result).\n"
+            "✅ ALWAYS verify you have the actual URL before presenting.\n\n"
+        )
+
         # POC MODE vs PRODUCTION MODE
         if poc_mode:
             system_prompt += (
@@ -1587,6 +2175,7 @@ class MCPAgent:
                 "   - `create_project_file` (creates new LookML files)\n"
                 "   - `get_project_files`, `get_project_file`\n"
                 "   - `validate_project`, `dev_mode`\n\n"
+                "   🚨 **POC MANDATE**: When creating a MODEL file, you MUST ALWAYS include: `include: \"/*.view.lkml\"` to ensure visibility of all views.\n\n"
                 
                 "   Context Tools:\n"
                 "   - `get_explore_fields_from_context` (get fields from uncommitted LookML)\n"
@@ -1601,8 +2190,32 @@ class MCPAgent:
                 "   - `search_web`, `get_connections`, `get_connection_tables`, etc.\n\n"
                 
                 "**REFUSAL PROTOCOL**:\n"
-                "If the user asks for existing/production data analysis, you MUST refuse and say:\n"
                 "'I am in POC Mode and can only work with new/uncommitted LookML. To analyze existing data, please disable POC mode.'\n\n"
+                
+                "🚫 **LOOKML ARTIFACT NAMING PROTOCOL** (CRITICAL - PREVENTS HALLUCINATION):\\n"
+                "1. **AUTO-REGISTRATION AWARENESS**:\\n"
+                "   - When you call `create_project_file`, artifacts are AUTOMATICALLY registered.\\n"
+                "   - Models via `connection:`, Explores via `explore: name`, Views via `view: name`.\\n"
+                "   - You DO NOT need `get_git_branch_state` to find names you just created.\\n\\n"
+                
+                "2. **NAME LOCK MANDATE**:\\n"
+                "   - IMMEDIATELY after creating a file, you MUST create a mental 'NAME LOCK'.\\n"
+                "   - Extract exact names from the content YOU wrote.\\n"
+                "   - THESE ARE THE ONLY NAMES THAT EXIST. Use them in all subsequent calls.\\n\\n"
+                
+                "3. **EXPLORE NAME vs BASE VIEW**:\\n"
+                "   - ❌ WRONG: Using the name after `from:` (e.g., `from: users` -> explore='users')\\n"
+                "   - ✅ CORRECT: Using the name after `explore:` (e.g., `explore: customer_analytics` -> explore='customer_analytics')\\n"
+                "   - ALWAYS use the `explore:` name.\\n\\n"
+
+                "🔒 **LOCKED SETTINGS PROTOCOL** (MANDATORY FOR POC DASHBOARDS):\n"
+                "When creating a POC dashboard, you MUST implicitly use the 'settings' model if it exists.\n"
+                "1. CHECK if `settings.model.lkml` exists (using get_project_files).\n"
+                "2. IF IT EXISTS: You MUST use `model='settings'` for the dashboard tiles, NOT the business model.\n"
+                "   - The `settings` model includes the business model but adds required context.\n"
+                "   - ❌ Incorrect: `model='marketing'`\n"
+                "   - ✅ Correct: `model='settings'` (assuming marketing is included in settings)\n"
+                "3. IF NO settings model: Use the business model directly.\n\n"
                 
                 "🔒 **LOCKED DISCOVERY PROTOCOL** (MANDATORY):\\n\\n"
                 "After calling get_connection_tables, you MUST:\\n"
@@ -1612,26 +2225,123 @@ class MCPAgent:
                 "4. Before creating LookML: Verify table is in locked inventory\\n\\n"
                 "❌ FORBIDDEN: Using tables from memory, context, or assumptions\\n"
                 "✅ REQUIRED: ALL tables MUST come from get_connection_tables\\n\\n"
+                
+                "CRITICAL: DASHBOARD TILE CREATION PROTOCOL (PREVENTS INFINITE LOOPS)\\n\\n"
+
+                "🚨 AFTER create_dashboard RETURNS SUCCESS:\\n"
+                "1. ✅ Lock dashboard_id and base_url\\n"
+                "2. ✅ Call get_explore_fields_from_context ONCE for the primary explore\\n"
+                "3. ✅ CREATE A FIELD INVENTORY LIST (write it out):\\n"
+                "   '📋 LOCKED FIELD INVENTORY:\\n"
+                "    Dimensions: user.id, user.age, user.country, ...\\n"
+                "    Measures: user.count, orders.total_revenue, ...'\\n"
+                "   This inventory is your ONLY source of truth.\\n"
+                "4. ✅ IMMEDIATELY start add_dashboard_element calls using ONLY fields from inventory\\n\\n"
+
+                "❌ FORBIDDEN AFTER create_dashboard:\\n"
+                "   - Creating new project files (you already created them!)\\n"
+                "   - Calling create_project_file again\\n"
+                "   - Going 'back' to LookML creation\\n"
+                "   - Saying 'I need to create X view' (you already did!)\\n"
+                "   - Circular verification loops\\n\\n"
+
+                "⚠️ IF get_explore_fields_from_context returns empty/error:\\n"
+                "   - Call register_lookml_manually ONCE\\n"
+                "   - Then proceed to add_dashboard_element\\n"
+                "   - DO NOT create new files\\n\\n"
+
+                "🔒 RULE: Once dashboard_id exists, you are in TILE ASSEMBLY MODE\\n"
+                "   - Your ONLY job: add_dashboard_element (6x) → create_dashboard_filter → present URL\\n"
+                "   - NO file creation, NO model updates, NO going backwards\\n\\n"
+                "⚖️ **UNIVERSAL VISUAL Q&A (MANDATORY)**:\\n"
+                "   Before adding ANY tile, you MUST evaluate:\\n"
+                "   1. Does the metric/dimension exist in the explore? (Check Locked Field Inventory)\\n"
+                "   2. Does this visual format (Bar, Line, etc.) make sense for this specific data scope?\\n"
+                "   3. Have I alternated visual types to avoid repetitive dashboards?\\n\\n"
             )
         else:
             system_prompt += (
                 "🌍 **PRODUCTION MODE**\n"
                 "You have access to all tools. You can query existing models and build new ones.\n"
                 "**PRIORITY**: Use production tools like `get_models` and `run_query` for existing data questions.\n\n"
+                
+                "❌ **HIDDEN/FORBIDDEN TOOLS** (POC Only):\n"
+                "   - `get_explore_fields_from_context`\n"
+                "   - `create_query_from_context`\n"
+                "   - `create_chart_from_context`\n"
+                "   - `create_dashboard_from_context`\n"
+                "   - `register_lookml_manually`\n"
+                "   These tools are for uncommitted LookML only. In Production Mode, use the standard API tools.\n\n"
             )
+
+        # VISUALIZATION FORMATTING RULES (Applies to both modes)
+        system_prompt += (
+            "📊 **VISUALIZATION FORMATTING RULES** (CRITICAL):\n"
+            "When a tool returns a URL (Explore, Dashboard, or Chart):\n"
+            "1. **markdown Link ONLY**: `[Interactive Chart](https://.../embed/...)`\n"
+            "2. **NO HTML**: Do NOT use `<iframe>`, `<embed>`, or `<object>` tags.\n"
+            "   - The chat interface AUTOMATICALLY embeds Markdown links ending in `/embed/...`\n"
+            "   - Using HTML tags will cause the code to display as raw text.\n"
+            "3. **ALWAYS** provide the link. Never say \"I created it\" without showing the link.\n\n"
+            "📝 **MANDATORY REPORTING FORMAT**:\n"
+            "Every analysis (dashboard or single chart) MUST follow this structure:\n"
+            "1. **Highlight / Insight 💡**: What happened? (Concise summary)\n"
+            "2. **Trends / Context 📈**: How is it changing? (% change, benchmarks)\n"
+            "3. **Recommendations 🚀**: Actionable next steps based on data.\n"
+            "4. **Follow-up Questions ❓**: 2-3 logical next questions to deepen analysis.\n\n"
+        )
+        
+        # SEARCH ERROR CHECKING
+        system_prompt += (
+            "RULE: MANDATORY WEB SEARCH ERROR CHECKING\n"
+            "When search_web is called:\n"
+            "1. Check response for \"error\" field\n"
+            "2. If error=true, STOP and inform user:\n"
+            "   \"❌ Web search unavailable: [reason]\"\n"
+            "3. NEVER proceed with fabricated information\n"
+            "4. Offer alternative: \"I can help with your internal data instead\"\n\n"
+        )
 
         # UNIVERSAL PROTOCOLS
         system_prompt += (
             "CRITICAL: URL AND ID INTEGRITY PROTOCOL (PREVENTS HALLUCINATION)\n\n"
             
-            "**DASHBOARD CREATION WORKFLOW:**\\n"
             "1. Call `create_dashboard` with title\\n"
             "2. EXTRACT and SAVE these values from the response:\\n"
             "   - `dashboard_id`: Use in ALL `add_dashboard_element` calls\\n"
-            "   - `full_url`: The COMPLETE embed URL to present to user\\n"
+            "   - `full_url`: Present ONLY after all tiles are added\\n\n"
+            "🛡️ **CLARIFICATION MANDATE (UNIVERSAL)**:\n"
+            "If a user request is ambiguous, lacking detail, or technically contradictory:\n"
+            "- **STOP** immediately.\n"
+            "- **ALWAYS** ask return clarifying questions before proceeding with tool calls.\n"
+            "- **NEVER** guess user intent if the path is unclear.\n\n"
             "3. For each tile, call `add_dashboard_element` with the extracted `dashboard_id`\\n"
             "4. 🔒 MANDATORY: Call `create_dashboard_filter` to add at least ONE filter\\n"
             "   - Recommended: Date range filter (field: created_date, type: date)\\n"
+            "   - Other options: Category filters, dimension filters\\n"
+            "   - NEVER skip this step - filters improve user experience\\n"
+            "5. Present to user: Use the `full_url` from step 2 (already contains /embed/)\\n\\n"
+            
+            "CRITICAL: AUTOMATIC QUERY VISUALIZATION PROTOCOL (MANDATORY FOR SINGLE QUERY REQUESTS)\\n\\n"
+
+            "When user asks for data analysis that results in ONE query/visualization (not a dashboard):\\n"
+            "STEP 1: Run the query using query tool to get data\\n"
+            "STEP 2: IMMEDIATELY call query_url with IDENTICAL parameters to get embed URL\\n"
+            "STEP 3: Extract the EXACT url field from response:\\n"
+            "   ✅ DO: Use the exact string from response.url\\n"
+            "   ❌ DON'T: Construct URLs, assume domains, or modify the returned URL\\n"
+            "STEP 4: Present as Markdown link:\\n"
+            "   Format: [Interactive Chart]({exact_url_from_response})\\n"
+            "   The URL already contains /embed/ - use it AS-IS\\n"
+            "STEP 5: Provide insights (4-section format)\\n\\n"
+
+            "**URL INTEGRITY RULES (ZERO TOLERANCE):**\\n"
+            "⛔ NEVER invent domain names (googledemo, looker-demo, etc.)\\n"
+            "⛔ NEVER construct URLs from memory or patterns\\n"
+            "⛔ NEVER use placeholder URLs\\n"
+            "✅ ALWAYS extract from tool response fields\\n"
+            "✅ ALWAYS verify you have the actual URL before presenting\\n\\n"
+
             "   - Other options: Category filters, dimension filters\\n"
             "   - NEVER skip this step - filters improve user experience\\n"
             "5. Present to user: Use the `full_url` from step 2 (already contains /embed/)\\n\\n"
@@ -2033,6 +2743,20 @@ class MCPAgent:
                         "content": result_str
                     })
 
+                # HALLUCINATION CHECK (Fix #2)
+                # If checking specifically for dashboard tiles
+                actual_add_calls = sum(1 for b in turn_tool_blocks if b.name == "add_dashboard_element")
+                
+                # Check for hallucinations in text blocks
+                text_content = ""
+                for block in response.content:
+                    if block.type == "text":
+                        text_content += block.text
+                
+                if actual_add_calls == 0:
+                    # Logic removed per user request (Reference: User Request 633)
+                    pass
+                
                 # Update conversation history
                 messages.append({"role": "assistant", "content": response.content})
                 messages.append({"role": "user", "content": tool_results})
@@ -2064,6 +2788,7 @@ class MCPAgent:
         Routes to appropriate model (Claude or Gemini).
         Generator that yields partial results or final text.
         """
+        self.poc_mode = poc_mode  # Persist for tool checks
         logger.info(f"Processing message: {user_message[:50]}... (POC Mode: {poc_mode})")
         if images:
              logger.info(f"Received {len(images)} images")
@@ -2088,8 +2813,23 @@ class MCPAgent:
 
         # Inject explore_context into user_message if provided
         full_message = user_message
+        
+        # FIX #3: Rigid Template Injection for Dashboard Creation
+        if "dashboard" in user_message.lower() and "create" in user_message.lower():
+             logger.info("Injecting Rigid Dashboard Template")
+             dashboard_sequence = (
+                "🛑 **INTERVENTION: DASHBOARD CREATION DETECTED**\n"
+                "You MUST follow the MANDATORY DASHBOARD CREATION SEQUENCE:\n"
+                "1. `create_dashboard` -> WAIT for ID.\n"
+                "2. `add_dashboard_element` for EACH tile -> WAIT for success.\n"
+                "3. `create_dashboard_filter` (Mandatory).\n"
+                "4. ONLY THEN present the link.\n"
+                "⛔ DO NOT claim tiles are added unless you actually call the tool.\n\n"
+             )
+             full_message = f"{dashboard_sequence}\nUSER REQUEST: {user_message}"
+        
         if explore_context:
-            full_message = f"CONTEXT:\\n{explore_context}\\n\\nUSER REQUEST: {user_message}"
+            full_message = f"CONTEXT:\\n{explore_context}\\n\\n{full_message}"
 
         try:
             if self.is_claude:

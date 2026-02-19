@@ -132,12 +132,16 @@ export function migrateToUserSettings(userId: string, settingsToMigrate: string[
 export function getCurrentUser(): GoogleUser | null {
     try {
         const userStr = localStorage.getItem('google_user');
-        if (userStr) {
+        if (userStr && userStr !== "undefined" && userStr !== "null") {
             return JSON.parse(userStr) as GoogleUser;
         }
         return null;
     } catch (error) {
         console.error('Failed to get current user:', error);
+        // Self-healing: Clear corrupted data
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem('google_user');
+        }
         return null;
     }
 }

@@ -4,7 +4,7 @@
 PROJECT_ID="antigravity-innovations"
 REGION="europe-west1"
 REPO="antigravity-repo-eu"
-GCLOUD="/snap/google-cloud-cli/425/bin/gcloud"
+GCLOUD="/snap/bin/gcloud"
 BACKEND_URL="https://antigravity-backend-734857282249.europe-west1.run.app"
 
 # 2. Helper function for errors
@@ -27,7 +27,7 @@ case $choice in
     1|3)
         echo "--------------------------------------"
         echo "📦 Building Backend..."
-        $GCLOUD builds submit --config backend-build.yaml . || error_exit "Backend Build Failed"
+        $GCLOUD builds submit --config scripts/backend-build.yaml . || error_exit "Backend Build Failed"
 
         echo "🚀 Deploying Backend..."
         $GCLOUD run deploy antigravity-backend \
@@ -45,7 +45,7 @@ case $choice in
     2|3)
         echo "--------------------------------------"
         echo "📦 Building Frontend..."
-        $GCLOUD builds submit --config web-build.yaml . || error_exit "Frontend Build Failed"
+        $GCLOUD builds submit --config scripts/web-build.yaml . || error_exit "Frontend Build Failed"
 
         echo "🚀 Deploying Frontend..."
         $GCLOUD run deploy antigravity-web \

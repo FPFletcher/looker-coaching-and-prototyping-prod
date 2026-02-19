@@ -85,8 +85,11 @@ export default function Home() {
             const persistedPocMode = getUserSetting<boolean>('poc_mode', userId, false);
             if (persistedPocMode !== null) setIsPocMode(persistedPocMode);
 
-            const persistedExplore = getUserSetting<Explore | null>('selected_explore', userId, null);
-            if (persistedExplore) setSelectedExplore(persistedExplore);
+            // Only load explore if NOT in POC mode
+            if (!persistedPocMode) {
+                const persistedExplore = getUserSetting<Explore | null>('selected_explore', userId, null);
+                if (persistedExplore) setSelectedExplore(persistedExplore);
+            }
         }
     }, []); // Run once on mount
 
@@ -291,7 +294,7 @@ export default function Home() {
                     credentials: credentials,
                     model: selectedModel,
                     session_id: sessionId,
-                    explore: selectedExplore, // Send selected explore
+                    explore: isPocMode ? null : selectedExplore, // Ensure explore is null in POC mode
                     images: base64Images,      // Send images as base64 (already converted above)
                     gcp_project: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.gcpProject,
                     gcp_location: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.gcpLocation,
@@ -429,10 +432,11 @@ export default function Home() {
     const handlePocModeChange = (newMode: boolean) => {
         setIsPocMode(newMode);
         saveUserSetting('poc_mode', newMode, currentUser?.id);
-        
+
         // Clear explore context when entering POC mode to prevent contamination
         if (newMode) {
             setSelectedExplore(null);
+            saveUserSetting('selected_explore', null, currentUser?.id);
         }
     };
 

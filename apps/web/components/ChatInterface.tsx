@@ -150,23 +150,34 @@ const ChatInterface = memo(function ChatInterface({
     const markdownComponents = useMemo(() => ({
         a: ({ node, ...props }: any) => {
             const href = props.href || "";
-            // Support both standard dashboards and embed URLs
-            const isDashboard = href.includes("/dashboards/") || href.includes("looker.app/embed/");
+            // Support both standard dashboards, explores, and embed URLs
+            const isEmbeddable = href.includes("/dashboards/") || href.includes("/explore/") || href.includes("looker.app/embed/");
 
-            if (isDashboard) {
+            console.log('[ChatInterface] 🔗 Processing Link:', { href, isEmbeddable });
+
+            if (isEmbeddable) {
                 let embedUrl = href;
-                // If it's a standard dashboard URL, convert to embed
+                // If it's a standard URL, convert to embed
                 if (!href.includes("/embed/")) {
-                    embedUrl = href.replace("/dashboards/", "/embed/dashboards/");
+                    console.log('[ChatInterface] 🔄 Converting standard URL to Embed URL');
+                    if (href.includes("/dashboards/")) {
+                        embedUrl = href.replace("/dashboards/", "/embed/dashboards/");
+                    } else if (href.includes("/explore/")) {
+                        embedUrl = href.replace("/explore/", "/embed/explore/");
+                    }
+                } else {
+                    console.log('[ChatInterface] ✅ Already an Embed URL');
                 }
 
+                console.log('[ChatInterface] 🚀 Final Embed URL:', embedUrl);
+
                 return (
-                    <div className="my-4">
+                    <span className="block my-4">
                         <a {...props} className="text-[#A8C7FA] hover:underline block mb-2" target="_blank" rel="noreferrer">
                             {props.children}
                         </a>
                         <StableDashboardEmbed url={embedUrl} />
-                    </div>
+                    </span>
                 );
             }
             return <a {...props} className="text-[#A8C7FA] hover:underline" target="_blank" rel="noreferrer" />;
