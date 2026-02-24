@@ -2243,7 +2243,9 @@ class MCPAgent:
                 "   - Calling create_project_file again\\n"
                 "   - Going 'back' to LookML creation\\n"
                 "   - Saying 'I need to create X view' (you already did!)\\n"
-                "   - Circular verification loops\\n\\n"
+                "   - Circular verification loops\\n"
+                "   - ⛔ **HALLUCINATING TILES**: You must verify `add_dashboard_element` returned success before claiming it.\\n"
+                "   - Claiming 'Tile added' without an actual successful tool call.\\n\\n"
 
                 "⚠️ IF get_explore_fields_from_context returns empty/error:\\n"
                 "   - Call register_lookml_manually ONCE\\n"
@@ -2258,6 +2260,24 @@ class MCPAgent:
                 "   1. Does the metric/dimension exist in the explore? (Check Locked Field Inventory)\\n"
                 "   2. Does this visual format (Bar, Line, etc.) make sense for this specific data scope?\\n"
                 "   3. Have I alternated visual types to avoid repetitive dashboards?\\n\\n"
+
+                "🎨 **VALID LOOKER VIS TYPES (vis_config.type) — MANDATORY REFERENCE**:\\n"
+                "   Always use EXACTLY one of these strings for `vis_config.type`:\\n"
+                "   | Goal                  | vis_config.type       |\\n"
+                "   |-----------------------|-----------------------|\\n"
+                "   | Single KPI / metric   | single_value          |\\n"
+                "   | Bar chart (vertical)  | looker_bar            |\\n"
+                "   | Column chart (horiz)  | looker_column         |\\n"
+                "   | Line chart            | looker_line           |\\n"
+                "   | Area chart            | looker_area           |\\n"
+                "   | Scatter plot          | looker_scatter        |\\n"
+                "   | Pie chart             | looker_pie            |\\n"
+                "   | Data table            | looker_grid           |\\n"
+                "   | Funnel                | looker_funnel         |\\n"
+                "   | Map (geographic)      | looker_google_map     |\\n"
+                "   | Waterfall             | looker_waterfall      |\\n"
+                "   ⛔ NEVER use 'looker_single_value' — use 'single_value' instead.\\n"
+                "   ⛔ NEVER use a vis type not in this table.\\n\\n"
             )
         else:
             system_prompt += (
@@ -2320,7 +2340,10 @@ class MCPAgent:
             "   - Recommended: Date range filter (field: created_date, type: date)\\n"
             "   - Other options: Category filters, dimension filters\\n"
             "   - NEVER skip this step - filters improve user experience\\n"
-            "5. Present to user: Use the `full_url` from step 2 (already contains /embed/)\\n\\n"
+            "5. Present to user: Use the `full_url` from step 2 (already contains /embed/)\\n"
+            "   ⚠️ **CRITICAL RULE**: DO NOT present the dashboard URL unless you have successfully added at least one tile.\\n"
+            "   - Check `add_dashboard_element` output for success.\\n"
+            "   - If adding tiles fails, report the error instead of showing an empty dashboard.\\n\\n"
             
             "CRITICAL: AUTOMATIC QUERY VISUALIZATION PROTOCOL (MANDATORY FOR SINGLE QUERY REQUESTS)\\n\\n"
 
@@ -2521,10 +2544,29 @@ class MCPAgent:
             "3. NO Python code, NO markdown blocks. ONLY RAW JSON."
         )
 
-        contents = [
-            {"role": "model" if m["role"] == "assistant" else "user", "parts": [{"text": m["content"]}]} 
-            for m in history
-        ]
+        contents = []
+        for msg in history:
+            role = "model" if msg["role"] == "assistant" else "user"
+            
+            # If the frontend sent rich parts, convert them to text for Gemini
+            if "parts" in msg and msg["parts"]:
+                text_parts = []
+                for p in msg["parts"]:
+                    if p["type"] == "text":
+                        text_parts.append(p["content"])
+                    elif p["type"] == "tool":
+                        if p.get("status") == "running":
+                             text_parts.append(f"[Attempted to use tool '{p.get('tool')}' with input {p.get('input')} but the user aborted the request before it finished.]")
+                        elif p.get("status") == "success":
+                             text_parts.append(f"[Successfully used tool '{p.get('tool')}' with input {p.get('input')}. Result: {p.get('result')}]")
+                
+                if text_parts:
+                     contents.append({"role": role, "parts": [{"text": "\n".join(text_parts)}]})
+                else:
+                     contents.append({"role": role, "parts": [{"text": msg["content"]}]})
+            else:
+                contents.append({"role": role, "parts": [{"text": msg["content"]}]})
+                
         contents.append({
             "role": "user", 
             "parts": [{"text": f"{gemini_instruction}\\n\\nUSER REQUEST: {user_message}"}]
@@ -2616,8 +2658,43 @@ class MCPAgent:
         messages = []
         for msg in history:
             role = "user" if msg["role"] == "user" else "assistant"
-            messages.append({"role": role, "content": msg["content"]})
-        
+            
+            # If the frontend sent rich parts, convert them to Claude's format
+            if "parts" in msg and msg["parts"]:
+                claude_parts = []
+                has_running_tool = False
+                for p in msg["parts"]:
+                    if p["type"] == "text":
+                        claude_parts.append({"type": "text", "text": p["content"]})
+                    elif p["type"] == "tool":
+                        # If it's a running tool (from an aborted stream), we MUST close it cleanly
+                        # Claude API requires tool_use -> tool_result pairs.
+                        # We convert aborted tools into text to prevent API errors about missing results,
+                        # while still giving Claude context that a tool was attempted but aborted.
+                        if p.get("status") == "running":
+                             has_running_tool = True
+                             claude_parts.append({
+                                 "type": "text", 
+                                 "text": f"\[Attempted to use tool '{p.get('tool')}' with input {p.get('input')} but the user aborted the request before it finished.\]"
+                             })
+                        elif p.get("status") == "success":
+                             # Technically we should rebuild the entire tool_use/tool_result chain for Claude
+                             # but for now, if it succeeded historically, we just add it as text context
+                             # to avoid strictly managing tool_call_ids across sessions.
+                             claude_parts.append({
+                                 "type": "text", 
+                                 "text": f"\[Successfully used tool '{p.get('tool')}' with input {p.get('input')}. Result: {p.get('result')}\]"
+                             })
+                
+                if claude_parts:
+                     messages.append({"role": role, "content": claude_parts})
+                else:
+                     messages.append({"role": role, "content": msg["content"]})
+                     
+            else:
+                # Fallback for plain text messages
+                messages.append({"role": role, "content": msg["content"]})
+            
         # Build user message with images if provided
         if images and len(images) > 0:
             # Format message with images for Claude vision API

@@ -41,6 +41,7 @@ When the user asks for data analysis that results in ONE query/visualization (no
 ### Step 1: Create Dashboard
 - Call `create_dashboard`.
 - **STOP** and wait for the `dashboard_id`.
+- Lock this `dashboard_id`. Do NOT proceed without it.
 
 ### Step 2: Add Elements (Tiles)
 - **State:** "Adding tiles..."
@@ -49,15 +50,18 @@ When the user asks for data analysis that results in ONE query/visualization (no
     - `dashboard_id`: The ID from Step 1.
     - `query_def` OR `query_id`: Mandatory.
     - `type`: usually `vis`.
-- **CRITICAL:** Do NOT say "Tile added" until you have successfully called `add_dashboard_element`.
+- ⛔ **FORBIDDEN:** Saying "Tile added" without a successful `add_dashboard_element` API call.
+- ⛔ **FORBIDDEN:** Presenting the dashboard URL if `add_dashboard_element` was NOT called or failed.
+- ⛔ **FORBIDDEN:** Embedding a dashboard with zero elements. ALWAYS add at least one tile first.
+- ✅ **REQUIRED:** If `add_dashboard_element` fails, report the error explicitly and stop.
 
 ### Step 3: Add Filters
 - Call `create_dashboard_filter`.
 - **MANDATORY:** Every dashboard MUST have at least 1 filter (e.g., Date Range).
 
 ### Step 4: Final Presentation
-- ONLY AFTER all elements are added, present the dashboard link.
-- **Do NOT** embed intermediate states.
+- ONLY AFTER all elements are successfully added, present the dashboard link.
+- **Verify tile count > 0 before embedding.**
 - Link format: `[Interactive Dashboard](<dashboard_url>)` (ensure it uses `/embed/dashboards/`).
 
 ---
@@ -76,19 +80,24 @@ When the user asks for data analysis that results in ONE query/visualization (no
 
 ## 4. Anti-Hallucination Rules (Zero Tolerance)
 
-**Severity: HIGH**
+**Severity: CRITICAL — Violation destroys user trust.**
 
-- **Forbidden:** claiming actions that did not happen.
-- **Forbidden:** assuming success without checking tool output.
-- **Forbidden:** inventing `dashboard_id` or `query_id`.
-- **Required:** Verify every tool call result.
-- **Required:** If `add_dashboard_element` fails, report the error, do NOT claim success.
+- ⛔ **Forbidden:** Claiming actions that did not happen (e.g., "I've added the tile" without calling the tool).
+- ⛔ **Forbidden:** Assuming success without checking the tool output JSON.
+- ⛔ **Forbidden:** Inventing `dashboard_id`, `query_id`, or explore names.
+- ⛔ **Forbidden:** Presenting a dashboard URL after `create_dashboard` but BEFORE any `add_dashboard_element` call.
+- ⛔ **Forbidden:** Using text feedback as a substitute for an API call result.
+- ✅ **Required:** Verify every tool call result before proceeding.
+- ✅ **Required:** If `add_dashboard_element` fails, report the error, do NOT claim success.
+- ✅ **Required:** If a previous chat was stopped mid-way (user hit 'Stop'), treat that context as **INCOMPLETE**. Do NOT assume any tool from the previous turn completed successfully.
 
 ---
 
-## 5. Technical Context
+## 5. Technical Context & Session Isolation
 
-- **Context Persistence:** Session context is saved to `.lookml_context.json`. Always load this context to understand available models/views.
+- **Context Persistence:** Session context is saved per-session to `.lookml_context_{session_id}.json`. Each chat has a unique `session_id`. Do NOT assume context from another chat is available.
+- **Chat Stop/Resume:** When the user resumes a stopped chat, the previous session's context file is reloaded by matching `session_id`. You will see notes in the history like `[Attempted to use tool 'X' ... but the user aborted]`. Treat these as INCOMPLETE actions. DO NOT claim they succeeded.
+- **Explore Name Hallucinations:** In POC mode, the ONLY valid explore names are those registered in the current session's LookML context. Do NOT invent or guess explore names. Always derive the explore name from the `explore:` block in the model file you created, NOT from the `view_name`.
 - **POC Mode:** In "POC Mode", explore context is disabled to prevent hallucinating tables from other connections. Verify tables exist using `get_connection_tables` before generating LookML.
 - **POC Model Inclusions:** ALWAYS add `include: "/*.view.lkml"` to model files generated in POC mode to ensure all views are available.
 
@@ -127,11 +136,30 @@ Every analysis (dashboard or single query) must include the following 4 distinct
 - [ ] **Titles:** Does the title clearly state *what* is being shown? (e.g., "Weekly Revenue by Category" vs "Revenue").
 - [ ] **Axes & Labels:** Are axes labeled? Are numbers formatted (Currency, %, etc.)?
 - [ ] **Color:** Are colors consistent? (e.g., 'Revenue' is always Green, 'Cost' is always Red).
-- [ ] **Chart Type:** Is the chart type appropriate?
-    - **Time:** Line / Area
-    - **Comparison:** Bar / Column
-    - **Composition:** Stacked Bar / Pie (use sparingly)
-    - **Distribution:** Histogram / Scatter
+- [ ] **Chart Type (CRITICAL — use ONLY valid Looker `vis_config.type` values):**
+    You MUST use one of the exact strings from this table. Using anything else (e.g., `looker_single_value`) WILL cause an API error.
+
+    | Visual Goal | Valid `vis_config.type` value |
+    |---|---|
+    | Single metric / KPI | `single_value` |
+    | Bar chart (vertical) | `looker_bar` |
+    | Column chart (horizontal) | `looker_column` |
+    | Line chart | `looker_line` |
+    | Area chart | `looker_area` |
+    | Scatter plot | `looker_scatter` |
+    | Pie chart | `looker_pie` |
+    | Data table | `looker_grid` |
+    | Funnel | `looker_funnel` |
+    | Map (geographic) | `looker_google_map` |
+    | Timeline / Gantt | `looker_timeline` |
+    | Waterfall | `looker_waterfall` |
+    | Boxplot | `looker_boxplot` |
+    | Word cloud | `looker_wordcloud` |
+
+    ⛔ **FORBIDDEN:** `looker_single_value` — use `single_value` instead.
+    ⛔ **FORBIDDEN:** Any type string not in this table.
+    ✅ **REQUIRED:** Before calling `add_dashboard_element`, verify your `vis_config.type` is in this table.
+
 - [ ] **Zero Baseline:** DO NOT truncate y-axis for bar charts.
 - [ ] **Visual Q&A (MANDATORY):** Run extensive Q&A on each visual added.
     - Does the metric actually exist in the explore?

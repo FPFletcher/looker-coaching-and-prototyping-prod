@@ -49,8 +49,8 @@ export default function Home() {
     // Default credentials
     const defaultCredentials: LookerCredentials = {
         url: "https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app",
-        client_id: "vQyY8tbjsT6tcG7ZV85N",
-        client_secret: "hyPbyWkJXDz8h6tGcYk5Y44G"
+        client_id: "PcpBKntHBFZswh25Mh6v",
+        client_secret: "yFw5mgPYgjfg4NDtXqfdxzVz"
     };
 
     const [credentials, setCredentials] = useState<LookerCredentials>(defaultCredentials);

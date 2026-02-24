@@ -1,0 +1,15 @@
+{
+  "session_id": "session_test_2",
+  "views": {},
+  "models": {},
+  "explores": {
+    "model_2.explore_2": {
+      "model_name": "model_2",
+      "explore_name": "explore_2",
+      "base_view": "view_2",
+      "joins": [],
+      "fields": [],
+      "field_source": "parsed"
+    }
+  }
+}

@@ -1,5 +1,12 @@
 import { useState, useEffect } from 'react';
-import { X, Settings as SettingsIcon, Database, Key } from 'lucide-react';
+import { X, Settings as SettingsIcon, Database, Key, RotateCcw } from 'lucide-react';
+
+// Default credentials (masked in UI — type "default" to revert)
+const DEFAULT_CREDENTIALS = {
+    url: 'https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app',
+    client_id: 'PcpBKntHBFZswh25Mh6v',
+    client_secret: 'yFw5mgPYgjfg4NDtXqfdxzVz',
+};
 
 export interface LookerCredentials {
     url: string;
@@ -31,6 +38,26 @@ export default function SettingsModal({ isOpen, onClose, onSave, initialSettings
     const [gcpProject, setGcpProject] = useState(initialSettings?.gcpProject || 'looker-core-demo-ffrancois');
     const [gcpLocation, setGcpLocation] = useState(initialSettings?.gcpLocation || 'europe-west1');
     const [showSecret, setShowSecret] = useState(false);
+
+    const isDefaultCred = (val: string, field: keyof typeof DEFAULT_CREDENTIALS) => val === DEFAULT_CREDENTIALS[field];
+
+    const handleClientIdChange = (val: string) => {
+        if (val.toLowerCase() === 'default') { setClientId(DEFAULT_CREDENTIALS.client_id); }
+        else setClientId(val);
+    };
+    const handleClientSecretChange = (val: string) => {
+        if (val.toLowerCase() === 'default') { setClientSecret(DEFAULT_CREDENTIALS.client_secret); }
+        else setClientSecret(val);
+    };
+    const handleUrlChange = (val: string) => {
+        if (val.toLowerCase() === 'default') { setUrl(DEFAULT_CREDENTIALS.url); }
+        else setUrl(val);
+    };
+    const handleRevertAll = () => {
+        setUrl(DEFAULT_CREDENTIALS.url);
+        setClientId(DEFAULT_CREDENTIALS.client_id);
+        setClientSecret(DEFAULT_CREDENTIALS.client_secret);
+    };
 
     useEffect(() => {
         if (initialSettings) {
@@ -144,6 +171,17 @@ export default function SettingsModal({ isOpen, onClose, onSave, initialSettings
 
                 {/* Credentials Form */}
                 <div className="space-y-4">
+                    <div className="flex items-center justify-between mb-1">
+                        <span className="text-sm font-medium text-gray-300">Looker Credentials</span>
+                        <button
+                            type="button"
+                            onClick={handleRevertAll}
+                            title="Reset to default credentials"
+                            className="flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                        >
+                            <RotateCcw className="w-3 h-3" /> Revert to default
+                        </button>
+                    </div>
                     <div>
                         <label htmlFor="looker-url" className="block text-sm font-medium text-gray-300 mb-2">
                             Looker Instance URL
@@ -152,38 +190,45 @@ export default function SettingsModal({ isOpen, onClose, onSave, initialSettings
                             id="looker-url"
                             type="url"
                             value={url}
-                            onChange={(e) => setUrl(e.target.value)}
-                            placeholder="https://your-instance.looker.app"
-                            className="w-full px-3 py-2 bg-[#2a2b2c] border border-[#37393b] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50"
+                            onChange={(e) => handleUrlChange(e.target.value)}
+                            placeholder="https://your-instance.looker.app (type 'default' to revert)"
+                            className={`w-full px-3 py-2 bg-[#2a2b2c] border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 ${isDefaultCred(url, 'url') ? 'border-green-500/40' : 'border-[#37393b]'
+                                }`}
                         />
+                        {isDefaultCred(url, 'url') && <p className="text-xs text-green-400 mt-1">&#10003; Using default instance</p>}
                     </div>
 
                     <div>
                         <label htmlFor="client-id" className="block text-sm font-medium text-gray-300 mb-2">
-                            Client ID
+                            Client ID <span className="text-gray-500 text-xs font-normal">(type "default" to revert)</span>
                         </label>
                         <input
                             id="client-id"
                             type="text"
-                            value={clientId}
-                            onChange={(e) => setClientId(e.target.value)}
-                            placeholder="Enter your client ID"
-                            className="w-full px-3 py-2 bg-[#2a2b2c] border border-[#37393b] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50"
+                            value={isDefaultCred(clientId, 'client_id') ? '••••••••••••••••••••' : clientId}
+                            onFocus={(e) => { if (isDefaultCred(clientId, 'client_id')) e.target.value = ''; }}
+                            onChange={(e) => handleClientIdChange(e.target.value)}
+                            placeholder="Enter client ID (type 'default' to revert)"
+                            className={`w-full px-3 py-2 bg-[#2a2b2c] border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 ${isDefaultCred(clientId, 'client_id') ? 'border-green-500/40' : 'border-[#37393b]'
+                                }`}
                         />
+                        {isDefaultCred(clientId, 'client_id') && <p className="text-xs text-green-400 mt-1">&#10003; Using default credentials</p>}
                     </div>
 
                     <div>
                         <label htmlFor="client-secret" className="block text-sm font-medium text-gray-300 mb-2">
-                            Client Secret
+                            Client Secret <span className="text-gray-500 text-xs font-normal">(type "default" to revert)</span>
                         </label>
                         <div className="relative">
                             <input
                                 id="client-secret"
                                 type={showSecret ? 'text' : 'password'}
-                                value={clientSecret}
-                                onChange={(e) => setClientSecret(e.target.value)}
-                                placeholder="Enter your client secret"
-                                className="w-full px-3 py-2 bg-[#2a2b2c] border border-[#37393b] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 pr-20"
+                                value={isDefaultCred(clientSecret, 'client_secret') && !showSecret ? '••••••••••••••••••••' : clientSecret}
+                                onFocus={(e) => { if (isDefaultCred(clientSecret, 'client_secret')) { e.target.value = ''; setShowSecret(true); } }}
+                                onChange={(e) => handleClientSecretChange(e.target.value)}
+                                placeholder="Enter client secret (type 'default' to revert)"
+                                className={`w-full px-3 py-2 bg-[#2a2b2c] border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 pr-20 ${isDefaultCred(clientSecret, 'client_secret') ? 'border-green-500/40' : 'border-[#37393b]'
+                                    }`}
                             />
                             <button
                                 type="button"
@@ -193,6 +238,7 @@ export default function SettingsModal({ isOpen, onClose, onSave, initialSettings
                                 {showSecret ? 'Hide' : 'Show'}
                             </button>
                         </div>
+                        {isDefaultCred(clientSecret, 'client_secret') && <p className="text-xs text-green-400 mt-1">✓ Using default credentials</p>}
                     </div>
                 </div>
 
