@@ -705,6 +705,9 @@ video {
 .mt-auto {
   margin-top: auto;
 }
+.mt-5 {
+  margin-top: 1.25rem;
+}
 .block {
   display: block;
 }
@@ -764,6 +767,9 @@ video {
 }
 .max-h-\[200px\] {
   max-height: 200px;
+}
+.max-h-\[90vh\] {
+  max-height: 90vh;
 }
 .min-h-\[44px\] {
   min-height: 44px;

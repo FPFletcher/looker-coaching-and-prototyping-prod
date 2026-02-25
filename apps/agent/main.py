@@ -68,9 +68,11 @@ class ChatRequest(BaseModel):
     images: Optional[List[str]] = None  # Base64 encoded images
     explore: Optional[Dict[str, str]] = None  # Selected explore {name, label, model}
     gcp_project: Optional[str] = None
-    gcp_project: Optional[str] = None
     gcp_location: Optional[str] = None
     poc_mode: bool = False  # New flag for strict POC mode
+    vertex_api_key: Optional[str] = None
+    claude_api_key: Optional[str] = None
+    llm_region: Optional[str] = "US"
 
 class ResetRequest(BaseModel):
     session_id: str
@@ -121,7 +123,13 @@ async def chat(request: ChatRequest):
             }
         
         # Instantiate agent
-        chat_agent = MCPAgent(session_id=session_id, model_name=request.model)
+        chat_agent = MCPAgent(
+            session_id=session_id, 
+            model_name=request.model,
+            vertex_api_key=request.vertex_api_key or "",
+            claude_api_key=request.claude_api_key or "",
+            llm_region=request.llm_region or "US"
+        )
 
         async def event_generator():
             try:

@@ -298,6 +298,9 @@ export default function Home() {
                     images: base64Images,      // Send images as base64 (already converted above)
                     gcp_project: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.gcpProject,
                     gcp_location: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.gcpLocation,
+                    vertex_api_key: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.vertexApiKey,
+                    claude_api_key: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.claudeApiKey,
+                    llm_region: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.llmRegion,
                     poc_mode: isPocMode
                 }),
                 signal: controller.signal // Add abort signal

@@ -3,8 +3,11 @@ import json
 import logging
 import asyncio
 from typing import Dict, List, Any, Optional, AsyncGenerator
-import google.generativeai as genai
 from anthropic import AsyncAnthropic
+try:
+    from anthropic import AsyncAnthropicVertex as _AnthropicVertex
+except ImportError:
+    _AnthropicVertex = None
 import httpx
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
@@ -125,49 +128,154 @@ class MCPAgent:
     Supports both POC mode (uncommitted LookML only) and Production mode.
     """
     
-    def __init__(self, session_id: str = "default", model_name: str = "gemini-2.0-flash"):
+    def __init__(
+        self,
+        session_id: str = "default",
+        model_name: str = "gemini-2.0-flash",
+        vertex_api_key: str = "",
+        claude_api_key: str = "",
+        llm_region: str = "US",
+    ):
         self.model_name = model_name
         self.session_id = session_id
         self.created_files_cache = {}
-        
+        self.llm_region = llm_region.upper() if llm_region else "US"
+
         # Initialize session-specific context
         if LookMLContext:
             self.lookml_context = LookMLContext(session_id)
             self.lookml_context.load_from_file()
         else:
             self.lookml_context = None
-        
+
         self.is_claude = model_name.startswith("claude-")
-        
+
+        # Resolve credentials: UI-provided > env fallback
+        _vertex_key = vertex_api_key or os.getenv("VERTEX_API_KEY", "") or os.getenv("GOOGLE_API_KEY", "")
+        _claude_key = claude_api_key or os.getenv("ANTHROPIC_API_KEY", "")
+        _gcp_project = os.getenv("VERTEX_PROJECT", "antigravity-innovations")
+        _gcp_region_claude = os.getenv("VERTEX_REGION_CLAUDE", "us-east5")  # Claude on Vertex needs us-east5
+        _gcp_region_gemini = os.getenv("VERTEX_REGION_GEMINI", os.getenv("VERTEX_REGION", "europe-west1"))
+
+        self.model_name = self._map_to_vertex_model(model_name)
+
         if self.is_claude:
-            if not os.getenv("ANTHROPIC_API_KEY"):
-                raise Exception("ANTHROPIC_API_KEY not found in environment")
-            
-            # Configure extended timeouts to prevent 60s read timeout from killing long requests
-            self.client = AsyncAnthropic(
-                api_key=os.getenv("ANTHROPIC_API_KEY"),
-                timeout=httpx.Timeout(
-                    connect=10.0,    # Connection timeout
-                    read=600.0,      # Read timeout - 10 minutes (was 60s default)
-                    write=10.0,      # Write timeout
-                    pool=10.0        # Pool timeout
+            # EU region → use direct Anthropic API key (Claude not on Vertex in EU)
+            if self.llm_region == "EU" and _claude_key:
+                logger.info("Claude: EU region → using direct Anthropic API key")
+                self.client = AsyncAnthropic(
+                    api_key=_claude_key,
+                    timeout=httpx.Timeout(connect=10.0, read=600.0, write=10.0, pool=10.0)
                 )
-            )
+                self.is_vertex = False
+            elif _AnthropicVertex and _gcp_project:
+                # US / Vertex region → use AnthropicVertex with ADC or API key
+                logger.info(f"Claude: Vertex AI (project={_gcp_project}, region={_gcp_region_claude})")
+                self.client = _AnthropicVertex(
+                    project_id=_gcp_project,
+                    region=_gcp_region_claude,
+                    http_client=httpx.AsyncClient(
+                        timeout=httpx.Timeout(connect=10.0, read=600.0, write=10.0, pool=10.0)
+                    )
+                )
+                self.is_vertex = True
+            elif _claude_key:
+                logger.info("Claude: falling back to direct Anthropic API key")
+                self.client = AsyncAnthropic(
+                    api_key=_claude_key,
+                    timeout=httpx.Timeout(connect=10.0, read=600.0, write=10.0, pool=10.0)
+                )
+                self.is_vertex = False
+            else:
+                raise Exception("No Claude credentials available. Provide an Anthropic API key (EU) or configure Vertex AI (US).")
         else:
-            if not os.getenv("GOOGLE_API_KEY"):
-                raise Exception("GOOGLE_API_KEY not found in environment")
-            genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-            self.model = genai.GenerativeModel(model_name)
+            # Gemini via google-genai SDK (supports API key, SA JSON, OR ADC)
+            try:
+                from google import genai as google_genai
+                from google.oauth2 import service_account
+                import json
+                
+                if _vertex_key and _vertex_key.startswith("AIza"):
+                    logger.info("Gemini: Google AI Studio with API key provided. Using standard GenAI client.")
+                    self.genai_client = google_genai.Client(
+                        api_key=_vertex_key,
+                    )
+                elif _vertex_key and _vertex_key.strip().startswith("{"):
+                    logger.info("Gemini: Service Account JSON provided in settings. Initializing isolated identity.")
+                    try:
+                        sa_info = json.loads(_vertex_key)
+                        creds = service_account.Credentials.from_service_account_info(sa_info)
+                        self.genai_client = google_genai.Client(
+                            vertexai=True,
+                            project=sa_info.get("project_id", _gcp_project),
+                            location=_gcp_region_gemini,
+                            credentials=creds
+                        )
+                    except Exception as parse_e:
+                        raise Exception(f"Invalid Service Account JSON provided: {parse_e}")
+                else:
+                    logger.info(f"Gemini: Vertex AI with ADC (project={_gcp_project})")
+                    self.genai_client = google_genai.Client(
+                        vertexai=True,
+                        project=_gcp_project,
+                        location=_gcp_region_gemini,
+                    )
+                self.model = self.model_name
+                self.is_vertex = True
+                logger.info(f"Gemini model: {self.model}")
+            except Exception as e:
+                raise Exception(f"Gemini initialization failed: {e}")
         
         # Path to MCP toolbox binary
         self.toolbox_bin = os.path.abspath(os.path.join(
             os.path.dirname(__file__), "../../tools/mcp-toolbox/toolbox"
         ))
         
+    def _map_to_vertex_model(self, model_name: str) -> str:
+        """Map UI-facing model name strings to Vertex AI model endpoint IDs."""
+        vertex_map = {
+            # Gemini 2.x
+            "gemini-2.0-flash":           "gemini-2.0-flash",
+            "gemini-2.0-flash-001":       "gemini-2.0-flash-001",
+            "gemini-2.5-flash":           "gemini-2.5-flash",
+            "gemini-2.5-pro":             "gemini-2.5-pro",
+            "gemini-2.5-flash-lite":      "gemini-2.5-flash-lite",
+            "gemini-2.5-flash-image":     "gemini-2.5-flash-preview-04-17",
+            # Gemini 3.x (preview)
+            "gemini-3-flash-preview":     "gemini-3-flash-preview",
+            "gemini-3-pro-image-preview": "gemini-3-pro-image-preview",
+            "gemini-3.1-pro-preview":     "gemini-3.1-pro-preview",
+
+            # Claude 3.5 & 3 (including handling cached UI names)
+            "claude-sonnet-4-5-20250929": "claude-sonnet-4-5@20250929",
+            "claude-sonnet-4-5@20250929": "claude-sonnet-4-5@20250929",
+            "claude-opus-4-5-20251101":   "claude-opus-4-6@default",
+            "claude-haiku-4-5-20251001":  "claude-sonnet-4-6@default",
+            "claude-3-5-sonnet-v2@20241022": "claude-sonnet-4-6@default",
+            "claude-sonnet-4-6@default":  "claude-sonnet-4-6@default",
+            "claude-3-opus@20240229":     "claude-opus-4-6@default",
+            "claude-opus-4-6@default":    "claude-opus-4-6@default",
+            "claude-3-5-haiku@20241022":  "claude-sonnet-4-6@default",
+        }
+        mapped = vertex_map.get(model_name, model_name)
+        logger.info(f"Vertex AI model mapping: {model_name} -> {mapped}")
+        return mapped
+
     def _get_server_params(self, looker_url: str, client_id: str, client_secret: str) -> StdioServerParameters:
         """Create server parameters with proper environment setup."""
+        url_to_use = looker_url.rstrip("/")
+        
+        # Port :19999 is required for:
+        # 1. Looker Original instances (usually *.looker.com, but NOT Looker Core instances like *.eu.looker.com)
+        # 2. The specific default developer instance
+        is_looker_original = url_to_use.endswith(".com") and not url_to_use.endswith(".eu.looker.com") and not url_to_use.endswith(".europe-west1.looker.com")
+        is_default_dummy = "8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app" in url_to_use
+        
+        if (is_looker_original or is_default_dummy) and ":19999" not in url_to_use:
+            url_to_use += ":19999"
+            
         env = os.environ.copy()
-        env["LOOKER_BASE_URL"] = looker_url.rstrip("/")
+        env["LOOKER_BASE_URL"] = url_to_use
         env["LOOKER_CLIENT_ID"] = client_id
         env["LOOKER_CLIENT_SECRET"] = client_secret
         env["LOOKER_VERIFY_SSL"] = "true"
@@ -181,7 +289,15 @@ class MCPAgent:
     def _init_sdk(self, url: str, client_id: str, client_secret: str):
         """Initialize Looker SDK for custom tool implementations."""
         import looker_sdk
-        os.environ["LOOKERSDK_BASE_URL"] = url
+        url_to_use = url.rstrip("/")
+        
+        is_looker_original = url_to_use.endswith(".com") and not url_to_use.endswith(".eu.looker.com") and not url_to_use.endswith(".europe-west1.looker.com")
+        is_default_dummy = "8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app" in url_to_use
+        
+        if (is_looker_original or is_default_dummy) and ":19999" not in url_to_use:
+            url_to_use += ":19999"
+            
+        os.environ["LOOKERSDK_BASE_URL"] = url_to_use
         os.environ["LOOKERSDK_CLIENT_ID"] = client_id
         os.environ["LOOKERSDK_CLIENT_SECRET"] = client_secret
         os.environ["LOOKERSDK_VERIFY_SSL"] = "true"
@@ -561,6 +677,21 @@ class MCPAgent:
                     "description": "Lists COMMITTED/PRODUCTION models (summarized for large instances).",
                     "inputSchema": {"type": "object", "properties": {}, "required": []}
                 })
+            
+            # Python override for get_explore_fields to prevent binary TaskGroup errors
+            if "get_explore_fields" not in {t["name"] for t in tools}:
+                tools.append({
+                    "name": "get_explore_fields",
+                    "description": "Get available dimensions/measures from a COMMITTED, production explore. Use this to validate fields before querying.",
+                    "inputSchema": {
+                        "type": "object",
+                        "properties": {
+                            "model_name": {"type": "string", "description": "The Looker model name"},
+                            "explore_name": {"type": "string", "description": "The Looker explore name"}
+                        },
+                        "required": ["model_name", "explore_name"]
+                    }
+                })
         
         logger.info(f"Total tools available: {len(tools)} (POC Mode: {poc_mode})")
         
@@ -658,6 +789,8 @@ class MCPAgent:
             return self._execute_get_models_enhanced(looker_url, client_id, client_secret)
         elif tool_name == "get_lookml_model_explore":
             return self._execute_get_lookml_model_explore(arguments, looker_url, client_id, client_secret)
+        elif tool_name == "get_explore_fields":
+            return self._execute_get_explore_fields(arguments, looker_url, client_id, client_secret)
         
         # Database Metadata
         elif tool_name == "get_connections":
@@ -1783,6 +1916,34 @@ class MCPAgent:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
+    def _execute_get_explore_fields(self, args: Dict[str, Any], url: str, client_id: str, client_secret: str) -> Dict[str, Any]:
+        """Fetch fields for an explore (Production Mode) using the Python SDK."""
+        try:
+            model = args.get("model_name")
+            explore = args.get("explore_name")
+            if not model or not explore:
+                return {"success": False, "error": "model_name and explore_name are required"}
+            
+            sdk = self._init_sdk(url, client_id, client_secret)
+            exp = sdk.lookml_model_explore(model, explore, fields="fields")
+            
+            dimensions = []
+            for d in exp.fields.dimensions:
+                dimensions.append({"name": d.name, "type": d.type, "label": d.label, "description": d.description})
+                
+            measures = []
+            for m in exp.fields.measures:
+                measures.append({"name": m.name, "type": m.type, "label": m.label, "description": m.description})
+                
+            return {
+                "success": True, 
+                "explore": f"{model}.{explore}",
+                "dimensions": dimensions,
+                "measures": measures
+            }
+        except Exception as e:
+            return {"success": False, "error": f"Failed to fetch fields: {str(e)}"}
+
     def _execute_get_connections(self, url: str, client_id: str, client_secret: str) -> Dict[str, Any]:
         """List connections."""
         try:
@@ -2523,7 +2684,6 @@ class MCPAgent:
     # ==========================================
     # MODEL PROCESSING
     # ==========================================
-
     async def _process_with_gemini(
         self, 
         user_message: str, 
@@ -2532,23 +2692,38 @@ class MCPAgent:
         looker_url: str, 
         client_id: str, 
         client_secret: str, 
-        system_prompt: str = ""
-    ) -> Dict[str, Any]:
-        """Process message with Gemini (action-first, JSON-based)."""
+        system_prompt: str = "",
+        images: Optional[List[str]] = None
+    ) -> AsyncGenerator[Dict[str, Any], None]:
+        """Process message with Gemini (JSON tool calling with streaming text)."""
+        from google.genai import types
+        import base64
+        import time
+        import json
+        
+        # 1. Format tools manually
+        tools_list_for_prompt = [
+            {"name": t["name"], "description": t["description"], "parameters": t["inputSchema"]}
+            for t in tools
+        ]
+        tools_str = json.dumps(tools_list_for_prompt, indent=2)
         
         gemini_instruction = (
-            f"{system_prompt}\\n\\n"
-            "### MANDATORY OUTPUT PROTOCOL:\\n"
-            '1. Output a raw JSON object to call a tool: {"tool": "name", "arguments": {...}}\\n'
-            "2. DO NOT give a text answer until you have analyzed tool results.\\n"
-            "3. NO Python code, NO markdown blocks. ONLY RAW JSON."
+            f"{system_prompt}\n\n"
+            "### REQUIRED TOOLS:\n"
+            f"{tools_str}\n\n"
+            "### MANDATORY OUTPUT PROTOCOL:\n"
+            "1. Output exactly ONE raw JSON object to call a tool: {\"tool\": \"name\", \"arguments\": {...}}\n"
+            "2. DO NOT give a text answer until you have analyzed tool results. Wait for the end of the prompt before answering.\n"
+            "3. NO Python code, NO markdown blocks. ONLY RAW JSON.\n"
+            "4. NEVER output text and a JSON block together in the first turn."
         )
 
+        # 2. Build History
         contents = []
         for msg in history:
             role = "model" if msg["role"] == "assistant" else "user"
             
-            # If the frontend sent rich parts, convert them to text for Gemini
             if "parts" in msg and msg["parts"]:
                 text_parts = []
                 for p in msg["parts"]:
@@ -2561,76 +2736,113 @@ class MCPAgent:
                              text_parts.append(f"[Successfully used tool '{p.get('tool')}' with input {p.get('input')}. Result: {p.get('result')}]")
                 
                 if text_parts:
-                     contents.append({"role": role, "parts": [{"text": "\n".join(text_parts)}]})
+                     contents.append(types.Content(role=role, parts=[types.Part.from_text(text="\n".join(text_parts))]))
                 else:
-                     contents.append({"role": role, "parts": [{"text": msg["content"]}]})
+                     contents.append(types.Content(role=role, parts=[types.Part.from_text(text=msg["content"])]))
             else:
-                contents.append({"role": role, "parts": [{"text": msg["content"]}]})
+                contents.append(types.Content(role=role, parts=[types.Part.from_text(text=msg["content"])]))
                 
-        contents.append({
-            "role": "user", 
-            "parts": [{"text": f"{gemini_instruction}\\n\\nUSER REQUEST: {user_message}"}]
-        })
+        # 3. Add current turn with images if any
+        user_parts = []
+        if images and len(images) > 0:
+            for img_data in images:
+                if img_data.startswith('data:image'):
+                    header, base1 = img_data.split(',', 1)
+                    media_type = header.split(';')[0].split(':')[1]
+                else:
+                    base1 = img_data
+                    media_type = "image/jpeg"
+                raw_data = base64.b64decode(base1)
+                user_parts.append(types.Part.from_data(data=raw_data, mime_type=media_type))
+                
+        user_parts.append(types.Part.from_text(text=f"{gemini_instruction}\n\nUSER REQUEST: {user_message}"))
+        contents.append(types.Content(role="user", parts=user_parts))
         
-        try:
-            from google.generativeai.types import HarmCategory, HarmBlockThreshold
-            safety = {
-                cat: HarmBlockThreshold.BLOCK_NONE 
-                for cat in [
-                    HarmCategory.HARM_CATEGORY_HATE_SPEECH, 
-                    HarmCategory.HARM_CATEGORY_HARASSMENT, 
-                    HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, 
-                    HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT
-                ]
-            }
-            
-            response = self.model.generate_content(contents, safety_settings=safety)
-            raw_text = response.text if (response.candidates and response.candidates[0].content.parts) else ""
-            clean_text = raw_text.strip().replace("```json", "").replace("```", "")
-            tool_calls = []
+        safety = [
+            types.SafetySetting(category="HARM_CATEGORY_HATE_SPEECH", threshold="BLOCK_NONE"),
+            types.SafetySetting(category="HARM_CATEGORY_HARASSMENT", threshold="BLOCK_NONE"),
+            types.SafetySetting(category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="BLOCK_NONE"),
+            types.SafetySetting(category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="BLOCK_NONE"),
+        ]
+        
+        config = types.GenerateContentConfig(safety_settings=safety)
 
+        try:
+            # Step 1: Request JSON Tool Call
+            action_response = await self.genai_client.aio.models.generate_content(
+                model=self.model,
+                contents=contents,
+                config=config
+            )
+            
+            raw_text = action_response.text if (action_response.candidates and action_response.candidates[0].content and action_response.candidates[0].content.parts) else ""
+            clean_text = raw_text.strip().replace("```json", "").replace("```", "")
+            
+            t_name = None
+            args = {}
+            
             if "{" in clean_text and "}" in clean_text:
                 start, end = clean_text.find("{"), clean_text.rfind("}") + 1
                 try:
                     data = json.loads(clean_text[start:end])
                     t_name = data.get("tool") or data.get("name")
-                    if t_name:
-                        raw_result = await self.execute_tool(
-                            t_name, 
-                            data.get("arguments", {}), 
-                            looker_url, 
-                            client_id, 
-                            client_secret
-                        )
-                        
-                        # Serialize result safely
-                        if isinstance(raw_result, dict) and "result" in raw_result:
-                            res = raw_result["result"]
-                            safe_result = json.dumps(res) if isinstance(res, (dict, list)) else str(res)
-                        else:
-                            safe_result = str(raw_result)
-                            
-                        tool_calls.append({
-                            "tool": t_name, 
-                            "arguments": data.get("arguments", {}), 
-                            "result": safe_result
-                        })
+                    args = data.get("arguments", {})
                 except json.JSONDecodeError:
                     pass
-
-            if tool_calls:
+            
+            if t_name:
+                yield {
+                    "type": "tool_use",
+                    "tool": t_name,
+                    "input": args
+                }
+                
+                # Execute tool
+                tool_result = await self.execute_tool(
+                    t_name,
+                    args,
+                    looker_url,
+                    client_id,
+                    client_secret
+                )
+                
+                # Serialize result
+                if isinstance(tool_result, dict) and "result" in tool_result:
+                    res_obj = tool_result["result"]
+                    res_str = json.dumps(res_obj) if isinstance(res_obj, (dict, list)) else str(res_obj)
+                else:
+                    res_str = str(tool_result)
+                    
+                yield {
+                    "type": "tool_result",
+                    "tool": t_name,
+                    "result": res_str
+                }
+                
+                # Step 2: Stream final text answer
                 summary_prompt = (
-                    f"CONTEXT: {system_prompt}\\n"
-                    f"REQUEST: {user_message}\\n"
-                    f"TOOL RESULT: {tool_calls[0]['result']}\\n\\n"
+                    f"CONTEXT: {system_prompt}\n"
+                    f"REQUEST: {user_message}\n"
+                    f"TOOL RESULT: {res_str}\n\n"
                     f"Answer using this data."
                 )
-                final_text = self.model.generate_content(summary_prompt).text
-                return {"success": True, "response": final_text, "tool_calls": tool_calls}
-            
-            return {"success": True, "response": raw_text, "tool_calls": []}
+                
+                stream_response = await self.genai_client.aio.models.generate_content_stream(
+                    model=self.model,
+                    contents=summary_prompt,
+                    config=config
+                )
+                
+                async for chunk in stream_response:
+                    if chunk.text:
+                        yield {"type": "text", "content": chunk.text}
+            else:
+                # No tool matched, just yield the text
+                yield {"type": "text", "content": raw_text}
+
         except Exception as e:
-            return {"success": False, "response": f"Error: {str(e)}", "tool_calls": []}
+            logger.error(f"Gemini error: {e}")
+            yield {"type": "error", "content": str(e)}
 
     async def _process_with_claude(
         self,
@@ -2909,40 +3121,24 @@ class MCPAgent:
             full_message = f"CONTEXT:\\n{explore_context}\\n\\n{full_message}"
 
         try:
+            # Claude and Gemini now both use Native Generators (streaming events)
             if self.is_claude:
-                # Claude is a generator (streaming events)
-                async for event in self._process_with_claude(
+                agent_processor = self._process_with_claude(
                     full_message, history, available_tools,
                     looker_url, client_id, client_secret,
                     system_prompt=system_instruction,
                     images=images
-                ):
-                    yield event
+                )
             else:
-                # Gemini is request-response, bridge to events
-                result = await self._process_with_gemini(
+                agent_processor = self._process_with_gemini(
                     full_message, history, available_tools,
                     looker_url, client_id, client_secret,
-                    system_prompt=system_instruction
+                    system_prompt=system_instruction,
+                    images=images
                 )
-                
-                # Yield tool calls if any
-                if result.get("tool_calls"):
-                    for tc in result["tool_calls"]:
-                        yield {
-                            "type": "tool_use",
-                            "tool": tc["tool"],
-                            "input": tc["arguments"]
-                        }
-                        yield {
-                            "type": "tool_result",
-                            "tool": tc["tool"],
-                            "result": tc["result"]
-                        }
-
-                # Yield text response
-                response_text = result.get("response") or result.get("text") or str(result)
-                yield {"type": "text", "content": response_text}
+            
+            async for event in agent_processor:
+                yield event
             
             yield {"type": "done"}
             
