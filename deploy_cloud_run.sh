@@ -4,8 +4,8 @@
 PROJECT_ID="antigravity-innovations"
 REGION="europe-west1"
 REPO="antigravity-repo-eu"
-GCLOUD="/snap/bin/gcloud"
-BACKEND_URL="https://antigravity-backend-734857282249.europe-west1.run.app"
+GCLOUD="gcloud"
+BACKEND_URL="https://selo-backend-734857282249.europe-west1.run.app"
 
 # 2. Helper function for errors
 error_exit() {
@@ -30,7 +30,7 @@ case $choice in
         $GCLOUD builds submit --config scripts/backend-build.yaml . || error_exit "Backend Build Failed"
 
         echo "🚀 Deploying Backend..."
-        $GCLOUD run deploy antigravity-backend \
+        $GCLOUD run deploy selo-backend \
             --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/antigravity-backend \
             --region ${REGION} \
             --allow-unauthenticated \
@@ -48,7 +48,7 @@ case $choice in
         $GCLOUD builds submit --config scripts/web-build.yaml . || error_exit "Frontend Build Failed"
 
         echo "🚀 Deploying Frontend..."
-        $GCLOUD run deploy antigravity-web \
+        $GCLOUD run deploy selo-web \
             --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/antigravity-web \
             --region ${REGION} \
             --allow-unauthenticated \
@@ -56,6 +56,7 @@ case $choice in
             --set-env-vars="NEXT_PUBLIC_API_URL=${BACKEND_URL}" || error_exit "Frontend Deploy Failed"
         ;;
 esac
+
 
 echo "==============================================="
 echo "✅ Deployment Complete!"

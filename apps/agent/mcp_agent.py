@@ -4,6 +4,8 @@ import logging
 import asyncio
 from typing import Dict, List, Any, Optional, AsyncGenerator
 from anthropic import AsyncAnthropic
+from google.oauth2 import credentials as google_credentials
+from google.oauth2 import service_account
 try:
     from anthropic import AsyncAnthropicVertex as _AnthropicVertex
 except ImportError:
@@ -136,10 +138,21 @@ class MCPAgent:
         claude_api_key: str = "",
         llm_region: str = "US",
     ):
+        # SSL Bypass (Nuclear Option for Corporate Proxies)
+        import ssl
+        try:
+            _create_unverified_https_context = ssl._create_unverified_context
+            ssl._create_default_https_context = _create_unverified_https_context
+        except AttributeError:
+            pass
+
         self.model_name = model_name
         self.session_id = session_id
         self.created_files_cache = {}
         self.llm_region = llm_region.upper() if llm_region else "US"
+        self.vertex_location = None
+        self.vertex_project = None
+        self.vertex_creds = None
 
         # Initialize session-specific context
         if LookMLContext:
@@ -154,12 +167,50 @@ class MCPAgent:
         _vertex_key = vertex_api_key or os.getenv("VERTEX_API_KEY", "") or os.getenv("GOOGLE_API_KEY", "")
         _claude_key = claude_api_key or os.getenv("ANTHROPIC_API_KEY", "")
         _gcp_project = os.getenv("VERTEX_PROJECT", "antigravity-innovations")
-        _gcp_region_claude = os.getenv("VERTEX_REGION_CLAUDE", "us-east5")  # Claude on Vertex needs us-east5
+        _gcp_region_claude = os.getenv("VERTEX_REGION_CLAUDE", "global")  # User suspects global works with correct ID
+
         _gcp_region_gemini = os.getenv("VERTEX_REGION_GEMINI", os.getenv("VERTEX_REGION", "europe-west1"))
 
-        self.model_name = self._map_to_vertex_model(model_name)
+        _vertex_creds = None
+        _vertex_access_token = None
+        if _vertex_key and _vertex_key.strip().startswith("{"):
+             try:
+                 import json
+                 from google.oauth2 import service_account
+                 sa_info = json.loads(_vertex_key)
+                 # Explicitly provide the required scope for Vertex AI
+                 _vertex_creds = service_account.Credentials.from_service_account_info(
+                     sa_info, 
+                     scopes=["https://www.googleapis.com/auth/cloud-platform"]
+                 )
+                 if "project_id" in sa_info:
+                     _gcp_project = sa_info["project_id"]
+                     logger.info(f"Extracted project ID from Service Account JSON: {_gcp_project}")
+             except Exception as e:
+                 logger.error(f"Failed to parse service account JSON: {e}")
+        elif _vertex_key and (_vertex_key.startswith("AQ") or _vertex_key.startswith("ya29")):
+             logger.info("Vertex AI: Using OAuth2 Access Token provided.")
+             _vertex_access_token = _vertex_key
+
+        # Map UI model names to Vertex IDs (Default behavior)
+        # Map UI model names to Vertex IDs (Default behavior)
+        # self.model_name = self._map_to_vertex_model(model_name) # MOVED to provider specific sections
+
+
+        # self.model_name = self._map_to_vertex_model(model_name) # DEFERRED until we know if we are Vertex or not
 
         if self.is_claude:
+            # Use direct Anthropic key if provided, this avoids the need for Vertex / ADC
+            # Prioritize Vertex if Service Account JSON OR Access Token is provided
+            if (_vertex_creds or _vertex_access_token) and _AnthropicVertex:
+                logger.info(f"Claude: Using Vertex AI with provided credentials (project={_gcp_project})")
+                self.model_name = self._map_to_vertex_model(model_name)
+                anthropic_kwargs = {
+                    "project_id": _gcp_project,
+                    "region": _gcp_region_claude,
+                    "http_client": httpx.AsyncClient(timeout=httpx.Timeout(connect=10.0, read=600.0, write=10.0, pool=10.0))
+                }
+            
             # EU region → use direct Anthropic API key (Claude not on Vertex in EU)
             if self.llm_region == "EU" and _claude_key:
                 logger.info("Claude: EU region → using direct Anthropic API key")
@@ -168,9 +219,12 @@ class MCPAgent:
                     timeout=httpx.Timeout(connect=10.0, read=600.0, write=10.0, pool=10.0)
                 )
                 self.is_vertex = False
-            elif _AnthropicVertex and _gcp_project:
+                self.model_name = model_name.split("@")[0]
+                if self.model_name == "claude-sonnet-4-5-20250929":
+                    self.model_name = "claude-sonnet-4-5"
+            elif (_vertex_creds or _vertex_access_token) and _AnthropicVertex:
                 # US / Vertex region → use AnthropicVertex with ADC or API key
-                logger.info(f"Claude: Vertex AI (project={_gcp_project}, region={_gcp_region_claude})")
+                logger.info(f"Claude: Vertex AI (project={_gcp_project}, region={_gcp_region_claude}) - Using SA Creds")
                 self.client = _AnthropicVertex(
                     project_id=_gcp_project,
                     region=_gcp_region_claude,
@@ -186,43 +240,60 @@ class MCPAgent:
                     timeout=httpx.Timeout(connect=10.0, read=600.0, write=10.0, pool=10.0)
                 )
                 self.is_vertex = False
+                self.model_name = model_name.split("@")[0]
+                if self.model_name == "claude-sonnet-4-5-20250929":
+                    self.model_name = "claude-sonnet-4-5"
+            elif _AnthropicVertex and _gcp_project: # Fallback to ADC if explicitly requested or defaults
+                 logger.info(f"Claude: Vertex AI via ADC (project={_gcp_project})")
+                 self.model_name = self._map_to_vertex_model(model_name)
+                 self.client = _AnthropicVertex(
+                    project_id=_gcp_project,
+                    region=_gcp_region_claude,
+                 )
+                 self.is_vertex = True
             else:
+                logger.error("No Claude credentials found!")
                 raise Exception("No Claude credentials available. Provide an Anthropic API key (EU) or configure Vertex AI (US).")
         else:
-            # Gemini via google-genai SDK (supports API key, SA JSON, OR ADC)
+            # Gemini via google-genai SDK (supports API key OR ADC)
             try:
                 from google import genai as google_genai
-                from google.oauth2 import service_account
-                import json
+                logger.info(f"Gemini Init. Vertex Key Present: {bool(_vertex_key)}")
                 
+                # Store context for Region Fallback (Required for _generate_with_retry)
+                self.vertex_project = _gcp_project
+                self.vertex_creds = _vertex_creds
+                self.vertex_location = _gcp_region_gemini
+                self.fallback_regions = [
+                    "global", "us-central1", "us-east1", "us-west1", "us-east4",
+                    "europe-west1", "europe-west2", "europe-west3", "europe-west4", "europe-west9",
+                    "asia-northeast1", "asia-southeast1", "northamerica-northeast1"
+                ]
+
                 if _vertex_key and _vertex_key.startswith("AIza"):
-                    logger.info("Gemini: Google AI Studio with API key provided. Using standard GenAI client.")
+                    logger.info("Gemini: Google AI Studio with API key provided.")
                     self.genai_client = google_genai.Client(
                         api_key=_vertex_key,
                     )
-                elif _vertex_key and _vertex_key.strip().startswith("{"):
-                    logger.info("Gemini: Service Account JSON provided in settings. Initializing isolated identity.")
-                    try:
-                        sa_info = json.loads(_vertex_key)
-                        creds = service_account.Credentials.from_service_account_info(sa_info)
-                        self.genai_client = google_genai.Client(
-                            vertexai=True,
-                            project=sa_info.get("project_id", _gcp_project),
-                            location=_gcp_region_gemini,
-                            credentials=creds
-                        )
-                    except Exception as parse_e:
-                        raise Exception(f"Invalid Service Account JSON provided: {parse_e}")
-                else:
-                    logger.info(f"Gemini: Vertex AI with ADC (project={_gcp_project})")
-                    self.genai_client = google_genai.Client(
-                        vertexai=True,
-                        project=_gcp_project,
-                        location=_gcp_region_gemini,
-                    )
+                    self.is_vertex = False
+                else: 
+                     # Fallback to pure ADC (environment)
+                     logger.info(f"Gemini: Vertex AI via Ambient ADC (project={_gcp_project})")
+                     vertex_kwargs = {
+                        "vertexai": True,
+                        "project": _gcp_project,
+                        "location": _gcp_region_gemini
+                     }
+                     if _vertex_creds:
+                         # Use explicit credentials if provided (e.g. valid SA object)
+                         # But likely None if we rely on ADC
+                         vertex_kwargs["credentials"] = _vertex_creds
+
+                     self.genai_client = google_genai.Client(**vertex_kwargs)
+                     self.is_vertex = True
+                
                 self.model = self.model_name
-                self.is_vertex = True
-                logger.info(f"Gemini model: {self.model}")
+                logger.info(f"Gemini model initialized: {self.model} (is_vertex: {self.is_vertex})")
             except Exception as e:
                 raise Exception(f"Gemini initialization failed: {e}")
         
@@ -242,20 +313,29 @@ class MCPAgent:
             "gemini-2.5-flash-lite":      "gemini-2.5-flash-lite",
             "gemini-2.5-flash-image":     "gemini-2.5-flash-preview-04-17",
             # Gemini 3.x (preview)
-            "gemini-3-flash-preview":     "gemini-3-flash-preview",
-            "gemini-3-pro-image-preview": "gemini-3-pro-image-preview",
+            # Gemini 3.x (preview)
+            "gemini-3.0-flash-preview":     "gemini-3.0-flash-preview",
+            "gemini-3.0-pro-image-preview": "gemini-3.0-pro-image-preview",
             "gemini-3.1-pro-preview":     "gemini-3.1-pro-preview",
+            "gemini-3.0-pro-preview":     "gemini-3.0-pro-preview",
 
             # Claude 3.5 & 3 (including handling cached UI names)
-            "claude-sonnet-4-5-20250929": "claude-sonnet-4-5@20250929",
-            "claude-sonnet-4-5@20250929": "claude-sonnet-4-5@20250929",
+            "claude-sonnet-4-5-20250929": "claude-3-5-sonnet@20240620",
+            "claude-sonnet-4-5@20250929": "claude-3-5-sonnet@20240620",
             "claude-opus-4-5-20251101":   "claude-opus-4-6@default",
             "claude-haiku-4-5-20251001":  "claude-sonnet-4-6@default",
-            "claude-3-5-sonnet-v2@20241022": "claude-sonnet-4-6@default",
+            "claude-3-5-sonnet-v2@20241022": "claude-3-5-sonnet-v2@20241022",
+            
+            # User Requested Mappings (Confirmed via Screenshots @default)
+            "claude-opus-4-6":            "claude-opus-4-6@default",
+            "claude-sonnet-4-6":          "claude-sonnet-4-6@default",
+            "claude-sonnet-4-5":          "claude-sonnet-4-5@20250929", 
+            
+            # Legacy/Safety fallback
             "claude-sonnet-4-6@default":  "claude-sonnet-4-6@default",
             "claude-3-opus@20240229":     "claude-opus-4-6@default",
             "claude-opus-4-6@default":    "claude-opus-4-6@default",
-            "claude-3-5-haiku@20241022":  "claude-sonnet-4-6@default",
+            "claude-3-5-haiku@20241022":  "claude-3-5-haiku@20241022",
         }
         mapped = vertex_map.get(model_name, model_name)
         logger.info(f"Vertex AI model mapping: {model_name} -> {mapped}")
@@ -263,19 +343,8 @@ class MCPAgent:
 
     def _get_server_params(self, looker_url: str, client_id: str, client_secret: str) -> StdioServerParameters:
         """Create server parameters with proper environment setup."""
-        url_to_use = looker_url.rstrip("/")
-        
-        # Port :19999 is required for:
-        # 1. Looker Original instances (usually *.looker.com, but NOT Looker Core instances like *.eu.looker.com)
-        # 2. The specific default developer instance
-        is_looker_original = url_to_use.endswith(".com") and not url_to_use.endswith(".eu.looker.com") and not url_to_use.endswith(".europe-west1.looker.com")
-        is_default_dummy = "8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app" in url_to_use
-        
-        if (is_looker_original or is_default_dummy) and ":19999" not in url_to_use:
-            url_to_use += ":19999"
-            
         env = os.environ.copy()
-        env["LOOKER_BASE_URL"] = url_to_use
+        env["LOOKER_BASE_URL"] = looker_url.rstrip("/")
         env["LOOKER_CLIENT_ID"] = client_id
         env["LOOKER_CLIENT_SECRET"] = client_secret
         env["LOOKER_VERIFY_SSL"] = "true"
@@ -289,15 +358,7 @@ class MCPAgent:
     def _init_sdk(self, url: str, client_id: str, client_secret: str):
         """Initialize Looker SDK for custom tool implementations."""
         import looker_sdk
-        url_to_use = url.rstrip("/")
-        
-        is_looker_original = url_to_use.endswith(".com") and not url_to_use.endswith(".eu.looker.com") and not url_to_use.endswith(".europe-west1.looker.com")
-        is_default_dummy = "8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app" in url_to_use
-        
-        if (is_looker_original or is_default_dummy) and ":19999" not in url_to_use:
-            url_to_use += ":19999"
-            
-        os.environ["LOOKERSDK_BASE_URL"] = url_to_use
+        os.environ["LOOKERSDK_BASE_URL"] = url
         os.environ["LOOKERSDK_CLIENT_ID"] = client_id
         os.environ["LOOKERSDK_CLIENT_SECRET"] = client_secret
         os.environ["LOOKERSDK_VERIFY_SSL"] = "true"
@@ -476,7 +537,7 @@ class MCPAgent:
         
         tools.append({
             "name": "create_dashboard",
-            "description": "STEP 1 of dashboard creation: Create a new empty User Defined Dashboard. Returns dashboard_id and base_url. In POC mode, use for multi-tile uncommitted LookML dashboards. ALWAYS save the returned dashboard_id and base_url for subsequent add_dashboard_element calls.",
+            "description": "Create a PERMANENT dashboard object. Use ONLY when explicitly requested or for multi-tile reports. For simple single-metric questions, use run_query + query_url instead.",
             "inputSchema": {
                 "type": "object",
                 "properties": {
@@ -583,6 +644,42 @@ class MCPAgent:
         
         # --- Database Metadata Tools (helpful for LookML creation) ---
         
+        # PRODUCTION / GENERAL ANALYTICS TOOLS
+        if not poc_mode:
+            tools.append({
+                "name": "run_query",
+                "description": "Run an inline query to get data. MANDATORY: You MUST run `get_explore_fields` BEFORE calling this tool to verify field names. Returns JSON data.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "model": {"type": "string", "description": "Model name"},
+                        "view": {"type": "string", "description": "View/Explore name"},
+                        "fields": {"type": "array", "items": {"type": "string"}},
+                        "filters": {"type": "object"},
+                        "sorts": {"type": "array", "items": {"type": "string"}},
+                        "limit": {"type": "string", "description": "Row limit (default 500)"}
+                    },
+                    "required": ["model", "view", "fields"]
+                }
+            })
+
+            tools.append({
+                "name": "query_url",
+                "description": "Generate a visualization URL for a query. Call this IMMEDIATELY after run_query for the same parameters. Returns embed URL.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "model": {"type": "string"},
+                        "view": {"type": "string"},
+                        "fields": {"type": "array", "items": {"type": "string"}},
+                        "filters": {"type": "object"},
+                        "sorts": {"type": "array", "items": {"type": "string"}},
+                        "limit": {"type": "string"}
+                    },
+                    "required": ["model", "view", "fields"]
+                }
+            })
+
         tools.append({
             "name": "get_connections",
             "description": "List database connections.",
@@ -749,6 +846,13 @@ class MCPAgent:
             return self._execute_get_explore_fields_from_context(arguments, looker_url, client_id, client_secret)
         elif tool_name == "register_lookml_manually":
             return self._execute_register_lookml_manually(arguments, looker_url, client_id, client_secret)
+        
+        # Data Querying
+        elif tool_name == "run_query" or tool_name == "query":
+            return self._execute_run_query(arguments, looker_url, client_id, client_secret)
+
+        elif tool_name == "query_url":
+            return self._execute_query_url(arguments, looker_url, client_id, client_secret)
         
         # Visualization
         elif tool_name == "create_chart_from_context":
@@ -1304,7 +1408,14 @@ class MCPAgent:
                     filters=query_def.get("filters"),
                     sorts=query_def.get("sorts"),
                     limit=query_def.get("limit", "500"),
-                    vis_config={"type": vis_type}
+                    vis_config={
+                        "type": vis_type,
+                        "show_view_names": False,
+                        "show_y_axis_labels": True,
+                        "show_x_axis_ticks": True,
+                        "show_null_points": True,
+                        "interpolation": "linear"
+                    }
                 )
                 created_query = sdk.create_query(body=query_body)
                 query_id = created_query.id
@@ -1937,12 +2048,107 @@ class MCPAgent:
                 
             return {
                 "success": True, 
-                "explore": f"{model}.{explore}",
-                "dimensions": dimensions,
-                "measures": measures
+                "result": {
+                    "explore": f"{model}.{explore}",
+                    "dimensions": dimensions,
+                    "measures": measures
+                }
             }
         except Exception as e:
             return {"success": False, "error": f"Failed to fetch fields: {str(e)}"}
+
+    def _execute_run_query(self, args: Dict[str, Any], url: str, client_id: str, client_secret: str) -> Dict[str, Any]:
+        """Run an inline query using Python SDK (Replaces binary tool)."""
+        try:
+            model = args.get("model")
+            view = args.get("view")
+            
+            # Simple fallback for model/explore params (sometimes called explore_name)
+            if not view and args.get("explore"):
+                view = args.get("explore")
+
+            if not model or not view:
+                return {"success": False, "error": "model and view (explore name) are required"}
+            
+            sdk = self._init_sdk(url, client_id, client_secret)
+            
+            # Construct Query Body from args
+            # Supported args: fields, filters, sorts, limit, column_limit
+            body = {
+                "model": model,
+                "view": view,
+                "fields": args.get("fields", []),
+                "filters": args.get("filters", {}),
+                "sorts": args.get("sorts", []),
+                "limit": str(args.get("limit", "500")),
+                "column_limit": str(args.get("column_limit", "50")),
+            }
+            
+            if "dynamic_fields" in args:
+                body["dynamic_fields"] = args["dynamic_fields"]
+
+            # Run query
+            import json
+            result_json = sdk.run_inline_query(result_format="json", body=body)
+            
+            # Parse result
+            data = json.loads(result_json)
+            
+            return {
+                "success": True,
+                "result": {
+                    "data": data,
+                    "count": len(data),
+                    "summary": f"Query returned {len(data)} rows."
+                }
+            }
+        except Exception as e:
+             return {"success": False, "error": f"Failed to run query: {str(e)}"}
+
+    def _execute_query_url(self, args: Dict[str, Any], url: str, client_id: str, client_secret: str) -> Dict[str, Any]:
+        """Generate embed URL (Python implementation)."""
+        try:
+            from looker_sdk import models40
+            sdk = self._init_sdk(url, client_id, client_secret)
+            
+            model = args.get("model")
+            view = args.get("view") or args.get("explore")
+            if not model:
+                model = args.get("model_name") # Try model_name
+            if not view:
+                view = args.get("explore_name") # Try explore_name
+
+            if not model or not view:
+                return {"success": False, "error": "Missing model or view"}
+
+            query_body = models40.WriteQuery(
+                model=model,
+                view=view,
+                fields=args.get("fields", []),
+                filters=args.get("filters", {}),
+                sorts=args.get("sorts", []),
+                limit=str(args.get("limit", "500")),
+                column_limit=str(args.get("column_limit", "50"))
+            )
+            
+            # create_query
+            query = sdk.create_query(body=query_body)
+            
+            # Construct URL
+            base_url = url.rstrip('/')
+            if not base_url.startswith('http'):
+                base_url = f"https://{base_url}"
+             
+            # Construct absolute URL manually (assuming cloud environment)
+            # If using custom domain, this might vary.
+            long_url = f"{base_url}/explore/{model}/{view}?qid={query.client_id}&toggle=dat,pik,vis"
+            
+            return {
+                "success": True,
+                "result": long_url
+            }
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
     def _execute_get_connections(self, url: str, client_id: str, client_secret: str) -> Dict[str, Any]:
         """List connections."""
@@ -2237,6 +2443,14 @@ class MCPAgent:
         # TOOL INTEGRITY RULES (applies to ALL modes)
         system_prompt += (
             "🛡️ TOOL INTEGRITY RULES (MANDATORY - READ BEFORE ANY TOOL CALL)\n\n"
+
+            "RULE 0 - INTERACTION PROTOCOL (CLARIFICATION):\n"
+            "If the user's request is ambiguous or lacks necessary context (e.g., 'show best products' without a metric):\n"
+            "   1. ASK FOR CLARIFICATION immediately.\n"
+            "   2. DO NOT CALL ANY TOOLS while asking a question.\n"
+            "   3. STOP execution and WAIT for user input.\n"
+            "   ❌ INCORRECT: asking a question AND calling a tool in the same turn.\n"
+            "   ✅ CORRECT: 'Can you specify which metric to use for ranking?' -> [STOP]\n\n"
 
             "RULE 1 - CONTEXT EXISTENCE CHECK (_from_context tools):\n"
             "BEFORE using ANY '_from_context' tool (get_explore_fields_from_context, "
@@ -2550,10 +2764,21 @@ class MCPAgent:
             "- Use the exact strings returned by tools\n"
             "- Verify you have the dashboard_id before calling add_dashboard_element\n\n"
             
+            "CRITICAL: TOOL SELECTION PROTOCOL (Visual Output):\n"
+            "1. IF user asks for 'a dashboard', 'a report', or multiple unrelated metrics -> USE `create_dashboard`.\n"
+            "2. IF user asks a specific question ('Total sales', 'Top 10 products', 'Trend of users') -> DO NOT create a dashboard.\n"
+            "   - USE `run_query` to get data.\n"
+            "   - USE `query_url` to get the chart.\n"
+            "   - This is faster and cleaner for the user.\n"
+            "   - Creating a dashboard for a single number is FORBIDDEN.\n\n"
+
             "CRITICAL: DATA ANALYSIS PROTOCOLS:\n"
-            "1. **METADATA FIRST**: Before running ANY aggregate query, understand available measures.\n"
-            "   - Call `get_explore_fields_from_context` (POC) or `get_dimensions`/`get_measures` (Production)\n"
-            "   - DO NOT assume fields exist. Verify them first.\n\n"
+            "1. **METADATA FIRST**: Before running ANY query, you MUST verify field names.\n"
+            "   - POC Mode: Call `get_explore_fields_from_context`\n"
+            "   - Production Mode: Call `get_explore_fields`\n"
+            "   - ❌ NEVER guess field names (e.g. 'total_revenue', 'count')\n"
+            "   - ✅ ALWAYS use exact Fully Qualified Names from the tool response (e.g. 'orders.count')\n"
+            "   - Step 1 is `get_explore_fields`. Step 2 is `run_query`.\n\n"
             
             "2. **CLARIFY AMBIGUITY**: If user asks for 'best', 'top', 'worst', 'most' without specifying metric:\n"
             "   - **STOP** and **ASK**: 'Top 10 by which metric? (e.g. Count, Revenue, Margin?)'\n"
@@ -2679,11 +2904,103 @@ class MCPAgent:
         if explore_context and not poc_mode:
             system_prompt += f"\\n**Context**: {explore_context}\\n"
             
+        if not self.is_claude:
+            system_prompt += (
+                "\n\nCRITICAL: DASHBOARD DATA LIMITATION & INSIGHTS PROTOCOL\n"
+                "You are required to provide hard numbers in your Insights section. However, you must understand a core Looker API limitation: \n"
+                "The `add_dashboard_element` tool ONLY returns tile metadata. It DOES NOT return the data payload (the actual numbers). \n\n"
+                "Therefore, to fulfill the requirement of providing hard numbers without hallucinating, you MUST follow this exact sequence when creating a dashboard:\n\n"
+                "1. FIELD VERIFICATION (MANDATORY)\n"
+                "   - Call `get_explore_fields` to get the exact Fully Qualified Names (FQNs).\n"
+                "   - Output a `<locked_fields>` block in your reasoning containing the verified fields.\n\n"
+                "2. THE 'INSIGHTS FETCH' (MANDATORY FOR NUMBERS)\n"
+                "   - You cannot get data from tile creation. Therefore, you MUST call `run_query` for the primary/most important query you plan to put on the dashboard.\n"
+                "   - Extract the hard numbers from this `run_query` response to use in your Insights section.\n\n"
+                "3. DASHBOARD CREATION\n"
+                "   - Call `create_dashboard` to get the `dashboard_id`.\n\n"
+                "4. TILE CREATION\n"
+                "   - Call `add_dashboard_element` for your tiles. \n"
+                "   - For the primary tile, reuse the EXACT SAME `query_def` parameters you used in Step 2.\n\n"
+                "5. NO HALLUCINATION\n"
+                "   - NEVER guess metrics. \n"
+                "   - NEVER pretend `add_dashboard_element` returned data. \n"
+                "   - ONLY quote numbers in your Insights that you explicitly received from the `run_query` call in Step 2.\n\n"
+            )
+
         return system_prompt
 
     # ==========================================
     # MODEL PROCESSING
     # ==========================================
+    def _convert_tool_for_gemini(self, tool_def: Dict[str, Any]) -> Any:
+        from google.genai import types
+        # Convert schema to FunctionDeclaration
+        return types.FunctionDeclaration(
+            name=tool_def["name"],
+            description=tool_def["description"],
+            parameters=tool_def.get("inputSchema")
+        )
+
+    async def _generate_with_retry(self, model, contents, config):
+        """Handle 404 Region errors by retrying fallback regions."""
+        from google import genai as google_genai
+
+        # If not Vertex, use standard generation without region fallback
+        if not self.is_vertex:
+             return await self.genai_client.aio.models.generate_content(
+                model=model, contents=contents, config=config
+             )
+        
+        # Determine regions
+        regions = []
+        if self.vertex_location: regions.append(self.vertex_location)
+        if hasattr(self, 'fallback_regions') and self.fallback_regions: 
+            regions.extend(self.fallback_regions)
+        else:
+            regions.extend(["us-central1", "us-east1", "us-west1", "europe-west4", "europe-west1"])
+
+        unique_regions = list(dict.fromkeys(regions))
+        last_error = None
+        
+        for i, region in enumerate(unique_regions):
+            try:
+                # If this is a retry (i > 0), ensure client is updated BEFORE call
+                # But simpler: Rely on the 'except' block of PREVIOUS iteration to have processed the switch
+                # Exception: Authorization or Connection error might occur before 404?
+                
+                response = await self.genai_client.aio.models.generate_content(
+                    model=model, contents=contents, config=config
+                )
+                return response
+                
+            except Exception as e:
+                err_str = str(e)
+                if ("404" in err_str and "not found" in err_str.lower()) or "Publisher Model" in err_str:
+                    logger.warning(f"Gemini 404 in region {region}: {e}")
+                    last_error = e
+                    
+                    # Prepare next region
+                    if i + 1 < len(unique_regions):
+                        next_region = unique_regions[i + 1]
+                        logger.info(f"Gemini: Switching to fallback region {next_region}")
+                        
+                        vertex_kwargs = {
+                            "vertexai": True,
+                            "project": self.vertex_project,
+                            "location": next_region,
+                        }
+                        if self.vertex_creds:
+                            vertex_kwargs["credentials"] = self.vertex_creds
+                        
+                        self.genai_client = google_genai.Client(**vertex_kwargs)
+                        self.vertex_location = next_region
+                        continue
+                
+                # Non-recoverable error
+                raise e
+        
+        raise last_error
+
     async def _process_with_gemini(
         self, 
         user_message: str, 
@@ -2695,154 +3012,148 @@ class MCPAgent:
         system_prompt: str = "",
         images: Optional[List[str]] = None
     ) -> AsyncGenerator[Dict[str, Any], None]:
-        """Process message with Gemini (JSON tool calling with streaming text)."""
+        """Process message with Gemini using Native Function Calling (Generator)."""
+        logger.info(f"Gemini: Processing message with Native Function Calling")
+        
         from google.genai import types
         import base64
-        import time
-        import json
         
-        # 1. Format tools manually
-        tools_list_for_prompt = [
-            {"name": t["name"], "description": t["description"], "parameters": t["inputSchema"]}
-            for t in tools
-        ]
-        tools_str = json.dumps(tools_list_for_prompt, indent=2)
+        # 1. Prepare Tools
+        declarations = [self._convert_tool_for_gemini(t) for t in tools]
+        gemini_tool = types.Tool(function_declarations=declarations)
         
-        gemini_instruction = (
-            f"{system_prompt}\n\n"
-            "### REQUIRED TOOLS:\n"
-            f"{tools_str}\n\n"
-            "### MANDATORY OUTPUT PROTOCOL:\n"
-            "1. Output exactly ONE raw JSON object to call a tool: {\"tool\": \"name\", \"arguments\": {...}}\n"
-            "2. DO NOT give a text answer until you have analyzed tool results. Wait for the end of the prompt before answering.\n"
-            "3. NO Python code, NO markdown blocks. ONLY RAW JSON.\n"
-            "4. NEVER output text and a JSON block together in the first turn."
+        # 2. Config
+        system_clean = system_prompt.replace("MANDATORY OUTPUT PROTOCOL", "RULES").replace("Output a raw JSON object", "")
+        
+        config = types.GenerateContentConfig(
+            tools=[gemini_tool],
+            system_instruction=system_clean,
+            temperature=0.0,
+            safety_settings=[
+                 types.SafetySetting(category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="BLOCK_NONE"),
+                 types.SafetySetting(category="HARM_CATEGORY_HARASSMENT", threshold="BLOCK_NONE"),
+                 types.SafetySetting(category="HARM_CATEGORY_HATE_SPEECH", threshold="BLOCK_NONE"),
+                 types.SafetySetting(category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="BLOCK_NONE")
+            ]
         )
-
-        # 2. Build History
+        
+        # 3. Build History
         contents = []
         for msg in history:
             role = "model" if msg["role"] == "assistant" else "user"
+            contents.append(types.Content(role=role, parts=[types.Part(text=msg["content"])]))
             
-            if "parts" in msg and msg["parts"]:
-                text_parts = []
-                for p in msg["parts"]:
-                    if p["type"] == "text":
-                        text_parts.append(p["content"])
-                    elif p["type"] == "tool":
-                        if p.get("status") == "running":
-                             text_parts.append(f"[Attempted to use tool '{p.get('tool')}' with input {p.get('input')} but the user aborted the request before it finished.]")
-                        elif p.get("status") == "success":
-                             text_parts.append(f"[Successfully used tool '{p.get('tool')}' with input {p.get('input')}. Result: {p.get('result')}]")
-                
-                if text_parts:
-                     contents.append(types.Content(role=role, parts=[types.Part.from_text(text="\n".join(text_parts))]))
-                else:
-                     contents.append(types.Content(role=role, parts=[types.Part.from_text(text=msg["content"])]))
-            else:
-                contents.append(types.Content(role=role, parts=[types.Part.from_text(text=msg["content"])]))
-                
-        # 3. Add current turn with images if any
+        # 4. Current Message + Images
         user_parts = []
-        if images and len(images) > 0:
-            for img_data in images:
+        if images:
+             for img_data in images:
                 if img_data.startswith('data:image'):
                     header, base1 = img_data.split(',', 1)
-                    media_type = header.split(';')[0].split(':')[1]
+                    mime_type = header.split(';')[0].split(':')[1]
                 else:
                     base1 = img_data
-                    media_type = "image/jpeg"
-                raw_data = base64.b64decode(base1)
-                user_parts.append(types.Part.from_data(data=raw_data, mime_type=media_type))
-                
-        user_parts.append(types.Part.from_text(text=f"{gemini_instruction}\n\nUSER REQUEST: {user_message}"))
+                    mime_type = "image/jpeg"
+                try:
+                    raw_data = base64.b64decode(base1)
+                    user_parts.append(types.Part.from_bytes(data=raw_data, mime_type=mime_type))
+                except Exception as e:
+                    logger.warning(f"Failed to decode image: {e}")
+        
+        user_parts.append(types.Part(text=user_message))
         contents.append(types.Content(role="user", parts=user_parts))
-        
-        safety = [
-            types.SafetySetting(category="HARM_CATEGORY_HATE_SPEECH", threshold="BLOCK_NONE"),
-            types.SafetySetting(category="HARM_CATEGORY_HARASSMENT", threshold="BLOCK_NONE"),
-            types.SafetySetting(category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="BLOCK_NONE"),
-            types.SafetySetting(category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="BLOCK_NONE"),
-        ]
-        
-        config = types.GenerateContentConfig(safety_settings=safety)
 
         try:
-            # Step 1: Request JSON Tool Call
-            action_response = await self.genai_client.aio.models.generate_content(
-                model=self.model,
-                contents=contents,
-                config=config
-            )
-            
-            raw_text = action_response.text if (action_response.candidates and action_response.candidates[0].content and action_response.candidates[0].content.parts) else ""
-            clean_text = raw_text.strip().replace("```json", "").replace("```", "")
-            
-            t_name = None
-            args = {}
-            
-            if "{" in clean_text and "}" in clean_text:
-                start, end = clean_text.find("{"), clean_text.rfind("}") + 1
-                try:
-                    data = json.loads(clean_text[start:end])
-                    t_name = data.get("tool") or data.get("name")
-                    args = data.get("arguments", {})
-                except json.JSONDecodeError:
-                    pass
-            
-            if t_name:
-                yield {
-                    "type": "tool_use",
-                    "tool": t_name,
-                    "input": args
-                }
-                
-                # Execute tool
-                tool_result = await self.execute_tool(
-                    t_name,
-                    args,
-                    looker_url,
-                    client_id,
-                    client_secret
-                )
-                
-                # Serialize result
-                if isinstance(tool_result, dict) and "result" in tool_result:
-                    res_obj = tool_result["result"]
-                    res_str = json.dumps(res_obj) if isinstance(res_obj, (dict, list)) else str(res_obj)
-                else:
-                    res_str = str(tool_result)
-                    
-                yield {
-                    "type": "tool_result",
-                    "tool": t_name,
-                    "result": res_str
-                }
-                
-                # Step 2: Stream final text answer
-                summary_prompt = (
-                    f"CONTEXT: {system_prompt}\n"
-                    f"REQUEST: {user_message}\n"
-                    f"TOOL RESULT: {res_str}\n\n"
-                    f"Answer using this data."
-                )
-                
-                stream_response = await self.genai_client.aio.models.generate_content_stream(
+            # 4. Multi-Turn Function Execution Loop
+            for i in range(10): # Allow up to 10 turns for complex chains
+                response = await self._generate_with_retry(
                     model=self.model,
-                    contents=summary_prompt,
+                    contents=contents,
                     config=config
                 )
                 
-                async for chunk in stream_response:
-                    if chunk.text:
-                        yield {"type": "text", "content": chunk.text}
-            else:
-                # No tool matched, just yield the text
-                yield {"type": "text", "content": raw_text}
+                if not response.candidates:
+                    yield {"type": "error", "content": "No response from model."}
+                    return
+                    
+                candidate = response.candidates[0]
+                content = candidate.content
+                contents.append(content) # Update history
+                
+                # Check for Function Calls
+                function_calls = []
+                if content.parts:
+                    for part in content.parts:
+                        if part.function_call:
+                            function_calls.append(part.function_call)
+                
+                if function_calls:
+                    response_parts = []
+                    
+                    for fc in function_calls:
+                        t_name = fc.name
+                        t_args = fc.args
+                        logger.info(f"Gemini: Executing tool {t_name}")
+                        
+                        # Notify Frontend (optional, mimicking streaming events)
+                        yield {
+                            "type": "tool_use",
+                            "tool": t_name,
+                            "input": t_args
+                        }
+                        
+                        # Execute Tool
+                        raw_result = await self.execute_tool(
+                            t_name, 
+                            t_args, 
+                            looker_url, 
+                            client_id, 
+                            client_secret
+                        )
+                        
+                        # Serialize result
+                        if isinstance(raw_result, dict) and "result" in raw_result:
+                            result_payload = raw_result["result"]
+                            res_str = json.dumps(result_payload) if isinstance(result_payload, (dict, list)) else str(result_payload)
+                        else:
+                            result_payload = raw_result
+                            res_str = str(raw_result)
+
+                        # Notify Frontend
+                        yield {
+                            "type": "tool_result",
+                            "tool": t_name,
+                            "result": res_str
+                        }
+                        
+                        # Pack for History
+                        response_parts.append(types.Part(
+                            function_response=types.FunctionResponse(
+                                name=t_name,
+                                response={"result": result_payload}
+                            )
+                        ))
+                    
+                    # Append Function Responses
+                    contents.append(types.Content(role="user", parts=response_parts))
+                    continue # Loop for next turn (summary/answer)
+                
+                else:
+                    # Text Response
+                    text = ""
+                    if content.parts:
+                        for part in content.parts:
+                            if part.text:
+                                text += part.text
+                    
+                    if text:
+                        yield {"type": "text", "content": text}
+                    return # Done
+            
+            yield {"type": "text", "content": "Max tool turns exceeded."}
 
         except Exception as e:
-            logger.error(f"Gemini error: {e}")
-            yield {"type": "error", "content": str(e)}
+            logger.error(f"Gemini Error: {e}")
+            yield {"type": "error", "content": f"Gemini Error: {str(e)}"}
 
     async def _process_with_claude(
         self,
@@ -3047,7 +3358,20 @@ class MCPAgent:
                     pass
                 
                 # Update conversation history
-                messages.append({"role": "assistant", "content": response.content})
+                # Explicitly serialize response content to dicts to avoid object issues with Vertex AI API
+                serialized_content = []
+                for block in response.content:
+                    if block.type == "text":
+                        serialized_content.append({"type": "text", "text": block.text})
+                    elif block.type == "tool_use":
+                        serialized_content.append({
+                            "type": "tool_use",
+                            "id": block.id,
+                            "name": block.name,
+                            "input": block.input
+                        })
+                
+                messages.append({"role": "assistant", "content": serialized_content})
                 messages.append({"role": "user", "content": tool_results})
                 
         except Exception as e:

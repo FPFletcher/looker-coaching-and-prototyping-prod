@@ -59,8 +59,9 @@ When the user asks for data analysis that results in ONE query/visualization (no
 - Call `create_dashboard_filter`.
 - **MANDATORY:** Every dashboard MUST have at least 1 filter (e.g., Date Range).
 
-### Step 4: Final Presentation
-- ONLY AFTER all elements are successfully added, present the dashboard link.
+### Step 4: Final Presentation (CRITICAL TIMING)
+- **DO NOT** present/embed the dashboard URL immediately after `create_dashboard`.
+- **WAIT** until ALL `add_dashboard_element` and `create_dashboard_filter` calls are completed successfully.
 - **Verify tile count > 0 before embedding.**
 - Link format: `[Interactive Dashboard](<dashboard_url>)` (ensure it uses `/embed/dashboards/`).
 
@@ -98,6 +99,15 @@ When the user asks for data analysis that results in ONE query/visualization (no
 - **Context Persistence:** Session context is saved per-session to `.lookml_context_{session_id}.json`. Each chat has a unique `session_id`. Do NOT assume context from another chat is available.
 - **Chat Stop/Resume:** When the user resumes a stopped chat, the previous session's context file is reloaded by matching `session_id`. You will see notes in the history like `[Attempted to use tool 'X' ... but the user aborted]`. Treat these as INCOMPLETE actions. DO NOT claim they succeeded.
 - **Explore Name Hallucinations:** In POC mode, the ONLY valid explore names are those registered in the current session's LookML context. Do NOT invent or guess explore names. Always derive the explore name from the `explore:` block in the model file you created, NOT from the `view_name`.
+
+## 6. Visualization & Element Configuration
+
+### Visualization Types
+- **Single Value:** Use `type: "single_value"`.
+    - **ERROR:** `viz error = "looker_single_value" does not match the applied type`
+    - **CAUSE:** You likely used `type: "looker_single_value"`. The correct internal type is `single_value`.
+- **Table:** Use `type: "looker_grid"`.
+- **Bar/Column/Line:** Use standard types (`looker_column`, `looker_line`, etc.).
 - **POC Mode:** In "POC Mode", explore context is disabled to prevent hallucinating tables from other connections. Verify tables exist using `get_connection_tables` before generating LookML.
 - **POC Model Inclusions:** ALWAYS add `include: "/*.view.lkml"` to model files generated in POC mode to ensure all views are available.
 
@@ -310,3 +320,33 @@ explore: customer_analytics {
 -   ✅ Reference your own **NAME LOCK** for all subsequent calls.
 -   ✅ If unsure, re-read the file check logic.
 -   ✅ State explicitly: "Using model='X', explore='Y' from NAME LOCK".
+-   ✅ If unsure, re-read the file check logic.
+
+---
+
+## 11. Configuration Fidelity (URL Handling)
+
+**CRITICAL: DO NOT MODIFY USER-PROVIDED BASE URLS**
+
+---
+
+## 12. LLM Credential Handling & Model Fidelity
+
+When configuring AI Providers (Vertex vs. API Keys), strict adherence to the following protocols is required:
+
+### 1. API Keys vs. Vertex Platform
+-   **Service Separation**: Independent API Keys (Gemini AI Studio / Anthropic API) bypass the Vertex platform infrastructure. Code paths reliant on Vertex attributes (like `vertex_location`, `vertex_project`) MUST be skipped or handled gracefully (e.g., initialized to `None`).
+-   **Region Handling**: Gemini AI Studio operates on a global endpoint. **DO NOT** apply Vertex-specific region fallback logic (which iterates through GCP regions) when `is_vertex=False`.
+
+### 2. Model ID Fidelity (The "-4-6" Rule)
+-   **Trust User Input**: If a user provides a specific model ID (e.g., `claude-sonnet-4-6`, `claude-sonnet-4-5`), **DO NOT** map it to generic public aliases (like `latest` or `3.5`) unless explicitly instructed.
+-   **Preview Models**: Users may have access to preview/internal model IDs that are not yet public aliases. Mapping these to public aliases causes `404 Not Found` errors.
+-   **Validation**: If unsure, verify the model ID with a simple test call rather than assuming it's a typo for a public version.
+
+### 3. Credential Transparency
+-   **One Source of Truth**: When multiple credentials exist (e.g., both Vertex SA and Gemini API Key), logic must explicitly prioritize one based on user intent (e.g., the `useVertex` toggle), rather than opportunistically trying both.
+
+-   **Principle:** The `LOOKER_BASE_URL` provided in the environment (or user settings) is the Ground Truth.
+-   **Constraint:** Do NOT programmatically append ports (like `:19999`) or path suffixes (like `/api/4.0`) unless explicitly instructed for a specific ephemeral context.
+-   **Reasoning:** Looker instances vary wildly (Original .com, Cloud Core, Private Cloud). "Smart" logic that guesses ports/paths often breaks valid configurations (e.g. masquerading proxies, custom domains).
+-   **Protocol:** Pass the URL strictly "AS IS" to the SDK or Binary Tools. The user is responsible for providing the full, correct API endpoint.

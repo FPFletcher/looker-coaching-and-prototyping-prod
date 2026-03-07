@@ -1,0 +1,3917 @@
+{
+  "session_id": "usodt",
+  "views": {
+    "orders_fact": {
+      "name": "orders_fact",
+      "fields": [
+        {
+          "name": "order_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order ID",
+          "sql": null
+        },
+        {
+          "name": "booking_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Booking ID",
+          "sql": null
+        },
+        {
+          "name": "merchant_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Id",
+          "sql": null
+        },
+        {
+          "name": "customer_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer Id",
+          "sql": null
+        },
+        {
+          "name": "cuisine_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Cuisine Id",
+          "sql": null
+        },
+        {
+          "name": "merchant_area_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Area Id",
+          "sql": null
+        },
+        {
+          "name": "captain_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Captain Id",
+          "sql": null
+        },
+        {
+          "name": "day",
+          "type": "dimension",
+          "field_type": "date",
+          "label": "Order Day",
+          "sql": null
+        },
+        {
+          "name": "total_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Total Price",
+          "sql": null
+        },
+        {
+          "name": "basket_amount",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Basket Amount",
+          "sql": null
+        },
+        {
+          "name": "delivery_fee",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Delivery Fee",
+          "sql": null
+        },
+        {
+          "name": "service_fee",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Service Fee",
+          "sql": null
+        },
+        {
+          "name": "tax_amount",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Tax Amount",
+          "sql": null
+        },
+        {
+          "name": "promo_amount",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Promo Discount Amount",
+          "sql": null
+        },
+        {
+          "name": "order_status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Order Status",
+          "sql": null
+        },
+        {
+          "name": "payment_status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Payment Status",
+          "sql": null
+        },
+        {
+          "name": "payment_type",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Payment Method",
+          "sql": null
+        },
+        {
+          "name": "cancellation_reason",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Cancellation Reason",
+          "sql": null
+        },
+        {
+          "name": "delivery_time_mins",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Delivery Time (Minutes)",
+          "sql": null
+        },
+        {
+          "name": "food_rating",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Food Rating",
+          "sql": null
+        },
+        {
+          "name": "captain_rating",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Delivery Rating",
+          "sql": null
+        },
+        {
+          "name": "is_pos_order",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is POS Order?",
+          "sql": null
+        },
+        {
+          "name": "is_direct_order",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Direct Order?",
+          "sql": null
+        },
+        {
+          "name": "is_scheduled",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Scheduled Order?",
+          "sql": null
+        },
+        {
+          "name": "is_cross_sell",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Cross-Sell Order?",
+          "sql": null
+        },
+        {
+          "name": "country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Country",
+          "sql": null
+        },
+        {
+          "name": "city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "City",
+          "sql": null
+        },
+        {
+          "name": "merchant_area",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Area/Zone",
+          "sql": null
+        },
+        {
+          "name": "app_source",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "App Source",
+          "sql": null
+        },
+        {
+          "name": "os",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Operating System",
+          "sql": null
+        },
+        {
+          "name": "device",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Device Type",
+          "sql": null
+        },
+        {
+          "name": "revenue_tier",
+          "type": "dimension",
+          "field_type": "tier",
+          "label": "Order Value Tier",
+          "sql": null
+        },
+        {
+          "name": "delivery_speed_category",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Delivery Speed Category",
+          "sql": null
+        },
+        {
+          "name": "is_high_value_order",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is High-Value Order? (>$50)",
+          "sql": null
+        },
+        {
+          "name": "has_promo",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Has Promotion?",
+          "sql": null
+        },
+        {
+          "name": "net_revenue",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Net Revenue (After Promos)",
+          "sql": null
+        },
+        {
+          "name": "total_orders",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Orders",
+          "sql": null
+        },
+        {
+          "name": "total_completed_orders",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Completed Orders",
+          "sql": null
+        },
+        {
+          "name": "total_cancelled_orders",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Cancelled Orders",
+          "sql": null
+        },
+        {
+          "name": "cancellation_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Cancellation Rate %",
+          "sql": null
+        },
+        {
+          "name": "completion_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Order Completion Rate %",
+          "sql": null
+        },
+        {
+          "name": "total_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Revenue",
+          "sql": null
+        },
+        {
+          "name": "total_basket_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Basket Revenue",
+          "sql": null
+        },
+        {
+          "name": "total_delivery_fees",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Delivery Fees",
+          "sql": null
+        },
+        {
+          "name": "total_service_fees",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Service Fees",
+          "sql": null
+        },
+        {
+          "name": "total_promo_cost",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Promo Cost",
+          "sql": null
+        },
+        {
+          "name": "total_net_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Net Revenue (After Promos)",
+          "sql": null
+        },
+        {
+          "name": "average_order_value",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Order Value (AOV)",
+          "sql": null
+        },
+        {
+          "name": "average_basket_value",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Basket Value",
+          "sql": null
+        },
+        {
+          "name": "average_delivery_time",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Delivery Time (Minutes)",
+          "sql": null
+        },
+        {
+          "name": "average_food_rating",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Food Rating",
+          "sql": null
+        },
+        {
+          "name": "average_captain_rating",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Delivery Rating",
+          "sql": null
+        },
+        {
+          "name": "distinct_customers",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Unique Customers",
+          "sql": null
+        },
+        {
+          "name": "orders_per_customer",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Orders Per Customer",
+          "sql": null
+        },
+        {
+          "name": "distinct_merchants",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Active Merchants",
+          "sql": null
+        },
+        {
+          "name": "cross_sell_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Cross-Sell Rate %",
+          "sql": null
+        },
+        {
+          "name": "promo_adoption_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Promo Adoption Rate %",
+          "sql": null
+        }
+      ],
+      "sql_table_name": "looker_careem_poc_food.view_fake_orders_fact"
+    },
+    "merchants": {
+      "name": "merchants",
+      "fields": [
+        {
+          "name": "merchant_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant ID",
+          "sql": null
+        },
+        {
+          "name": "merchant_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Name",
+          "sql": null
+        },
+        {
+          "name": "cuisine_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Cuisine Type",
+          "sql": null
+        },
+        {
+          "name": "cuisine_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Cuisine ID",
+          "sql": null
+        },
+        {
+          "name": "merchant_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Tier",
+          "sql": null
+        },
+        {
+          "name": "merchant_tier_sort",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Tier Sort",
+          "sql": null
+        },
+        {
+          "name": "merchant_size",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Size",
+          "sql": null
+        },
+        {
+          "name": "partnership_type",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Partnership Type",
+          "sql": null
+        },
+        {
+          "name": "quality_score",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Quality Score",
+          "sql": null
+        },
+        {
+          "name": "quality_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Quality Tier",
+          "sql": null
+        },
+        {
+          "name": "merchant_area",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Area/Zone",
+          "sql": null
+        },
+        {
+          "name": "merchant_area_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Area ID",
+          "sql": null
+        },
+        {
+          "name": "city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant City",
+          "sql": null
+        },
+        {
+          "name": "country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Country",
+          "sql": null
+        },
+        {
+          "name": "days_since_onboarding",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Days Since Onboarding",
+          "sql": null
+        },
+        {
+          "name": "merchant_maturity",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Maturity",
+          "sql": null
+        },
+        {
+          "name": "commission_rate",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Commission Rate",
+          "sql": null
+        },
+        {
+          "name": "commission_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Commission Tier",
+          "sql": null
+        },
+        {
+          "name": "total_merchants",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Merchants",
+          "sql": null
+        },
+        {
+          "name": "average_quality_score",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Merchant Quality Score",
+          "sql": null
+        },
+        {
+          "name": "average_commission_rate",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Commission Rate",
+          "sql": null
+        },
+        {
+          "name": "platinum_merchants",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Platinum Merchants",
+          "sql": null
+        },
+        {
+          "name": "gold_merchants",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Gold Merchants",
+          "sql": null
+        }
+      ],
+      "sql_table_name": null
+    },
+    "customers": {
+      "name": "customers",
+      "fields": [
+        {
+          "name": "customer_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer ID",
+          "sql": null
+        },
+        {
+          "name": "customer_segment",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Segment",
+          "sql": null
+        },
+        {
+          "name": "segment_sort",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Segment Sort",
+          "sql": null
+        },
+        {
+          "name": "lifecycle_stage",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Lifecycle Stage",
+          "sql": null
+        },
+        {
+          "name": "age_group",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Age Group",
+          "sql": null
+        },
+        {
+          "name": "customer_value_score",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer Value Score",
+          "sql": null
+        },
+        {
+          "name": "value_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Value Tier",
+          "sql": null
+        },
+        {
+          "name": "days_since_first_order",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Days Since First Order",
+          "sql": null
+        },
+        {
+          "name": "customer_tenure_group",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Tenure",
+          "sql": null
+        },
+        {
+          "name": "city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer City",
+          "sql": null
+        },
+        {
+          "name": "country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Country",
+          "sql": null
+        },
+        {
+          "name": "preferred_device",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Preferred Device",
+          "sql": null
+        },
+        {
+          "name": "total_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Customers",
+          "sql": null
+        },
+        {
+          "name": "vip_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "VIP Customers",
+          "sql": null
+        },
+        {
+          "name": "active_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Active Customers",
+          "sql": null
+        },
+        {
+          "name": "at_risk_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "At-Risk Customers",
+          "sql": null
+        },
+        {
+          "name": "churned_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Churned Customers",
+          "sql": null
+        },
+        {
+          "name": "average_customer_value_score",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Customer Value Score",
+          "sql": null
+        },
+        {
+          "name": "churn_risk_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Churn Risk Rate %",
+          "sql": null
+        }
+      ],
+      "sql_table_name": null
+    },
+    "date_dimension": {
+      "name": "date_dimension",
+      "fields": [
+        {
+          "name": "date",
+          "type": "dimension",
+          "field_type": "date",
+          "label": "Date",
+          "sql": null
+        },
+        {
+          "name": "year",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Year",
+          "sql": null
+        },
+        {
+          "name": "quarter",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Quarter Number",
+          "sql": null
+        },
+        {
+          "name": "quarter_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Quarter",
+          "sql": null
+        },
+        {
+          "name": "month",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Month Number",
+          "sql": null
+        },
+        {
+          "name": "month_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Month Name",
+          "sql": null
+        },
+        {
+          "name": "month_year",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Month-Year",
+          "sql": null
+        },
+        {
+          "name": "week",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Week Number",
+          "sql": null
+        },
+        {
+          "name": "day_of_week",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Day of Week Number",
+          "sql": null
+        },
+        {
+          "name": "day_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Day Name",
+          "sql": null
+        },
+        {
+          "name": "day_type",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Day Type",
+          "sql": null
+        },
+        {
+          "name": "is_weekend",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Weekend?",
+          "sql": null
+        },
+        {
+          "name": "is_current_year",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Current Year?",
+          "sql": null
+        },
+        {
+          "name": "is_current_quarter",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Current Quarter?",
+          "sql": null
+        },
+        {
+          "name": "is_current_month",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Current Month?",
+          "sql": null
+        },
+        {
+          "name": "total_days",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Days",
+          "sql": null
+        },
+        {
+          "name": "total_weekdays",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Weekdays",
+          "sql": null
+        },
+        {
+          "name": "total_weekend_days",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Weekend Days",
+          "sql": null
+        }
+      ],
+      "sql_table_name": null
+    }
+  },
+  "models": {
+    "food_delivery_analytics": {
+      "name": "food_delivery_analytics",
+      "connection": "fake",
+      "explores": [
+        "orders_fact",
+        "merchant_performance",
+        "customer_analytics",
+        "period_comparison"
+      ],
+      "includes": [
+        "/*.view.lkml"
+      ]
+    }
+  },
+  "explores": {
+    "food_delivery_analytics.orders_fact": {
+      "model_name": "food_delivery_analytics",
+      "explore_name": "orders_fact",
+      "base_view": "orders_fact",
+      "joins": [
+        {
+          "name": "merchants"
+        },
+        {
+          "name": "customers"
+        },
+        {
+          "name": "date_dimension"
+        }
+      ],
+      "fields": [
+        {
+          "name": "orders_fact.order_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order ID",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.booking_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Booking ID",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.merchant_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Id",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.customer_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer Id",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.cuisine_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Cuisine Id",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.merchant_area_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Area Id",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.captain_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Captain Id",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.day",
+          "type": "dimension",
+          "field_type": "date",
+          "label": "Order Day",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.total_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Total Price",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.basket_amount",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Basket Amount",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.delivery_fee",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Delivery Fee",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.service_fee",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Service Fee",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.tax_amount",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Tax Amount",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.promo_amount",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Promo Discount Amount",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.order_status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Order Status",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.payment_status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Payment Status",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.payment_type",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Payment Method",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.cancellation_reason",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Cancellation Reason",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.delivery_time_mins",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Delivery Time (Minutes)",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.food_rating",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Food Rating",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.captain_rating",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Delivery Rating",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.is_pos_order",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is POS Order?",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.is_direct_order",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Direct Order?",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.is_scheduled",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Scheduled Order?",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.is_cross_sell",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Cross-Sell Order?",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Country",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "City",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.merchant_area",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Area/Zone",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.app_source",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "App Source",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.os",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Operating System",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.device",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Device Type",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.revenue_tier",
+          "type": "dimension",
+          "field_type": "tier",
+          "label": "Order Value Tier",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.delivery_speed_category",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Delivery Speed Category",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.is_high_value_order",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is High-Value Order? (>$50)",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.has_promo",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Has Promotion?",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.net_revenue",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Net Revenue (After Promos)",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.total_orders",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Orders",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.total_completed_orders",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Completed Orders",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.total_cancelled_orders",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Cancelled Orders",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.cancellation_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Cancellation Rate %",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.completion_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Order Completion Rate %",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.total_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Revenue",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.total_basket_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Basket Revenue",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.total_delivery_fees",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Delivery Fees",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.total_service_fees",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Service Fees",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.total_promo_cost",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Promo Cost",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.total_net_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Net Revenue (After Promos)",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.average_order_value",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Order Value (AOV)",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.average_basket_value",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Basket Value",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.average_delivery_time",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Delivery Time (Minutes)",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.average_food_rating",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Food Rating",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.average_captain_rating",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Delivery Rating",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.distinct_customers",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Unique Customers",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.orders_per_customer",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Orders Per Customer",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.distinct_merchants",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Active Merchants",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.cross_sell_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Cross-Sell Rate %",
+          "sql": null
+        },
+        {
+          "name": "orders_fact.promo_adoption_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Promo Adoption Rate %",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant ID",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Name",
+          "sql": null
+        },
+        {
+          "name": "merchants.cuisine_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Cuisine Type",
+          "sql": null
+        },
+        {
+          "name": "merchants.cuisine_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Cuisine ID",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Tier",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_tier_sort",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Tier Sort",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_size",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Size",
+          "sql": null
+        },
+        {
+          "name": "merchants.partnership_type",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Partnership Type",
+          "sql": null
+        },
+        {
+          "name": "merchants.quality_score",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Quality Score",
+          "sql": null
+        },
+        {
+          "name": "merchants.quality_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Quality Tier",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_area",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Area/Zone",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_area_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Area ID",
+          "sql": null
+        },
+        {
+          "name": "merchants.city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant City",
+          "sql": null
+        },
+        {
+          "name": "merchants.country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Country",
+          "sql": null
+        },
+        {
+          "name": "merchants.days_since_onboarding",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Days Since Onboarding",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_maturity",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Maturity",
+          "sql": null
+        },
+        {
+          "name": "merchants.commission_rate",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Commission Rate",
+          "sql": null
+        },
+        {
+          "name": "merchants.commission_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Commission Tier",
+          "sql": null
+        },
+        {
+          "name": "merchants.total_merchants",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Merchants",
+          "sql": null
+        },
+        {
+          "name": "merchants.average_quality_score",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Merchant Quality Score",
+          "sql": null
+        },
+        {
+          "name": "merchants.average_commission_rate",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Commission Rate",
+          "sql": null
+        },
+        {
+          "name": "merchants.platinum_merchants",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Platinum Merchants",
+          "sql": null
+        },
+        {
+          "name": "merchants.gold_merchants",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Gold Merchants",
+          "sql": null
+        },
+        {
+          "name": "customers.customer_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer ID",
+          "sql": null
+        },
+        {
+          "name": "customers.customer_segment",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Segment",
+          "sql": null
+        },
+        {
+          "name": "customers.segment_sort",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Segment Sort",
+          "sql": null
+        },
+        {
+          "name": "customers.lifecycle_stage",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Lifecycle Stage",
+          "sql": null
+        },
+        {
+          "name": "customers.age_group",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Age Group",
+          "sql": null
+        },
+        {
+          "name": "customers.customer_value_score",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer Value Score",
+          "sql": null
+        },
+        {
+          "name": "customers.value_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Value Tier",
+          "sql": null
+        },
+        {
+          "name": "customers.days_since_first_order",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Days Since First Order",
+          "sql": null
+        },
+        {
+          "name": "customers.customer_tenure_group",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Tenure",
+          "sql": null
+        },
+        {
+          "name": "customers.city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer City",
+          "sql": null
+        },
+        {
+          "name": "customers.country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Country",
+          "sql": null
+        },
+        {
+          "name": "customers.preferred_device",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Preferred Device",
+          "sql": null
+        },
+        {
+          "name": "customers.total_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Customers",
+          "sql": null
+        },
+        {
+          "name": "customers.vip_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "VIP Customers",
+          "sql": null
+        },
+        {
+          "name": "customers.active_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Active Customers",
+          "sql": null
+        },
+        {
+          "name": "customers.at_risk_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "At-Risk Customers",
+          "sql": null
+        },
+        {
+          "name": "customers.churned_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Churned Customers",
+          "sql": null
+        },
+        {
+          "name": "customers.average_customer_value_score",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Customer Value Score",
+          "sql": null
+        },
+        {
+          "name": "customers.churn_risk_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Churn Risk Rate %",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.date",
+          "type": "dimension",
+          "field_type": "date",
+          "label": "Date",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.year",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Year",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.quarter",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Quarter Number",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.quarter_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Quarter",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.month",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Month Number",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.month_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Month Name",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.month_year",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Month-Year",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.week",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Week Number",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.day_of_week",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Day of Week Number",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.day_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Day Name",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.day_type",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Day Type",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.is_weekend",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Weekend?",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.is_current_year",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Current Year?",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.is_current_quarter",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Current Quarter?",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.is_current_month",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Current Month?",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.total_days",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Days",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.total_weekdays",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Weekdays",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.total_weekend_days",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Weekend Days",
+          "sql": null
+        }
+      ],
+      "field_source": "parsed"
+    },
+    "food_delivery_analytics.merchant_performance": {
+      "model_name": "food_delivery_analytics",
+      "explore_name": "merchant_performance",
+      "base_view": "orders_fact",
+      "joins": [
+        {
+          "name": "merchants"
+        },
+        {
+          "name": "date_dimension"
+        }
+      ],
+      "fields": [
+        {
+          "name": "merchant_performance.order_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order ID",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.booking_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Booking ID",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.merchant_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Id",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.customer_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer Id",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.cuisine_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Cuisine Id",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.merchant_area_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Area Id",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.captain_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Captain Id",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.day",
+          "type": "dimension",
+          "field_type": "date",
+          "label": "Order Day",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.total_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Total Price",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.basket_amount",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Basket Amount",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.delivery_fee",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Delivery Fee",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.service_fee",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Service Fee",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.tax_amount",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Tax Amount",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.promo_amount",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Promo Discount Amount",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.order_status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Order Status",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.payment_status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Payment Status",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.payment_type",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Payment Method",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.cancellation_reason",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Cancellation Reason",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.delivery_time_mins",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Delivery Time (Minutes)",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.food_rating",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Food Rating",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.captain_rating",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Delivery Rating",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.is_pos_order",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is POS Order?",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.is_direct_order",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Direct Order?",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.is_scheduled",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Scheduled Order?",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.is_cross_sell",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Cross-Sell Order?",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Country",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "City",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.merchant_area",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Area/Zone",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.app_source",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "App Source",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.os",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Operating System",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.device",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Device Type",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.revenue_tier",
+          "type": "dimension",
+          "field_type": "tier",
+          "label": "Order Value Tier",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.delivery_speed_category",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Delivery Speed Category",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.is_high_value_order",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is High-Value Order? (>$50)",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.has_promo",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Has Promotion?",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.net_revenue",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Net Revenue (After Promos)",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.total_orders",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Orders",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.total_completed_orders",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Completed Orders",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.total_cancelled_orders",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Cancelled Orders",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.cancellation_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Cancellation Rate %",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.completion_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Order Completion Rate %",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.total_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Revenue",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.total_basket_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Basket Revenue",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.total_delivery_fees",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Delivery Fees",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.total_service_fees",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Service Fees",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.total_promo_cost",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Promo Cost",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.total_net_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Net Revenue (After Promos)",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.average_order_value",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Order Value (AOV)",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.average_basket_value",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Basket Value",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.average_delivery_time",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Delivery Time (Minutes)",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.average_food_rating",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Food Rating",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.average_captain_rating",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Delivery Rating",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.distinct_customers",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Unique Customers",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.orders_per_customer",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Orders Per Customer",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.distinct_merchants",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Active Merchants",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.cross_sell_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Cross-Sell Rate %",
+          "sql": null
+        },
+        {
+          "name": "merchant_performance.promo_adoption_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Promo Adoption Rate %",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant ID",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Name",
+          "sql": null
+        },
+        {
+          "name": "merchants.cuisine_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Cuisine Type",
+          "sql": null
+        },
+        {
+          "name": "merchants.cuisine_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Cuisine ID",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Tier",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_tier_sort",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Tier Sort",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_size",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Size",
+          "sql": null
+        },
+        {
+          "name": "merchants.partnership_type",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Partnership Type",
+          "sql": null
+        },
+        {
+          "name": "merchants.quality_score",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Quality Score",
+          "sql": null
+        },
+        {
+          "name": "merchants.quality_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Quality Tier",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_area",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Area/Zone",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_area_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Area ID",
+          "sql": null
+        },
+        {
+          "name": "merchants.city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant City",
+          "sql": null
+        },
+        {
+          "name": "merchants.country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Country",
+          "sql": null
+        },
+        {
+          "name": "merchants.days_since_onboarding",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Days Since Onboarding",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_maturity",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Maturity",
+          "sql": null
+        },
+        {
+          "name": "merchants.commission_rate",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Commission Rate",
+          "sql": null
+        },
+        {
+          "name": "merchants.commission_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Commission Tier",
+          "sql": null
+        },
+        {
+          "name": "merchants.total_merchants",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Merchants",
+          "sql": null
+        },
+        {
+          "name": "merchants.average_quality_score",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Merchant Quality Score",
+          "sql": null
+        },
+        {
+          "name": "merchants.average_commission_rate",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Commission Rate",
+          "sql": null
+        },
+        {
+          "name": "merchants.platinum_merchants",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Platinum Merchants",
+          "sql": null
+        },
+        {
+          "name": "merchants.gold_merchants",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Gold Merchants",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.date",
+          "type": "dimension",
+          "field_type": "date",
+          "label": "Date",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.year",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Year",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.quarter",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Quarter Number",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.quarter_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Quarter",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.month",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Month Number",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.month_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Month Name",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.month_year",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Month-Year",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.week",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Week Number",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.day_of_week",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Day of Week Number",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.day_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Day Name",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.day_type",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Day Type",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.is_weekend",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Weekend?",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.is_current_year",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Current Year?",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.is_current_quarter",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Current Quarter?",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.is_current_month",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Current Month?",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.total_days",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Days",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.total_weekdays",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Weekdays",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.total_weekend_days",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Weekend Days",
+          "sql": null
+        }
+      ],
+      "field_source": "parsed"
+    },
+    "food_delivery_analytics.customer_analytics": {
+      "model_name": "food_delivery_analytics",
+      "explore_name": "customer_analytics",
+      "base_view": "orders_fact",
+      "joins": [
+        {
+          "name": "customers"
+        },
+        {
+          "name": "date_dimension"
+        }
+      ],
+      "fields": [
+        {
+          "name": "customer_analytics.order_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order ID",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.booking_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Booking ID",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.merchant_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Id",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.customer_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer Id",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.cuisine_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Cuisine Id",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.merchant_area_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Area Id",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.captain_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Captain Id",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.day",
+          "type": "dimension",
+          "field_type": "date",
+          "label": "Order Day",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.total_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Total Price",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.basket_amount",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Basket Amount",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.delivery_fee",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Delivery Fee",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.service_fee",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Service Fee",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.tax_amount",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Tax Amount",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.promo_amount",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Promo Discount Amount",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.order_status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Order Status",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.payment_status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Payment Status",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.payment_type",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Payment Method",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.cancellation_reason",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Cancellation Reason",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.delivery_time_mins",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Delivery Time (Minutes)",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.food_rating",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Food Rating",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.captain_rating",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Delivery Rating",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.is_pos_order",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is POS Order?",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.is_direct_order",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Direct Order?",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.is_scheduled",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Scheduled Order?",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.is_cross_sell",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Cross-Sell Order?",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Country",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "City",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.merchant_area",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Area/Zone",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.app_source",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "App Source",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.os",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Operating System",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.device",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Device Type",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.revenue_tier",
+          "type": "dimension",
+          "field_type": "tier",
+          "label": "Order Value Tier",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.delivery_speed_category",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Delivery Speed Category",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.is_high_value_order",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is High-Value Order? (>$50)",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.has_promo",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Has Promotion?",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.net_revenue",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Net Revenue (After Promos)",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.total_orders",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Orders",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.total_completed_orders",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Completed Orders",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.total_cancelled_orders",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Cancelled Orders",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.cancellation_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Cancellation Rate %",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.completion_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Order Completion Rate %",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.total_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Revenue",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.total_basket_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Basket Revenue",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.total_delivery_fees",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Delivery Fees",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.total_service_fees",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Service Fees",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.total_promo_cost",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Promo Cost",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.total_net_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Net Revenue (After Promos)",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.average_order_value",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Order Value (AOV)",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.average_basket_value",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Basket Value",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.average_delivery_time",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Delivery Time (Minutes)",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.average_food_rating",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Food Rating",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.average_captain_rating",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Delivery Rating",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.distinct_customers",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Unique Customers",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.orders_per_customer",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Orders Per Customer",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.distinct_merchants",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Active Merchants",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.cross_sell_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Cross-Sell Rate %",
+          "sql": null
+        },
+        {
+          "name": "customer_analytics.promo_adoption_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Promo Adoption Rate %",
+          "sql": null
+        },
+        {
+          "name": "customers.customer_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer ID",
+          "sql": null
+        },
+        {
+          "name": "customers.customer_segment",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Segment",
+          "sql": null
+        },
+        {
+          "name": "customers.segment_sort",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Segment Sort",
+          "sql": null
+        },
+        {
+          "name": "customers.lifecycle_stage",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Lifecycle Stage",
+          "sql": null
+        },
+        {
+          "name": "customers.age_group",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Age Group",
+          "sql": null
+        },
+        {
+          "name": "customers.customer_value_score",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer Value Score",
+          "sql": null
+        },
+        {
+          "name": "customers.value_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Value Tier",
+          "sql": null
+        },
+        {
+          "name": "customers.days_since_first_order",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Days Since First Order",
+          "sql": null
+        },
+        {
+          "name": "customers.customer_tenure_group",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Tenure",
+          "sql": null
+        },
+        {
+          "name": "customers.city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer City",
+          "sql": null
+        },
+        {
+          "name": "customers.country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Country",
+          "sql": null
+        },
+        {
+          "name": "customers.preferred_device",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Preferred Device",
+          "sql": null
+        },
+        {
+          "name": "customers.total_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Customers",
+          "sql": null
+        },
+        {
+          "name": "customers.vip_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "VIP Customers",
+          "sql": null
+        },
+        {
+          "name": "customers.active_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Active Customers",
+          "sql": null
+        },
+        {
+          "name": "customers.at_risk_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "At-Risk Customers",
+          "sql": null
+        },
+        {
+          "name": "customers.churned_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Churned Customers",
+          "sql": null
+        },
+        {
+          "name": "customers.average_customer_value_score",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Customer Value Score",
+          "sql": null
+        },
+        {
+          "name": "customers.churn_risk_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Churn Risk Rate %",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.date",
+          "type": "dimension",
+          "field_type": "date",
+          "label": "Date",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.year",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Year",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.quarter",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Quarter Number",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.quarter_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Quarter",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.month",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Month Number",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.month_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Month Name",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.month_year",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Month-Year",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.week",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Week Number",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.day_of_week",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Day of Week Number",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.day_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Day Name",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.day_type",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Day Type",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.is_weekend",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Weekend?",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.is_current_year",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Current Year?",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.is_current_quarter",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Current Quarter?",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.is_current_month",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Current Month?",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.total_days",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Days",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.total_weekdays",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Weekdays",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.total_weekend_days",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Weekend Days",
+          "sql": null
+        }
+      ],
+      "field_source": "parsed"
+    },
+    "food_delivery_analytics.period_comparison": {
+      "model_name": "food_delivery_analytics",
+      "explore_name": "period_comparison",
+      "base_view": "orders_fact",
+      "joins": [
+        {
+          "name": "date_dimension"
+        },
+        {
+          "name": "merchants"
+        },
+        {
+          "name": "customers"
+        }
+      ],
+      "fields": [
+        {
+          "name": "period_comparison.order_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order ID",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.booking_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Booking ID",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.merchant_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Id",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.customer_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer Id",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.cuisine_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Cuisine Id",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.merchant_area_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Area Id",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.captain_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Captain Id",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.day",
+          "type": "dimension",
+          "field_type": "date",
+          "label": "Order Day",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.total_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Total Price",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.basket_amount",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Basket Amount",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.delivery_fee",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Delivery Fee",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.service_fee",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Service Fee",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.tax_amount",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Tax Amount",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.promo_amount",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Promo Discount Amount",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.order_status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Order Status",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.payment_status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Payment Status",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.payment_type",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Payment Method",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.cancellation_reason",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Cancellation Reason",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.delivery_time_mins",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Delivery Time (Minutes)",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.food_rating",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Food Rating",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.captain_rating",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Delivery Rating",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.is_pos_order",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is POS Order?",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.is_direct_order",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Direct Order?",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.is_scheduled",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Scheduled Order?",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.is_cross_sell",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Cross-Sell Order?",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Country",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "City",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.merchant_area",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Area/Zone",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.app_source",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "App Source",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.os",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Operating System",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.device",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Device Type",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.revenue_tier",
+          "type": "dimension",
+          "field_type": "tier",
+          "label": "Order Value Tier",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.delivery_speed_category",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Delivery Speed Category",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.is_high_value_order",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is High-Value Order? (>$50)",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.has_promo",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Has Promotion?",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.net_revenue",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Net Revenue (After Promos)",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.total_orders",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Orders",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.total_completed_orders",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Completed Orders",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.total_cancelled_orders",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Cancelled Orders",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.cancellation_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Cancellation Rate %",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.completion_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Order Completion Rate %",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.total_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Revenue",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.total_basket_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Basket Revenue",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.total_delivery_fees",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Delivery Fees",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.total_service_fees",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Service Fees",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.total_promo_cost",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Promo Cost",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.total_net_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Net Revenue (After Promos)",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.average_order_value",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Order Value (AOV)",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.average_basket_value",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Average Basket Value",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.average_delivery_time",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Delivery Time (Minutes)",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.average_food_rating",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Food Rating",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.average_captain_rating",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Delivery Rating",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.distinct_customers",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Unique Customers",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.orders_per_customer",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Orders Per Customer",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.distinct_merchants",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Active Merchants",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.cross_sell_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Cross-Sell Rate %",
+          "sql": null
+        },
+        {
+          "name": "period_comparison.promo_adoption_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Promo Adoption Rate %",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.date",
+          "type": "dimension",
+          "field_type": "date",
+          "label": "Date",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.year",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Year",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.quarter",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Quarter Number",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.quarter_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Quarter",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.month",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Month Number",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.month_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Month Name",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.month_year",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Month-Year",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.week",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Week Number",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.day_of_week",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Day of Week Number",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.day_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Day Name",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.day_type",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Day Type",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.is_weekend",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Weekend?",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.is_current_year",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Current Year?",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.is_current_quarter",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Current Quarter?",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.is_current_month",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Current Month?",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.total_days",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Days",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.total_weekdays",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Weekdays",
+          "sql": null
+        },
+        {
+          "name": "date_dimension.total_weekend_days",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Weekend Days",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant ID",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Name",
+          "sql": null
+        },
+        {
+          "name": "merchants.cuisine_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Cuisine Type",
+          "sql": null
+        },
+        {
+          "name": "merchants.cuisine_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Cuisine ID",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Tier",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_tier_sort",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Tier Sort",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_size",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Size",
+          "sql": null
+        },
+        {
+          "name": "merchants.partnership_type",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Partnership Type",
+          "sql": null
+        },
+        {
+          "name": "merchants.quality_score",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Merchant Quality Score",
+          "sql": null
+        },
+        {
+          "name": "merchants.quality_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Quality Tier",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_area",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Area/Zone",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_area_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Area ID",
+          "sql": null
+        },
+        {
+          "name": "merchants.city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant City",
+          "sql": null
+        },
+        {
+          "name": "merchants.country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Country",
+          "sql": null
+        },
+        {
+          "name": "merchants.days_since_onboarding",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Days Since Onboarding",
+          "sql": null
+        },
+        {
+          "name": "merchants.merchant_maturity",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Merchant Maturity",
+          "sql": null
+        },
+        {
+          "name": "merchants.commission_rate",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Commission Rate",
+          "sql": null
+        },
+        {
+          "name": "merchants.commission_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Commission Tier",
+          "sql": null
+        },
+        {
+          "name": "merchants.total_merchants",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Merchants",
+          "sql": null
+        },
+        {
+          "name": "merchants.average_quality_score",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Merchant Quality Score",
+          "sql": null
+        },
+        {
+          "name": "merchants.average_commission_rate",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Commission Rate",
+          "sql": null
+        },
+        {
+          "name": "merchants.platinum_merchants",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Platinum Merchants",
+          "sql": null
+        },
+        {
+          "name": "merchants.gold_merchants",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Gold Merchants",
+          "sql": null
+        },
+        {
+          "name": "customers.customer_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer ID",
+          "sql": null
+        },
+        {
+          "name": "customers.customer_segment",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Segment",
+          "sql": null
+        },
+        {
+          "name": "customers.segment_sort",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Segment Sort",
+          "sql": null
+        },
+        {
+          "name": "customers.lifecycle_stage",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Lifecycle Stage",
+          "sql": null
+        },
+        {
+          "name": "customers.age_group",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Age Group",
+          "sql": null
+        },
+        {
+          "name": "customers.customer_value_score",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Customer Value Score",
+          "sql": null
+        },
+        {
+          "name": "customers.value_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Value Tier",
+          "sql": null
+        },
+        {
+          "name": "customers.days_since_first_order",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Days Since First Order",
+          "sql": null
+        },
+        {
+          "name": "customers.customer_tenure_group",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Tenure",
+          "sql": null
+        },
+        {
+          "name": "customers.city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer City",
+          "sql": null
+        },
+        {
+          "name": "customers.country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Customer Country",
+          "sql": null
+        },
+        {
+          "name": "customers.preferred_device",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Preferred Device",
+          "sql": null
+        },
+        {
+          "name": "customers.total_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Total Customers",
+          "sql": null
+        },
+        {
+          "name": "customers.vip_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "VIP Customers",
+          "sql": null
+        },
+        {
+          "name": "customers.active_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Active Customers",
+          "sql": null
+        },
+        {
+          "name": "customers.at_risk_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "At-Risk Customers",
+          "sql": null
+        },
+        {
+          "name": "customers.churned_customers",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Churned Customers",
+          "sql": null
+        },
+        {
+          "name": "customers.average_customer_value_score",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Customer Value Score",
+          "sql": null
+        },
+        {
+          "name": "customers.churn_risk_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Churn Risk Rate %",
+          "sql": null
+        }
+      ],
+      "field_source": "parsed"
+    }
+  }
+}

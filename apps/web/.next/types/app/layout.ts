@@ -1,4 +1,4 @@
-// File: /home/admin_ffrancois_altostrat_com/Desktop/Antigravity projects/apps/web/app/layout.tsx
+// File: /Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/web/app/layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

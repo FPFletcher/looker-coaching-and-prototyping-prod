@@ -1,177 +1,177 @@
 """
-Google OAuth and Chat History Implementation
+Google OAuth and Chat History Implementation (Firestore Backend)
 
-This module provides OAuth authentication and chat history management.
+This module provides OAuth authentication and chat history management using Google Cloud Firestore.
 """
 
 import os
-import json
-from datetime import datetime, timedelta
+import firebase_admin
+from firebase_admin import credentials, firestore
+from datetime import datetime
 from typing import Optional, List, Dict
-import sqlite3
-from pathlib import Path
+import uuid
 
-# Database setup
-# Use /tmp for Cloud Run compatibility (ephemeral)
-DB_PATH = Path("/tmp") / "chat_history.db"
-
-def init_database():
-    """Initialize SQLite database for chat history"""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    # Create users table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id TEXT PRIMARY KEY,
-            email TEXT UNIQUE NOT NULL,
-            name TEXT,
-            picture TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
-    
-    # Create chat sessions table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS chat_sessions (
-            id TEXT PRIMARY KEY,
-            user_id TEXT NOT NULL,
-            title TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id)
-        )
-    """)
-    
-    # Create messages table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS messages (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            session_id TEXT NOT NULL,
-            role TEXT NOT NULL,
-            content TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (session_id) REFERENCES chat_sessions(id)
-        )
-    """)
-    
-    conn.commit()
-    conn.close()
+# Initialize Firebase Admin SDK
+# Use Application Default Credentials (ADC) which works on Cloud Run (with SA) and Local (with gcloud auth)
+try:
+    if not firebase_admin._apps:
+        firebase_admin.initialize_app()
+    db = firestore.client()
+except Exception as e:
+    print(f"Warning: Failed to initialize Firestore: {e}")
+    db = None
 
 class ChatHistoryManager:
-    """Manage chat history storage and retrieval"""
+    """Manage chat history storage and retrieval using Firestore"""
     
     def __init__(self):
-        init_database()
+        # Firestore is initialized at module level to reuse connection
+        pass
+    
+    def _ensure_db(self):
+        if not db:
+            raise Exception("Firestore client not initialized")
     
     def create_session(self, user_id: str, title: str = "New Chat") -> str:
         """Create a new chat session"""
-        import uuid
+        self._ensure_db()
         session_id = str(uuid.uuid4())
         
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        cursor.execute(
-            "INSERT INTO chat_sessions (id, user_id, title) VALUES (?, ?, ?)",
-            (session_id, user_id, title)
-        )
-        conn.commit()
-        conn.close()
+        doc_ref = db.collection('chat_sessions').document(session_id)
+        doc_ref.set({
+            'id': session_id,
+            'user_id': user_id,
+            'title': title,
+            'created_at': firestore.SERVER_TIMESTAMP,
+            'updated_at': firestore.SERVER_TIMESTAMP
+        })
         
         return session_id
     
     def save_message(self, session_id: str, role: str, content: str):
         """Save a message to a session"""
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        cursor.execute(
-            "INSERT INTO messages (session_id, role, content) VALUES (?, ?, ?)",
-            (session_id, role, content)
-        )
+        self._ensure_db()
+        
+        # Add message to 'messages' collection
+        # Note: We use a top-level collection for easier querying, but link via session_id
+        db.collection('messages').add({
+            'session_id': session_id,
+            'role': role,
+            'content': content,
+            'created_at': firestore.SERVER_TIMESTAMP
+        })
+        
         # Update session updated_at
-        cursor.execute(
-            "UPDATE chat_sessions SET updated_at = CURRENT_TIMESTAMP WHERE id = ?",
-            (session_id,)
-        )
-        conn.commit()
-        conn.close()
+        session_ref = db.collection('chat_sessions').document(session_id)
+        session_ref.update({
+            'updated_at': firestore.SERVER_TIMESTAMP
+        })
     
     def get_session_messages(self, session_id: str) -> List[Dict]:
         """Get all messages from a session"""
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        cursor.execute(
-            "SELECT role, content, created_at FROM messages WHERE session_id = ? ORDER BY created_at",
-            (session_id,)
-        )
-        messages = [
-            {"role": row[0], "content": row[1], "created_at": row[2]}
-            for row in cursor.fetchall()
-        ]
-        conn.close()
-        return messages
-    
+        self._ensure_db()
+        
+        # Query messages by session_id
+        try:
+            query = db.collection('messages').where('session_id', '==', session_id).order_by('created_at')
+            docs = query.stream()
+            
+            messages = []
+            for doc in docs:
+                data = doc.to_dict()
+                # Convert timestamp to string if needed, or keep object
+                # The frontend expects 'created_at'. We'll return it as is or ISO string.
+                created_at = data.get('created_at')
+                if created_at:
+                    # Firestore Timestamp to ISO string for JSON serialization
+                    created_at = created_at.isoformat()
+                
+                messages.append({
+                    "role": data.get('role'),
+                    "content": data.get('content'),
+                    "created_at": created_at
+                })
+            return messages
+        except Exception as e:
+            print(f"Error getting messages: {e}")
+            # Fallback if index missing or error
+            return []
+
     def get_user_sessions(self, user_id: str) -> List[Dict]:
         """Get all sessions for a user"""
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        cursor.execute(
-            """SELECT id, title, created_at, updated_at 
-               FROM chat_sessions 
-               WHERE user_id = ? 
-               ORDER BY updated_at DESC""",
-            (user_id,)
-        )
-        sessions = [
-            {
-                "id": row[0],
-                "title": row[1],
-                "created_at": row[2],
-                "updated_at": row[3]
-            }
-            for row in cursor.fetchall()
-        ]
-        conn.close()
-        return sessions
+        self._ensure_db()
+        
+        try:
+            query = db.collection('chat_sessions').where('user_id', '==', user_id).order_by('updated_at', direction=firestore.Query.DESCENDING)
+            docs = query.stream()
+            
+            sessions = []
+            for doc in docs:
+                data = doc.to_dict()
+                created_at = data.get('created_at')
+                updated_at = data.get('updated_at')
+                
+                sessions.append({
+                    "id": data.get('id'),
+                    "title": data.get('title'),
+                    "created_at": created_at.isoformat() if created_at else None,
+                    "updated_at": updated_at.isoformat() if updated_at else None
+                })
+            return sessions
+        except Exception as e:
+            print(f"Error getting sessions: {e}")
+            return []
     
     def delete_session(self, session_id: str, user_id: str) -> bool:
         """Delete a session (with user authorization check)"""
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
+        self._ensure_db()
         
         # Verify ownership
-        cursor.execute(
-            "SELECT user_id FROM chat_sessions WHERE id = ?",
-            (session_id,)
-        )
-        result = cursor.fetchone()
+        session_ref = db.collection('chat_sessions').document(session_id)
+        doc = session_ref.get()
         
-        if not result or result[0] != user_id:
-            conn.close()
+        if not doc.exists:
             return False
         
-        # Delete messages first (foreign key constraint)
-        cursor.execute("DELETE FROM messages WHERE session_id = ?", (session_id,))
-        cursor.execute("DELETE FROM chat_sessions WHERE id = ?", (session_id,))
+        data = doc.to_dict()
+        if data.get('user_id') != user_id:
+            return False
         
-        conn.commit()
-        conn.close()
+        # Delete session
+        session_ref.delete()
+        
+        # Delete messages (Batch delete is better but for now loop)
+        # Note: Firestore doesn't cascade delete. We must query and delete.
+        messages = db.collection('messages').where('session_id', '==', session_id).stream()
+        batch = db.batch()
+        count = 0
+        for msg in messages:
+            batch.delete(msg.reference)
+            count += 1
+            if count >= 400: # Batch limit
+                batch.commit()
+                batch = db.batch()
+                count = 0
+        if count > 0:
+            batch.commit()
+            
         return True
     
     def update_session_title(self, session_id: str, user_id: str, title: str) -> bool:
         """Update session title (with user authorization)"""
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
+        self._ensure_db()
         
-        cursor.execute(
-            "UPDATE chat_sessions SET title = ? WHERE id = ? AND user_id = ?",
-            (title, session_id, user_id)
-        )
-        success = cursor.rowcount > 0
+        session_ref = db.collection('chat_sessions').document(session_id)
+        doc = session_ref.get()
         
-        conn.commit()
-        conn.close()
-        return success
+        if not doc.exists:
+            return False
+            
+        if doc.to_dict().get('user_id') != user_id:
+            return False
+            
+        session_ref.update({'title': title})
+        return True
 
 class GoogleOAuthHandler:
     """Handle Google OAuth authentication"""
@@ -191,6 +191,7 @@ class GoogleOAuthHandler:
                 token, requests.Request(), self.client_id
             )
             
+            # For Firestore, we typically use 'sub' as user ID
             return {
                 "id": idinfo["sub"],
                 "email": idinfo["email"],
@@ -202,19 +203,16 @@ class GoogleOAuthHandler:
             return None
     
     def create_or_update_user(self, user_info: Dict):
-        """Create or update user in database"""
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        
-        cursor.execute(
-            """INSERT INTO users (id, email, name, picture) 
-               VALUES (?, ?, ?, ?)
-               ON CONFLICT(email) DO UPDATE SET
-               name = excluded.name,
-               picture = excluded.picture""",
-            (user_info["id"], user_info["email"], 
-             user_info.get("name"), user_info.get("picture"))
-        )
-        
-        conn.commit()
-        conn.close()
+        """Create or update user in Firestore"""
+        if not db: 
+            return
+            
+        user_ref = db.collection('users').document(user_info["id"])
+        user_ref.set({
+            'id': user_info["id"],
+            'email': user_info["email"],
+            'name': user_info.get("name"),
+            'picture': user_info.get("picture"),
+            # Merge to avoid overwriting created_at unless we track it
+            'last_login': firestore.SERVER_TIMESTAMP
+        }, merge=True)

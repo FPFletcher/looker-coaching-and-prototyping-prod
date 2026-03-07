@@ -35,7 +35,7 @@ export default function Home() {
     const [sessionId, setSessionId] = useState(() => Math.random().toString(36).substring(7));
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [mode, setMode] = useState<'existing' | 'dummy'>('existing');
-    const [selectedModel, setSelectedModel] = useState('claude-sonnet-4-5-20250929');
+    const [selectedModel, setSelectedModel] = useState('claude-sonnet-4-5');
     const [selectedExplore, setSelectedExplore] = useState<Explore | null>(null);
     const [abortController, setAbortController] = useState<AbortController | null>(null);
     const [currentUser, setCurrentUser] = useState<GoogleUser | null>(null);
@@ -49,15 +49,27 @@ export default function Home() {
     // Default credentials
     const defaultCredentials: LookerCredentials = {
         url: "https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app",
-        client_id: "PcpBKntHBFZswh25Mh6v",
-        client_secret: "yFw5mgPYgjfg4NDtXqfdxzVz"
+        client_id: "CXy7CKWwYMjjQrHzzgxZ",
+        client_secret: "J6KYGFmpNPwwfmFrHWXB3KGG"
     };
 
     const [credentials, setCredentials] = useState<LookerCredentials>(defaultCredentials);
+    // Add missing state for other settings
+    const [vertexApiKey, setVertexApiKey] = useState<string>("");
+    const [claudeApiKey, setClaudeApiKey] = useState<string>("");
+    const [googleApiKey, setGoogleApiKey] = useState<string>("");
+    const [gcpProject, setGcpProject] = useState<string>("");
+    const [gcpLocation, setGcpLocation] = useState<string>("");
+    const [useVertex, setUseVertex] = useState<boolean>(true);
 
     // Load user, settings, and chats on mount
     useEffect(() => {
         if (typeof window !== 'undefined') {
+            // Auto-close sidebar on mobile
+            if (window.innerWidth < 768) {
+                setIsSidebarOpen(false);
+            }
+
             // Try to get current user
             const userStr = localStorage.getItem('google_user');
             let userId: string | undefined;
@@ -76,9 +88,26 @@ export default function Home() {
 
             const settings = getUserSetting<SettingsData>('looker_settings', userId);
             if (settings) {
-                setCredentials(settings.credentials);
+                // Auto-migrate from old credentials to new defaults
+                const OLD_IDS = ["Zv36QKRBcC5dpWYTG8nY", "fSyCPCpCtdb26F8Zwq42", "DFtMS2cKqsJ2jjXHZkFR"];
+                if (OLD_IDS.includes(settings.credentials.client_id)) {
+                    console.log("Migrating old credentials to new defaults");
+                    setCredentials(defaultCredentials);
+                    // Also update stored settings immediately to persist the fix
+                    saveUserSetting('looker_settings', { ...settings, credentials: defaultCredentials }, userId);
+                } else {
+                    setCredentials(settings.credentials);
+                }
+
                 setMode(settings.mode || 'existing');
-                setSelectedModel(settings.model || 'claude-sonnet-4-5-20250929');
+                setSelectedModel(settings.model || 'claude-sonnet-4-5');
+                // Load extended settings
+                setVertexApiKey(settings.vertexApiKey || "");
+                setClaudeApiKey(settings.claudeApiKey || "");
+                setGoogleApiKey(settings.googleApiKey || "");
+                setGcpProject(settings.gcpProject || "");
+                setGcpLocation(settings.gcpLocation || "");
+                setUseVertex(settings.useVertex ?? true);
             }
 
             // Load persisted UI state
@@ -192,6 +221,14 @@ export default function Home() {
         setMode(settings.mode);
         setSelectedModel(settings.model);
 
+        // Update extended state
+        setVertexApiKey(settings.vertexApiKey || "");
+        setClaudeApiKey(settings.claudeApiKey || "");
+        setGoogleApiKey(settings.googleApiKey || "");
+        setGcpProject(settings.gcpProject || "");
+        setGcpLocation(settings.gcpLocation || "");
+        setUseVertex(settings.useVertex ?? true);
+
         // Save settings to storage
         if (typeof window !== 'undefined') {
             saveUserSetting('looker_settings', settings, currentUser?.id);
@@ -208,7 +245,15 @@ export default function Home() {
             if (userSettings) {
                 setCredentials(userSettings.credentials);
                 setMode(userSettings.mode || 'existing');
-                setSelectedModel(userSettings.model || 'claude-sonnet-4-5-20250929');
+                setSelectedModel(userSettings.model || 'claude-sonnet-4-5');
+
+                // Update extended state
+                setVertexApiKey(userSettings.vertexApiKey || "");
+                setClaudeApiKey(userSettings.claudeApiKey || "");
+                setGoogleApiKey(userSettings.googleApiKey || "");
+                setGcpProject(userSettings.gcpProject || "");
+                setGcpLocation(userSettings.gcpLocation || "");
+                setUseVertex(userSettings.useVertex ?? true);
             }
             setSavedChats(getSavedChats(user.id));
 
@@ -224,16 +269,32 @@ export default function Home() {
             if (anonSettings) {
                 setCredentials(anonSettings.credentials);
                 setMode(anonSettings.mode || 'existing');
-                setSelectedModel(anonSettings.model || 'claude-sonnet-4-5-20250929');
+                setSelectedModel(anonSettings.model || 'claude-sonnet-4-5');
+
+                // Update extended state
+                setVertexApiKey(anonSettings.vertexApiKey || "");
+                setClaudeApiKey(anonSettings.claudeApiKey || "");
+                setGoogleApiKey(anonSettings.googleApiKey || "");
+                setGcpProject(anonSettings.gcpProject || "");
+                setGcpLocation(anonSettings.gcpLocation || "");
+                setUseVertex(anonSettings.useVertex ?? true);
             } else {
                 // Reset to defaults
                 setCredentials({
                     url: "https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app",
-                    client_id: "vQyY8tbjsT6tcG7ZV85N",
-                    client_secret: "hyPbyWkJXDz8h6tGcYk5Y44G"
+                    client_id: "CXy7CKWwYMjjQrHzzgxZ",
+                    client_secret: "J6KYGFmpNPwwfmFrHWXB3KGG"
                 });
                 setMode('existing');
-                setSelectedModel('claude-sonnet-4-5-20250929');
+                setSelectedModel('claude-sonnet-4-5');
+
+                // Reset extended state
+                setVertexApiKey("");
+                setClaudeApiKey("");
+                setGoogleApiKey("");
+                setGcpProject("");
+                setGcpLocation("");
+                setUseVertex(true);
             }
         }
     };
@@ -300,7 +361,8 @@ export default function Home() {
                     gcp_location: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.gcpLocation,
                     vertex_api_key: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.vertexApiKey,
                     claude_api_key: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.claudeApiKey,
-                    llm_region: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.llmRegion,
+                    google_api_key: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.googleApiKey,
+                    use_vertex: getUserSetting<SettingsData>('looker_settings', currentUser?.id)?.useVertex ?? true,
                     poc_mode: isPocMode
                 }),
                 signal: controller.signal // Add abort signal
@@ -475,7 +537,19 @@ export default function Home() {
                 }
             />
 
-            <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? "ml-64" : "ml-16"} h-full flex flex-col`}>
+            <main className={`flex-1 transition-all duration-300 ${isSidebarOpen ? "md:ml-64" : "md:ml-16"} h-full flex flex-col`}>
+
+                {/* Mobile Header */}
+                <div className="md:hidden flex items-center justify-between p-4 bg-[#131314] sticky top-0 z-30 border-b border-[#37393b]">
+                    <button
+                        onClick={() => setIsSidebarOpen(true)}
+                        className="p-2 hover:bg-[#37393b] rounded-full text-gray-400"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg>
+                    </button>
+                    <span className="text-lg font-medium text-gray-200">Selo</span>
+                    <div className="w-10" /> {/* Spacer */}
+                </div>
                 <div className="flex-1">
                     <ChatInterface
                         messages={messages}
@@ -496,7 +570,17 @@ export default function Home() {
                 isOpen={isSettingsOpen}
                 onClose={() => setIsSettingsOpen(false)}
                 onSave={handleSaveSettings}
-                initialSettings={{ credentials, mode, model: selectedModel }}
+                initialSettings={{
+                    credentials,
+                    mode,
+                    model: selectedModel,
+                    vertexApiKey,
+                    claudeApiKey,
+                    googleApiKey,
+                    gcpProject,
+                    gcpLocation,
+                    useVertex
+                }}
             />
         </div>
     );

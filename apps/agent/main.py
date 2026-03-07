@@ -72,7 +72,8 @@ class ChatRequest(BaseModel):
     poc_mode: bool = False  # New flag for strict POC mode
     vertex_api_key: Optional[str] = None
     claude_api_key: Optional[str] = None
-    llm_region: Optional[str] = "US"
+    google_api_key: Optional[str] = None
+    use_vertex: bool = True
 
 class ResetRequest(BaseModel):
     session_id: str
@@ -122,13 +123,37 @@ async def chat(request: ChatRequest):
                 "history": []
             }
         
+        # Determine effective key for Gemini based on use_vertex flag
+        effective_gemini_key = request.vertex_api_key
+        if not request.use_vertex:
+             effective_gemini_key = request.google_api_key
+
         # Instantiate agent
+        # Instantiate agent
+        logger.info(f"--- Chat Request ---")
+        logger.info(f"Session: {session_id}, Model: {request.model}")
+        logger.info(f"Use Vertex: {request.use_vertex}")
+        logger.info(f"Vertex Key Provided: {'Yes' if request.vertex_api_key else 'No'} (Len: {len(request.vertex_api_key) if request.vertex_api_key else 0})")
+        logger.info(f"Google API Key (Env): {'Yes' if os.environ.get('GOOGLE_API_KEY') else 'No'} (Len: {len(os.environ.get('GOOGLE_API_KEY', ''))})")
+        logger.info(f"Anthropic Key Provided: {'Yes' if request.claude_api_key else 'No'} (Len: {len(request.claude_api_key) if request.claude_api_key else 0})")
+        
+        # Check credentials file
+        sa_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "")
+        if sa_path:
+            logger.info(f"GOOGLE_APPLICATION_CREDENTIALS set to: {sa_path}")
+            if os.path.exists(sa_path):
+                 logger.info(f"Creds file exists at {sa_path}")
+            else:
+                 logger.error(f"Creds file MISSING at {sa_path}")
+        else:
+             logger.warning("GOOGLE_APPLICATION_CREDENTIALS not set")
+        
         chat_agent = MCPAgent(
             session_id=session_id, 
             model_name=request.model,
-            vertex_api_key=request.vertex_api_key or "",
+            vertex_api_key=effective_gemini_key or "",
             claude_api_key=request.claude_api_key or "",
-            llm_region=request.llm_region or "US"
+            # llm_region removed as it was deprecated
         )
 
         async def event_generator():
@@ -182,13 +207,24 @@ async def get_explores(request: Dict[str, Any]):
     credentials = request.get("credentials", {})
     
     # Set Looker credentials
-    os.environ["LOOKERSDK_BASE_URL"] = credentials.get("url", "")
-    os.environ["LOOKERSDK_CLIENT_ID"] = credentials.get("client_id", "")
-    os.environ["LOOKERSDK_CLIENT_SECRET"] = credentials.get("client_secret", "")
+    base_url = credentials.get("url", "")
+    client_id = credentials.get("client_id", "")
+    client_secret = credentials.get("client_secret", "")
+    
+    logger.info(f"DEBUG: get_explores using URL: {base_url} | Client ID: {client_id[:5]}***")
+    
+    os.environ["LOOKERSDK_BASE_URL"] = base_url
+    os.environ["LOOKERSDK_CLIENT_ID"] = client_id
+    os.environ["LOOKERSDK_CLIENT_SECRET"] = client_secret
     os.environ["LOOKERSDK_VERIFY_SSL"] = "false" # POC dev/test
+    # Force API 4.0
+    os.environ["LOOKERSDK_API_VERSION"] = "4.0"
     
     try:
-        sdk = looker_sdk.init40()
+        from looker_sdk import init40
+        sdk = init40()
+        me = sdk.me()
+        logger.info(f"DEBUG: SDK Initialized. Connected as {me.display_name}")
         
         # Get all models with explicit fields to ensure explores are returned
         models = sdk.all_lookml_models(fields="name,label,project_name,explores(name,label)")

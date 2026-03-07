@@ -86,7 +86,7 @@ const ThinkingBlock: React.FC<ThinkingBlockProps> = ({ tool }) => {
                     {tool.input && Object.keys(tool.input).length > 0 && (
                         <div className="mb-3">
                             <div className="text-xs text-gray-400 mb-1">Input:</div>
-                            <pre className="text-xs bg-black/30 p-2 rounded overflow-x-auto">
+                            <pre className="text-xs bg-black/30 p-2 rounded whitespace-pre-wrap break-words">
                                 {JSON.stringify(tool.input, null, 2)}
                             </pre>
                         </div>
@@ -98,7 +98,7 @@ const ThinkingBlock: React.FC<ThinkingBlockProps> = ({ tool }) => {
                             <div className="text-xs text-gray-400 mb-1">
                                 {tool.status === 'error' ? 'Error:' : 'Result:'}
                             </div>
-                            <pre className="text-xs bg-black/30 p-2 rounded overflow-x-auto max-h-60">
+                            <pre className="text-xs bg-black/30 p-2 rounded whitespace-pre-wrap break-words max-h-60 overflow-y-auto">
                                 {typeof tool.output === 'string'
                                     ? tool.output
                                     : JSON.stringify(tool.output, null, 2)}

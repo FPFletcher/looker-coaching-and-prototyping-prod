@@ -77,32 +77,49 @@ export default function Sidebar({
     };
 
     return (
-        <div
-            className={`
-        fixed inset-y-0 left-0 z-50 bg-[#1e1f20] text-gray-200 transition-all duration-300 ease-in-out border-r border-[#37393b]
-        ${isOpen ? "w-64" : "w-16"}
-      `}
-        >
-            <div className="flex flex-col h-full">
-                {/* Header */}
-                <div className="flex items-center justify-between p-4 h-16">
-                    <button
-                        onClick={toggleSidebar}
-                        className="p-2 hover:bg-[#37393b] rounded-full transition-colors"
-                    >
-                        <Menu className="w-5 h-5" />
-                    </button>
+        <>
+            {/* Mobile Overlay */}
+            {isOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
+                    onClick={toggleSidebar}
+                />
+            )}
 
-                    {isOpen && (
+            <div
+                className={`
+                fixed inset-y-0 left-0 z-50 bg-[#1e1f20] text-gray-200 transition-transform duration-300 ease-in-out border-r border-[#37393b]
+                ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0
+                ${isOpen ? "w-64" : "w-64 md:w-16"}
+                `}
+            >
+                <div className="flex flex-col h-full">
+                    {/* Header */}
+                    <div className="flex items-center justify-between p-4 h-16">
                         <button
-                            onClick={onNewChat}
-                            className="p-2 bg-[#d3e3fd] text-[#041e49] rounded-full hover:bg-white transition-colors"
-                            title="New Chat"
+                            onClick={toggleSidebar}
+                            className="p-2 hover:bg-[#37393b] rounded-full transition-colors md:block hidden"
                         >
-                            <PlusCircle className="w-5 h-5" />
+                            <Menu className="w-5 h-5" />
                         </button>
-                    )}
-                </div>
+                        {/* Mobile Close Button */}
+                        <button
+                            onClick={toggleSidebar}
+                            className="p-2 hover:bg-[#37393b] rounded-full transition-colors md:hidden block ml-auto"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+
+                        {isOpen && (
+                            <button
+                                onClick={onNewChat}
+                                className="p-2 bg-[#d3e3fd] text-[#041e49] rounded-full hover:bg-white transition-colors"
+                                title="New Chat"
+                            >
+                                <PlusCircle className="w-5 h-5" />
+                            </button>
+                        )}
+                    </div>
 
                 {/* Content */}
                 <div className="flex-1 overflow-y-auto py-2 scrollbar-thin scrollbar-thumb-[#444746] scrollbar-track-transparent">
@@ -230,5 +247,6 @@ export default function Sidebar({
                 </div>
             </div>
         </div>
+        </>
     );
 }

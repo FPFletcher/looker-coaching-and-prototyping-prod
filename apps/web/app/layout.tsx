@@ -6,7 +6,7 @@ import clsx from "clsx";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "Banana - Looker Prototype Agent",
+    title: "Selo - Looker Coaching Agent",
     description: "Generate Looker dashboards and data from a single prompt.",
 };
 

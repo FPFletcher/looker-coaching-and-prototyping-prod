@@ -132,6 +132,8 @@ const ChatInterface = memo(function ChatInterface({
     // Dynamic prompts... (omitted for brevity, keep existing)
     const prompts = mode === 'existing'
         ? [
+            { icon: Sparkles, text: "Describe what you can do" },
+            { icon: Terminal, text: "Find the top 10 best performing products" },
             { icon: Terminal, text: "Create a dashboard for sales metrics" },
             { icon: Sparkles, text: "Analyze order trends over time" },
             { icon: ImageIcon, text: "Show me available data models" }
@@ -186,7 +188,7 @@ const ChatInterface = memo(function ChatInterface({
         ul: ({ node, ...props }: any) => <ul className="list-disc pl-5 mb-4 space-y-1" {...props} />,
         ol: ({ node, ...props }: any) => <ol className="list-decimal pl-5 mb-4 space-y-1" {...props} />,
         code: ({ node, ...props }: any) => <code className="bg-[#2A2B2D] px-1.5 py-0.5 rounded text-[#E2E2E2] font-mono text-sm" {...props} />,
-        pre: ({ node, ...props }: any) => <pre className="bg-[#1E1F20] p-4 rounded-xl border border-[#333537] overflow-x-auto mb-4" {...props} />,
+        pre: ({ node, ...props }: any) => <pre className="bg-[#1E1F20] p-4 rounded-xl border border-[#333537] overflow-x-auto mb-4 max-w-full" {...props} />,
     }), []);
 
     const renderMarkdown = useCallback((content: string) => (
@@ -205,7 +207,7 @@ const ChatInterface = memo(function ChatInterface({
             {/* Messages Area - Responsive Padding */}
             <div className="flex-1 overflow-y-auto px-4 md:px-8 lg:px-12 py-6 md:py-8 space-y-6 md:space-y-8 scrollbar-thin scrollbar-thumb-[#444746] scrollbar-track-transparent">
                 {messages.length === 0 && (
-                    <div className="h-full flex flex-col items-start justify-center max-w-4xl mx-auto -mt-12 md:-mt-20 px-2">
+                    <div className="h-full flex flex-col items-center justify-center max-w-4xl mx-auto -mt-12 md:-mt-20 px-4 text-center">
                         <div className="mb-2">
                             <Sparkles className="w-12 h-12 text-[#4c8df6]" />
                         </div>
@@ -328,7 +330,7 @@ const ChatInterface = memo(function ChatInterface({
 
                     {/* Suggestion Chips (only on empty state) */}
                     {messages.length === 0 && (
-                        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory -mx-4 px-4 md:mx-0 md:px-0">
+                        <div className="flex flex-wrap gap-2 justify-center pb-2">
                             {prompts.map((prompt, idx) => (
                                 <button
                                     key={idx}

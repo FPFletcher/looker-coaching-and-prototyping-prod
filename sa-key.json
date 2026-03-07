@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "antigravity-innovations",
+  "private_key_id": "9b6d456b5a9ffb12d289cc5793478c1291114bb6",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDgwirXB+GhjBIW\n/r9BYWY6LYt/p5yP7Wdnd/HlfffWf/ZklgpS7O5FAP+gnbdsFJJUmowO5tW225kI\na80UbrvI3nl8RlY1SQTh6MnXjHrfTwSbarl200OO7HMqv/zLqvhfrA5Sry6fI8yN\nIP8JXnorwPk7iFIJsKD060gMkyK0iKhFBvtCvPWMViePK4zMol1BcCj/k9d49A4i\n5dzJYKCTEj9Y+/+TUxTFzRCi76fAjji5B650vsSSoXpa/i+q5KY6OfeuwR7UWdwK\n95FZTdvlCxlDDocF/pQqE/70zr5gGd4oi+JNPwiCVSFLwBX2bAUHIA85Q/B7PKuY\nONSZ+E6hAgMBAAECggEAXT/h00Y3VDWPmc/GnQMijTexPVzWpZZLRQ/sIhlh1rJP\nkUr47I/ViXaRGFvnKmXcklJuko4uFAhHFUnYk8YfjgbTo35xLPlnF61j9NSZdAXO\nNQcR/J1JVcZ/P7jY0s1T8Cmr5Z09/BO3vcP3XDVA/d856Hu2AcQw+3yUb3cqOnkD\nOrXiebBvQ637ZCd72TuT+Zc7Pvuw7yEvrIZjmQd0Lb36k1YzVtl8rGeWPO54L5nv\nKBCNlNZix+Npph2+TRFQROqcYxbIJt0iw6n1X/3jV3UAO2xOydBB4lTPP4enOzO1\neaW8SrmOh3EGM+6n1+4YqEpX/wKFVquFkD66Wu6BgwKBgQDzidt739LxwjPC3IIC\nJXu2t8cAmqLXUjF+SKdMxuBWVyXOxzP61W+mhS02OQP90p7xgEOuBcJ7PktR7IRW\nbvTsdsEvPMGrbeNCiDwg/KUa0oycFyY8suUAh3C6luDDZCbUdJNyW6UkCzVPjkjg\nkbffWe+S8Sqyj4ygUwwDQObXMwKBgQDsQk7MLyyu6DfDzYKuUxR31mVuoOp3ooPZ\noHuBSQ/Po4obHY8u0mVhuNaMcCf06QYKl/DABEtfLKtLD1Gs4a/2tuYtp7356pw5\nx8GtD68XkxJ/G2XQhVtmcml7PnrEFOePLUbXegzbdbiQJCD0ZU/A7otCDQh5n9nJ\nxZpibrDy2wKBgBNcUECGyKRDhg3lrcgx5qXd8koQAQYRGLIrYHFwFgGHKBBKMc2t\nDhU03SVEXxbcmZolUjwRZSabCy3WGactZvctcaopsFPKhpiRcAZHT3DUcC0wge+t\nYRsrqUCMIg4mdhfJtLcQpg45feF3ND/2FaIB6lPKLFTJqKpOL9RKYo+VAoGAQnue\nROL5hfaeyqCoJ3oFhnt0a58om6XFyJXaa1Ut99YjZOH6ish18vvalAZzl/2Cz7RV\n8RLESvH8+dBDwYx4wcpSF4LeeNdGQxQtMg/5y359c/s3uWftgnSrrhy02zyutKGf\nD7+uoosL9rPT+jIQMVBvK5UTT3ZmCNtsSEqxzIUCgYEAgXivn5Zl+lKbrdfVMnoB\nqDtlVOR523ppYIN1Lx2bdLGfUfzGo++rid/40c2axH4+MtIox+xVzrLHr3fEgsOl\n9BiFqvnrWOpn8jYrRbbo0b6+jPvNqGA1hLnvu8hv+8GlMSnkgiEuQfriKgeINR63\nPm6LnkPAvf4aUDZQ7xHQ/xM=\n-----END PRIVATE KEY-----\n",
+  "client_email": "looker-vertex-agent@antigravity-innovations.iam.gserviceaccount.com",
+  "client_id": "111424775289288248762",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/looker-vertex-agent%40antigravity-innovations.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
