@@ -2,7 +2,7 @@
 # Startup script for Looker MCP Chat Interface
 # This script starts both the backend and frontend servers
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 echo "🚀 Starting Looker MCP Chat Interface..."
 

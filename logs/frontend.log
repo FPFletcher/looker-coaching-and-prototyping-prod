@@ -1,4 +1,3 @@
-nohup: ignoring input
 
 > banana-prototype-agent@0.1.0 dev
 > next dev
@@ -8,10 +7,8 @@ nohup: ignoring input
   - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 1673ms
+ ✓ Ready in 2.2s
  ○ Compiling / ...
- ✓ Compiled / in 1567ms (1063 modules)
- GET / 200 in 1834ms
- ○ Compiling /_not-found ...
- ✓ Compiled /_not-found in 505ms (1066 modules)
- GET /.well-known/appspecific/com.chrome.devtools.json 404 in 589ms
+ ✓ Compiled / in 1195ms (1063 modules)
+ GET / 200 in 1439ms
+ GET / 200 in 214ms

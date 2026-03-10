@@ -328,6 +328,38 @@ explore: customer_analytics {
 
 **CRITICAL: DO NOT MODIFY USER-PROVIDED BASE URLS**
 
+- **The Problem:** Programmatically appending paths like `/api/4.0` or ports to the `LOOKERSDK_BASE_URL` causes `404 Not Found` or `401 Unauthorized` errors when the Looker SDK automatically prefixes its own paths (e.g. creating `.../api/4.0/api/4.0/login`).
+- **The Protocol:** Pass the URL strictly "AS IS" to the SDK or Binary Tools. If using `looker_sdk.init40()`, rely on the user providing the clean base URL (`https://<instance>.looker.app`). **Do not write logic that "cleans" or forces `/api/4.0` suffixes.**
+
+---
+
+## 12. Troubleshooting Mismatched Explore Access (The "Empty Dropdown" Problem)
+
+**CRITICAL: ADMIN STATUS DOES NOT EQUAL AUTOMATIC EXPLORE VISIBILITY**
+
+- **The Problem:** The API call to `sdk.all_lookml_models(fields="name,explores")` runs successfully, but models appear in the UI dropdown with 0 explores (empty).
+- **The Check:** Do NOT assume authentication is broken if explores are missing. Run an independent validation script (using `sdk.lookml_model('model_name')` and `sdk.me()`). 
+- **The Causes:**
+  1. **Deployment State:** A Service Account defaults to the `production` workspace. Explores existing only in a user's `dev` branch are invisible to the API logic.
+  2. **Access Grants:** The model files might have `access_grant` requirements keyed on `user_attribute`s that the human User has, but the Service Account (even with Admin Role) does not. 
+- **The Protocol:** When diagnosing empty dropdowns, confirm workspace context and attribute restrictions before doubting API keys or code fidelity. 
+
+---
+
+## 13. Python Environment & Library Degradation
+
+**CRITICAL: GRACEFULLY HANDLE MISSING `mcp` DEPENDENCY (Python 3.9 Constraints)**
+
+- **The Problem:** The `mcp` library requires Python 3.10+. Code injected that uses `ClientSession`, `StdioServerParameters`, or `stdio_client` unconditionally will crash the entire agent loop with `TypeError: 'NoneType' object is not callable` in older environments like Python 3.9 if the import fails securely into a `None` fallback object.
+- **The Protocol:** Wrap all binary MCP client logic in guards:
+  ```python
+  if StdioServerParameters and stdio_client and ClientSession:
+      # Proceed with MCP binary
+  else:
+      logger.warning("MCP libraries absent (Python < 3.10). Using python tools only.")
+  ```
+  This ensures local python fallback tools (`run_query`, `create_dashboard`, etc.) continue providing a high-quality experience without crashing the interface.
+
 ---
 
 ## 12. LLM Credential Handling & Model Fidelity

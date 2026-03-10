@@ -49,8 +49,8 @@ export default function Home() {
     // Default credentials
     const defaultCredentials: LookerCredentials = {
         url: "https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app",
-        client_id: "CXy7CKWwYMjjQrHzzgxZ",
-        client_secret: "J6KYGFmpNPwwfmFrHWXB3KGG"
+        client_id: "fSyCPCpCtdb26F8Zwq42",
+        client_secret: "3bs3QFkvRjKFr7cV3cZkyjJH"
     };
 
     const [credentials, setCredentials] = useState<LookerCredentials>(defaultCredentials);
@@ -282,8 +282,8 @@ export default function Home() {
                 // Reset to defaults
                 setCredentials({
                     url: "https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app",
-                    client_id: "CXy7CKWwYMjjQrHzzgxZ",
-                    client_secret: "J6KYGFmpNPwwfmFrHWXB3KGG"
+                    client_id: "fSyCPCpCtdb26F8Zwq42",
+                    client_secret: "3bs3QFkvRjKFr7cV3cZkyjJH"
                 });
                 setMode('existing');
                 setSelectedModel('claude-sonnet-4-5');
