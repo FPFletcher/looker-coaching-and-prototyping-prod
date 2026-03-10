@@ -30,12 +30,14 @@ case $choice in
         $GCLOUD builds submit --config scripts/backend-build.yaml . || error_exit "Backend Build Failed"
 
         echo "🚀 Deploying Backend..."
+        ENV_VARS=$(grep -v '^#' apps/agent/.env | grep -v '^$' | tr '\n' ',' | sed 's/,$//')
         $GCLOUD run deploy selo-backend \
             --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/antigravity-backend \
             --region ${REGION} \
             --allow-unauthenticated \
             --timeout=600 \
             --memory 2Gi \
+            --set-env-vars="$ENV_VARS" \
             --cpu 2 || error_exit "Backend Deploy Failed"
         ;;
 esac
