@@ -11,8 +11,15 @@ try:
 except ImportError:
     _AnthropicVertex = None
 import httpx
-from mcp import ClientSession, StdioServerParameters
-from mcp.client.stdio import stdio_client
+try:
+    from mcp import ClientSession, StdioServerParameters
+    from mcp.client.stdio import stdio_client
+except ImportError:
+    # Fallback for Python 3.9 environnments
+    ClientSession = None
+    stdio_client = None
+    StdioServerParameters = None
+
 from duckduckgo_search import DDGS
 import base64
 import requests
@@ -541,7 +548,8 @@ class MCPAgent:
             "inputSchema": {
                 "type": "object",
                 "properties": {
-                    "title": {"type": "string", "description": "Title of the dashboard"}
+                    "title": {"type": "string", "description": "Title of the dashboard"},
+                    "folder_id": {"type": "string", "description": "Folder ID to create dashboard in (default: Shared '1' or Personal)"}
                 },
                 "required": ["title"]
             }
@@ -730,36 +738,40 @@ class MCPAgent:
         # ===========================================
         # These come from the binary and may require production/committed LookML
         
-        server_params = self._get_server_params(looker_url, client_id, client_secret)
-        
-        try:
-            async with stdio_client(server_params) as (read, write):
-                async with ClientSession(read, write) as session:
-                    await session.initialize()
-                    tools_result = await session.list_tools()
-                    
-                    # Track which tools we've manually defined above
-                    manual_tool_names = {t["name"] for t in tools}
-                    
-                    for tool in tools_result.tools:
-                        # Skip tools we've already defined manually
-                        if tool.name in manual_tool_names:
-                            continue
+        # Guard against missing mcp library (Python 3.9 compatibility)
+        if StdioServerParameters and stdio_client and ClientSession:
+            try:
+                server_params = self._get_server_params(looker_url, client_id, client_secret)
+                
+                async with stdio_client(server_params) as (read, write):
+                    async with ClientSession(read, write) as session:
+                        await session.initialize()
+                        tools_result = await session.list_tools()
                         
-                        # In POC mode, skip production-only tools
-                        if poc_mode and tool.name in PRODUCTION_ONLY_TOOLS:
-                            logger.info(f"Skipping production-only tool in POC mode: {tool.name}")
-                            continue
+                        # Track which tools we've manually defined above
+                        manual_tool_names = {t["name"] for t in tools}
                         
-                        # Add the tool
-                        tools.append({
-                            "name": tool.name,
-                            "description": tool.description,
-                            "inputSchema": tool.inputSchema
-                        })
-                        
-        except Exception as e:
-            logger.warning(f"Binary tool listing failed (non-fatal): {e}")
+                        for tool in tools_result.tools:
+                            # Skip tools we've already defined manually
+                            if tool.name in manual_tool_names:
+                                continue
+                            
+                            # In POC mode, skip production-only tools
+                            if poc_mode and tool.name in PRODUCTION_ONLY_TOOLS:
+                                logger.info(f"Skipping production-only tool in POC mode: {tool.name}")
+                                continue
+                            
+                            # Add the tool
+                            tools.append({
+                                "name": tool.name,
+                                "description": tool.description,
+                                "inputSchema": tool.inputSchema
+                            })
+                            
+            except Exception as e:
+                logger.warning(f"Binary tool listing failed (non-fatal): {e}")
+        else:
+            logger.warning("MCP library not available (Python < 3.10?). Skipping binary tools.")
         
         # ===========================================
         # SECTION 3: PRODUCTION MODE ENHANCEMENTS
@@ -914,30 +926,37 @@ class MCPAgent:
         # ROUTE TO BINARY (fallback for all other tools)
         # ===========================================
         
-        server_params = self._get_server_params(looker_url, client_id, client_secret)
-        
-        try:
-            async with stdio_client(server_params) as (read, write):
-                async with ClientSession(read, write) as session:
-                    await session.initialize()
-                    
-                    result = await session.call_tool(tool_name, arguments)
-                    
-                    if result.isError:
+        # Guard against missing mcp library (Python 3.9 compatibility)
+        if StdioServerParameters and stdio_client and ClientSession:
+            try:
+                server_params = self._get_server_params(looker_url, client_id, client_secret)
+                
+                async with stdio_client(server_params) as (read, write):
+                    async with ClientSession(read, write) as session:
+                        await session.initialize()
+                        
+                        result = await session.call_tool(tool_name, arguments)
+                        
+                        if result.isError:
+                            return {
+                                "success": False,
+                                "error": str(result.content)
+                            }
+                        
                         return {
-                            "success": False,
-                            "error": str(result.content)
+                            "success": True,
+                            "result": result.content
                         }
-                    
-                    return {
-                        "success": True,
-                        "result": result.content
-                    }
-        except Exception as e:
-            logger.error(f"Tool execution failed: {e}")
+            except Exception as e:
+                logger.error(f"Tool execution failed: {e}")
+                return {
+                    "success": False,
+                    "error": str(e)
+                }
+        else:
             return {
                 "success": False,
-                "error": str(e)
+                "error": f"Tool '{tool_name}' requires MCP library (Python 3.10+), but it is not available in this environment."
             }
     
     # ==========================================
@@ -1337,18 +1356,24 @@ class MCPAgent:
             
             title = args.get("title", "Untitled Dashboard")
             
-            # Find Personal Folder
-            folder_id = None
-            try:
-                me = sdk.me()
-                if me.personal_folder_id:
-                    folder_id = me.personal_folder_id
-                else:
-                    personal = next((f for f in sdk.all_folders() if f.is_personal), None)
-                    if personal:
-                        folder_id = personal.id
-            except Exception as e:
-                logger.warning(f"Could not find personal folder: {e}")
+            # Find Folder (Priority: Args > Personal > Shared)
+            folder_id = args.get("folder_id")
+            
+            if not folder_id:
+                try:
+                    me = sdk.me()
+                    if me.personal_folder_id:
+                        folder_id = me.personal_folder_id
+                    else:
+                        personal = next((f for f in sdk.all_folders() if f.is_personal), None)
+                        if personal:
+                            folder_id = personal.id
+                except Exception as e:
+                    logger.warning(f"Could not find personal folder: {e}")
+            
+            # Fallback to Shared (1) if no folder found
+            if not folder_id:
+                folder_id = "1"
 
             # Create dashboard
             dashboard = sdk.create_dashboard(models40.WriteDashboard(

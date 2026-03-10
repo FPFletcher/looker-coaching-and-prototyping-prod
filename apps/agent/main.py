@@ -207,39 +207,54 @@ async def get_explores(request: Dict[str, Any]):
     credentials = request.get("credentials", {})
     
     # Set Looker credentials
-    base_url = credentials.get("url", "")
-    client_id = credentials.get("client_id", "")
-    client_secret = credentials.get("client_secret", "")
+    # Set Looker credentials
+    # Fallback to server environment variables if request is missing them
+    base_url = credentials.get("url") or os.getenv("LOOKERSDK_BASE_URL", "")
+    client_id = credentials.get("client_id") or os.getenv("LOOKERSDK_CLIENT_ID", "")
+    client_secret = credentials.get("client_secret") or os.getenv("LOOKERSDK_CLIENT_SECRET", "")
     
-    logger.info(f"DEBUG: get_explores using URL: {base_url} | Client ID: {client_id[:5]}***")
+    logger.info(f"DEBUG: Processing URL: {base_url}")
+
+    logger.info(f"DEBUG: get_explores using URL: {base_url} | Client ID: {client_id[:5]}*** (Fallback active)")
     
     os.environ["LOOKERSDK_BASE_URL"] = base_url
     os.environ["LOOKERSDK_CLIENT_ID"] = client_id
     os.environ["LOOKERSDK_CLIENT_SECRET"] = client_secret
     os.environ["LOOKERSDK_VERIFY_SSL"] = "false" # POC dev/test
-    # Force API 4.0
+    # Force API 4.0 initially
     os.environ["LOOKERSDK_API_VERSION"] = "4.0"
     
     try:
-        from looker_sdk import init40
-        sdk = init40()
-        me = sdk.me()
-        logger.info(f"DEBUG: SDK Initialized. Connected as {me.display_name}")
-        
-        # Get all models with explicit fields to ensure explores are returned
-        models = sdk.all_lookml_models(fields="name,label,project_name,explores(name,label)")
-        
-        explores_list = []
-        for model in models:
-            if model.explores:
-                for explore in model.explores:
-                    explores_list.append({
-                        "name": explore.name,
-                        "label": explore.label or explore.name,
-                        "model": model.name
-                    })
-        
-        return {"explores": explores_list}
+        sdk = None
+        try:
+            from looker_sdk import init40
+            logger.info(f"DEBUG: Attempting init40 with URL: {base_url}")
+            sdk = init40()
+            me = sdk.me()
+            logger.info(f"DEBUG: SDK 4.0 Initialized. Connected as {me.display_name}")
+        except Exception as e_40:
+            logger.error(f"❌ API 4.0 Init Failed: {str(e_40)}")
+            # Raise or pass - for now pass so we return empty list
+            pass
+
+        if sdk:
+            # Get all models with explicit fields to ensure explores are returned
+            models = sdk.all_lookml_models(fields="name,label,project_name,explores(name,label)")
+            
+            explores_list = []
+            for model in models:
+                if model.explores:
+                    for explore in model.explores:
+                        explores_list.append({
+                            "name": explore.name,
+                            "label": explore.label or explore.name,
+                            "model": model.name
+                        })
+            
+            logger.info(f"✅ /api/explores: Returning {len(explores_list)} explores from {len(models)} models.")
+            return {"explores": explores_list}
+        else:
+             return {"explores": []}
 
     except Exception as e:
         logger.error(f"Failed to fetch explores (returning empty list to prevent crash): {str(e)}")
