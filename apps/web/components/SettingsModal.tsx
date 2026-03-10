@@ -6,7 +6,7 @@ const DEFAULT_CREDENTIALS = {
     url: 'https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app',
     client_id: 'Zv36QKRBcC5dpWYTG8nY',
     client_secret: 'hwNSHYBRJqbkhdKm6k2WWykH',
-    vertex_api_key: 'AQ.Ab8RN6J-O6ePzzS-n-dzzojPT3lneGuZX0zgskLL7FFE6cULuQ',
+    vertex_api_key: 'AQ.Ab8RN6IApYrJpLv1jipHJww-hpKCffNayNpfpe7tP66DJjT15w',
     claude_api_key: '',
     google_api_key: '',
 };
@@ -304,7 +304,6 @@ export default function SettingsModal({ isOpen, onClose, onSave, initialSettings
                         </div>
                     </div>
 
-                    {useVertex ? (
                         <div className="mb-4">
                             <label htmlFor="vertex-api-key" className="block text-sm font-medium text-gray-300 mb-2">
                                 Vertex API Key / Service Account JSON <span className="text-gray-500 text-xs font-normal">(type "default" to revert)</span>
@@ -330,56 +329,54 @@ export default function SettingsModal({ isOpen, onClose, onSave, initialSettings
                             {isDefaultCred(vertexApiKey, 'vertex_api_key') && <p className="text-xs text-green-400 mt-1">✓ Using Server Native IAM Identity</p>}
                             {!isDefaultCred(vertexApiKey, 'vertex_api_key') && vertexApiKey.trim().startsWith('{') && <p className="text-xs text-blue-400 mt-1">✓ Service Account JSON detected</p>}
                         </div>
-                    ) : (
-                        <>
-                            <div className="mb-4">
-                                <label htmlFor="google-api-key" className="block text-sm font-medium text-gray-300 mb-2">
-                                    Gemini API Key (AI Studio) <span className="text-gray-500 text-xs font-normal">(type "default" to revert)</span>
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        id="google-api-key"
-                                        type={showGoogleKey ? 'text' : 'password'}
-                                        value={isDefaultCred(googleApiKey, 'google_api_key') ? (showGoogleKey ? 'default' : '••••••••••••••••••••') : googleApiKey}
-                                        onFocus={(e) => { if (isDefaultCred(googleApiKey, 'google_api_key') && !showGoogleKey) { e.target.value = ''; setShowGoogleKey(true); } else if (e.target.value === 'default') { e.target.value = ''; } }}
-                                        onChange={(e) => handleGoogleKeyChange(e.target.value)}
-                                        placeholder="Enter Google AI Studio API Key"
-                                        className={`w-full px-3 py-2 bg-[#2a2b2c] border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 pr-20 ${isDefaultCred(googleApiKey, 'google_api_key') ? 'border-green-500/40' : 'border-[#37393b]'}`}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowGoogleKey(!showGoogleKey)}
-                                        className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-1 text-xs text-gray-400 hover:text-white transition-colors"
-                                    >
-                                        {showGoogleKey ? 'Hide' : 'Show'}
-                                    </button>
-                                </div>
-                                </div>
-                                <div className="mb-4">
-                                    <label htmlFor="claude-api-key" className="block text-sm font-medium text-gray-300 mb-2">
-                                        Anthropic API Key <span className="text-gray-500 text-xs font-normal">(type "default" to revert)</span>
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            id="claude-api-key"
-                                            type={showClaudeKey ? 'text' : 'password'}
-                                            value={isDefaultCred(claudeApiKey, 'claude_api_key') ? (showClaudeKey ? 'default' : '••••••••••••••••••••') : claudeApiKey}
-                                            onFocus={(e) => { if (isDefaultCred(claudeApiKey, 'claude_api_key') && !showClaudeKey) { e.target.value = ''; setShowClaudeKey(true); } else if (e.target.value === 'default') { e.target.value = ''; } }}
-                                            onChange={(e) => handleClaudeKeyChange(e.target.value)}
-                                            placeholder="Enter Anthropic API Key"
-                                            className={`w-full px-3 py-2 bg-[#2a2b2c] border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 pr-20 ${isDefaultCred(claudeApiKey, 'claude_api_key') ? 'border-green-500/40' : 'border-[#37393b]'}`}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowClaudeKey(!showClaudeKey)}
-                                            className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-1 text-xs text-gray-400 hover:text-white transition-colors"
-                                        >
-                                            {showClaudeKey ? 'Hide' : 'Show'}
-                                        </button>
-                                    </div>
-                                </div>
-                            </>
-                    )}
+
+                    <div className="mb-4">
+                        <label htmlFor="google-api-key" className="block text-sm font-medium text-gray-300 mb-2">
+                            Gemini API Key (AI Studio) <span className="text-gray-500 text-xs font-normal">(type "default" to revert)</span>
+                        </label>
+                        <div className="relative">
+                            <input
+                                id="google-api-key"
+                                type={showGoogleKey ? 'text' : 'password'}
+                                value={isDefaultCred(googleApiKey, 'google_api_key') ? (showGoogleKey ? 'default' : '••••••••••••••••••••') : googleApiKey}
+                                onFocus={(e) => { if (isDefaultCred(googleApiKey, 'google_api_key') && !showGoogleKey) { e.target.value = ''; setShowGoogleKey(true); } else if (e.target.value === 'default') { e.target.value = ''; } }}
+                                onChange={(e) => handleGoogleKeyChange(e.target.value)}
+                                placeholder="Enter Google AI Studio API Key"
+                                className={`w-full px-3 py-2 bg-[#2a2b2c] border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 pr-20 ${isDefaultCred(googleApiKey, 'google_api_key') ? 'border-green-500/40' : 'border-[#37393b]'}`}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowGoogleKey(!showGoogleKey)}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-1 text-xs text-gray-400 hover:text-white transition-colors"
+                            >
+                                {showGoogleKey ? 'Hide' : 'Show'}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="mb-4">
+                        <label htmlFor="claude-api-key" className="block text-sm font-medium text-gray-300 mb-2">
+                            Anthropic API Key <span className="text-gray-500 text-xs font-normal">(type "default" to revert)</span>
+                        </label>
+                        <div className="relative">
+                            <input
+                                id="claude-api-key"
+                                type={showClaudeKey ? 'text' : 'password'}
+                                value={isDefaultCred(claudeApiKey, 'claude_api_key') ? (showClaudeKey ? 'default' : '••••••••••••••••••••') : claudeApiKey}
+                                onFocus={(e) => { if (isDefaultCred(claudeApiKey, 'claude_api_key') && !showClaudeKey) { e.target.value = ''; setShowClaudeKey(true); } else if (e.target.value === 'default') { e.target.value = ''; } }}
+                                onChange={(e) => handleClaudeKeyChange(e.target.value)}
+                                placeholder="Enter Anthropic API Key"
+                                className={`w-full px-3 py-2 bg-[#2a2b2c] border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 pr-20 ${isDefaultCred(claudeApiKey, 'claude_api_key') ? 'border-green-500/40' : 'border-[#37393b]'}`}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowClaudeKey(!showClaudeKey)}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-1 text-xs text-gray-400 hover:text-white transition-colors"
+                            >
+                                {showClaudeKey ? 'Hide' : 'Show'}
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Advanced Options Toggle */}

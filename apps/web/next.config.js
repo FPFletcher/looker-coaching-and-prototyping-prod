@@ -4,8 +4,8 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // Apply COEP to all routes EXCEPT root (where Google Sign-In happens)
-        source: '/:path+', // Matches everything except the homepage
+        // Apply COEP and COOP to all routes including root
+        source: '/(.*)', // Matches everything including the homepage
         headers: [
           {
             key: 'Cross-Origin-Embedder-Policy',

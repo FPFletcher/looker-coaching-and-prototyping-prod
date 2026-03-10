@@ -14,7 +14,7 @@ COPY . .
 EXPOSE 8080
 
 # Force usage of Service Account Key for authentication (Vertex AI)
-# ENV GOOGLE_APPLICATION_CREDENTIALS="/app/sa-key.json"
+ENV GOOGLE_APPLICATION_CREDENTIALS="/app/sa-key.json"
 # ENV GOOGLE_API_KEY=""
 # ENV VERTEX_API_KEY=""
 # ENV ANTHROPIC_API_KEY=""
