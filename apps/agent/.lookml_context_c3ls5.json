@@ -1,0 +1,851 @@
+{
+  "session_id": "c3ls5",
+  "views": {
+    "order_items": {
+      "name": "order_items",
+      "fields": [
+        {
+          "name": "id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "order_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Id",
+          "sql": null
+        },
+        {
+          "name": "user_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "User Id",
+          "sql": null
+        },
+        {
+          "name": "product_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Product Id",
+          "sql": null
+        },
+        {
+          "name": "status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Status",
+          "sql": null
+        },
+        {
+          "name": "sale_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Sale Price",
+          "sql": null
+        },
+        {
+          "name": "is_returned",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Returned",
+          "sql": null
+        },
+        {
+          "name": "period_tag",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Period",
+          "sql": null
+        },
+        {
+          "name": "in_any_period",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "In Any Period",
+          "sql": null
+        },
+        {
+          "name": "period_day_offset",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Day # in Period",
+          "sql": null
+        },
+        {
+          "name": "total_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Revenue",
+          "sql": null
+        },
+        {
+          "name": "order_count",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Order Count",
+          "sql": null
+        },
+        {
+          "name": "item_count",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Items Sold",
+          "sql": null
+        },
+        {
+          "name": "return_count",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Returns",
+          "sql": null
+        },
+        {
+          "name": "return_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Return Rate",
+          "sql": null
+        },
+        {
+          "name": "avg_order_value",
+          "type": "measure",
+          "field_type": "number",
+          "label": "AOV",
+          "sql": null
+        },
+        {
+          "name": "total_gross_margin",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Gross Margin",
+          "sql": null
+        },
+        {
+          "name": "current_period_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Revenue \u2013 Current Period",
+          "sql": null
+        },
+        {
+          "name": "previous_period_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Revenue \u2013 Previous Period",
+          "sql": null
+        },
+        {
+          "name": "revenue_pop_change",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Revenue PoP \u0394%",
+          "sql": null
+        },
+        {
+          "name": "current_period_orders",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Orders \u2013 Current Period",
+          "sql": null
+        },
+        {
+          "name": "previous_period_orders",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Orders \u2013 Previous Period",
+          "sql": null
+        },
+        {
+          "name": "orders_pop_change",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Orders PoP \u0394%",
+          "sql": null
+        },
+        {
+          "name": "current_period_aov",
+          "type": "measure",
+          "field_type": "number",
+          "label": "AOV \u2013 Current Period",
+          "sql": null
+        },
+        {
+          "name": "previous_period_aov",
+          "type": "measure",
+          "field_type": "number",
+          "label": "AOV \u2013 Previous Period",
+          "sql": null
+        },
+        {
+          "name": "aov_pop_change",
+          "type": "measure",
+          "field_type": "number",
+          "label": "AOV PoP \u0394%",
+          "sql": null
+        }
+      ],
+      "sql_table_name": "thelook_ecommerce.order_items"
+    },
+    "products": {
+      "name": "products",
+      "fields": [
+        {
+          "name": "id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Product Name",
+          "sql": null
+        },
+        {
+          "name": "brand",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Brand",
+          "sql": null
+        },
+        {
+          "name": "category",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Category",
+          "sql": null
+        },
+        {
+          "name": "department",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Department",
+          "sql": null
+        },
+        {
+          "name": "sku",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Sku",
+          "sql": null
+        },
+        {
+          "name": "cost",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Cost",
+          "sql": null
+        },
+        {
+          "name": "retail_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Retail Price",
+          "sql": null
+        },
+        {
+          "name": "margin_per_item",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Margin / Item",
+          "sql": null
+        },
+        {
+          "name": "margin_pct",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Margin %",
+          "sql": null
+        },
+        {
+          "name": "price_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Price Tier",
+          "sql": null
+        },
+        {
+          "name": "distribution_center_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Distribution Center Id",
+          "sql": null
+        },
+        {
+          "name": "product_count",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "# Products",
+          "sql": null
+        },
+        {
+          "name": "avg_retail_price",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Retail Price",
+          "sql": null
+        },
+        {
+          "name": "avg_cost",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Cost",
+          "sql": null
+        }
+      ],
+      "sql_table_name": "thelook_ecommerce.products"
+    },
+    "users": {
+      "name": "users",
+      "fields": [
+        {
+          "name": "id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "first_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "First Name",
+          "sql": null
+        },
+        {
+          "name": "last_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Last Name",
+          "sql": null
+        },
+        {
+          "name": "email",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Email",
+          "sql": null
+        },
+        {
+          "name": "full_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Full Name",
+          "sql": null
+        },
+        {
+          "name": "gender",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Gender",
+          "sql": null
+        },
+        {
+          "name": "age",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Age",
+          "sql": null
+        },
+        {
+          "name": "age_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Age Tier",
+          "sql": null
+        },
+        {
+          "name": "country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Country",
+          "sql": null
+        },
+        {
+          "name": "state",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "State",
+          "sql": null
+        },
+        {
+          "name": "city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "City",
+          "sql": null
+        },
+        {
+          "name": "latitude",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Latitude",
+          "sql": null
+        },
+        {
+          "name": "longitude",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Longitude",
+          "sql": null
+        },
+        {
+          "name": "traffic_source",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Acquisition Channel",
+          "sql": null
+        },
+        {
+          "name": "user_count",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "# Customers",
+          "sql": null
+        },
+        {
+          "name": "avg_age",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Customer Age",
+          "sql": null
+        }
+      ],
+      "sql_table_name": "thelook_ecommerce.users"
+    }
+  },
+  "models": {
+    "retail_pop": {
+      "name": "retail_pop",
+      "connection": "ffrancois_-_ecomm_trial",
+      "explores": [
+        "order_items"
+      ],
+      "includes": [
+        "/*.view.lkml"
+      ]
+    }
+  },
+  "explores": {
+    "retail_pop.order_items": {
+      "model_name": "retail_pop",
+      "explore_name": "order_items",
+      "base_view": "order_items",
+      "joins": [
+        {
+          "name": "products"
+        },
+        {
+          "name": "users"
+        }
+      ],
+      "fields": [
+        {
+          "name": "order_items.id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "order_items.order_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Order Id",
+          "sql": null
+        },
+        {
+          "name": "order_items.user_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "User Id",
+          "sql": null
+        },
+        {
+          "name": "order_items.product_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Product Id",
+          "sql": null
+        },
+        {
+          "name": "order_items.status",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Status",
+          "sql": null
+        },
+        {
+          "name": "order_items.sale_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Sale Price",
+          "sql": null
+        },
+        {
+          "name": "order_items.is_returned",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "Is Returned",
+          "sql": null
+        },
+        {
+          "name": "order_items.period_tag",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Period",
+          "sql": null
+        },
+        {
+          "name": "order_items.in_any_period",
+          "type": "dimension",
+          "field_type": "yesno",
+          "label": "In Any Period",
+          "sql": null
+        },
+        {
+          "name": "order_items.period_day_offset",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Day # in Period",
+          "sql": null
+        },
+        {
+          "name": "order_items.total_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Total Revenue",
+          "sql": null
+        },
+        {
+          "name": "order_items.order_count",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Order Count",
+          "sql": null
+        },
+        {
+          "name": "order_items.item_count",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Items Sold",
+          "sql": null
+        },
+        {
+          "name": "order_items.return_count",
+          "type": "measure",
+          "field_type": "count",
+          "label": "Returns",
+          "sql": null
+        },
+        {
+          "name": "order_items.return_rate",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Return Rate",
+          "sql": null
+        },
+        {
+          "name": "order_items.avg_order_value",
+          "type": "measure",
+          "field_type": "number",
+          "label": "AOV",
+          "sql": null
+        },
+        {
+          "name": "order_items.total_gross_margin",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Gross Margin",
+          "sql": null
+        },
+        {
+          "name": "order_items.current_period_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Revenue \u2013 Current Period",
+          "sql": null
+        },
+        {
+          "name": "order_items.previous_period_revenue",
+          "type": "measure",
+          "field_type": "sum",
+          "label": "Revenue \u2013 Previous Period",
+          "sql": null
+        },
+        {
+          "name": "order_items.revenue_pop_change",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Revenue PoP \u0394%",
+          "sql": null
+        },
+        {
+          "name": "order_items.current_period_orders",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Orders \u2013 Current Period",
+          "sql": null
+        },
+        {
+          "name": "order_items.previous_period_orders",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "Orders \u2013 Previous Period",
+          "sql": null
+        },
+        {
+          "name": "order_items.orders_pop_change",
+          "type": "measure",
+          "field_type": "number",
+          "label": "Orders PoP \u0394%",
+          "sql": null
+        },
+        {
+          "name": "order_items.current_period_aov",
+          "type": "measure",
+          "field_type": "number",
+          "label": "AOV \u2013 Current Period",
+          "sql": null
+        },
+        {
+          "name": "order_items.previous_period_aov",
+          "type": "measure",
+          "field_type": "number",
+          "label": "AOV \u2013 Previous Period",
+          "sql": null
+        },
+        {
+          "name": "order_items.aov_pop_change",
+          "type": "measure",
+          "field_type": "number",
+          "label": "AOV PoP \u0394%",
+          "sql": null
+        },
+        {
+          "name": "products.id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "products.name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Product Name",
+          "sql": null
+        },
+        {
+          "name": "products.brand",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Brand",
+          "sql": null
+        },
+        {
+          "name": "products.category",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Category",
+          "sql": null
+        },
+        {
+          "name": "products.department",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Department",
+          "sql": null
+        },
+        {
+          "name": "products.sku",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Sku",
+          "sql": null
+        },
+        {
+          "name": "products.cost",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Cost",
+          "sql": null
+        },
+        {
+          "name": "products.retail_price",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Retail Price",
+          "sql": null
+        },
+        {
+          "name": "products.margin_per_item",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Margin / Item",
+          "sql": null
+        },
+        {
+          "name": "products.margin_pct",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Margin %",
+          "sql": null
+        },
+        {
+          "name": "products.price_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Price Tier",
+          "sql": null
+        },
+        {
+          "name": "products.distribution_center_id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Distribution Center Id",
+          "sql": null
+        },
+        {
+          "name": "products.product_count",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "# Products",
+          "sql": null
+        },
+        {
+          "name": "products.avg_retail_price",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Retail Price",
+          "sql": null
+        },
+        {
+          "name": "products.avg_cost",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Cost",
+          "sql": null
+        },
+        {
+          "name": "users.id",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Id",
+          "sql": null
+        },
+        {
+          "name": "users.first_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "First Name",
+          "sql": null
+        },
+        {
+          "name": "users.last_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Last Name",
+          "sql": null
+        },
+        {
+          "name": "users.email",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Email",
+          "sql": null
+        },
+        {
+          "name": "users.full_name",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Full Name",
+          "sql": null
+        },
+        {
+          "name": "users.gender",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Gender",
+          "sql": null
+        },
+        {
+          "name": "users.age",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Age",
+          "sql": null
+        },
+        {
+          "name": "users.age_tier",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Age Tier",
+          "sql": null
+        },
+        {
+          "name": "users.country",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Country",
+          "sql": null
+        },
+        {
+          "name": "users.state",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "State",
+          "sql": null
+        },
+        {
+          "name": "users.city",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "City",
+          "sql": null
+        },
+        {
+          "name": "users.latitude",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Latitude",
+          "sql": null
+        },
+        {
+          "name": "users.longitude",
+          "type": "dimension",
+          "field_type": "number",
+          "label": "Longitude",
+          "sql": null
+        },
+        {
+          "name": "users.traffic_source",
+          "type": "dimension",
+          "field_type": "string",
+          "label": "Acquisition Channel",
+          "sql": null
+        },
+        {
+          "name": "users.user_count",
+          "type": "measure",
+          "field_type": "count_distinct",
+          "label": "# Customers",
+          "sql": null
+        },
+        {
+          "name": "users.avg_age",
+          "type": "measure",
+          "field_type": "average",
+          "label": "Avg Customer Age",
+          "sql": null
+        }
+      ],
+      "field_source": "parsed"
+    }
+  }
+}

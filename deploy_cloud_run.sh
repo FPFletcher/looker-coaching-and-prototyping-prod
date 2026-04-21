@@ -4,7 +4,7 @@
 PROJECT_ID="antigravity-innovations"
 REGION="europe-west1"
 REPO="antigravity-repo-eu"
-GCLOUD="gcloud"
+GCLOUD="/Users/ffrancois/google-cloud-sdk/bin/gcloud"
 BACKEND_URL="https://selo-backend-734857282249.europe-west1.run.app"
 
 # 2. Helper function for errors
@@ -30,13 +30,15 @@ case $choice in
         $GCLOUD builds submit --config scripts/backend-build.yaml . || error_exit "Backend Build Failed"
 
         echo "🚀 Deploying Backend..."
+        ENV_VARS=$(grep -v '^#' apps/agent/.env | grep -v '^$' | tr '\n' ',' | sed 's/,$//')
         $GCLOUD run deploy selo-backend \
-            --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/antigravity-backend \
+            --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/selo-backend \
             --region ${REGION} \
             --allow-unauthenticated \
             --timeout=600 \
             --memory 2Gi \
-            --cpu 2 || error_exit "Backend Deploy Failed"
+            --cpu 2 \
+            --set-env-vars="${ENV_VARS}" || error_exit "Backend Deploy Failed"
         ;;
 esac
 
@@ -49,7 +51,7 @@ case $choice in
 
         echo "🚀 Deploying Frontend..."
         $GCLOUD run deploy selo-web \
-            --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/antigravity-web \
+            --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/selo-web \
             --region ${REGION} \
             --allow-unauthenticated \
             --timeout=600 \

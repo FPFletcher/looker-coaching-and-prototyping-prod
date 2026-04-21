@@ -207,12 +207,16 @@ class GoogleOAuthHandler:
         if not db: 
             return
             
-        user_ref = db.collection('users').document(user_info["id"])
-        user_ref.set({
-            'id': user_info["id"],
-            'email': user_info["email"],
-            'name': user_info.get("name"),
-            'picture': user_info.get("picture"),
-            # Merge to avoid overwriting created_at unless we track it
-            'last_login': firestore.SERVER_TIMESTAMP
-        }, merge=True)
+        try:
+            user_ref = db.collection('users').document(user_info["id"])
+            user_ref.set({
+                'id': user_info["id"],
+                'email': user_info["email"],
+                'name': user_info.get("name"),
+                'picture': user_info.get("picture"),
+                # Merge to avoid overwriting created_at unless we track it
+                'last_login': firestore.SERVER_TIMESTAMP
+            }, merge=True)
+        except Exception as e:
+            print(f"Firestore Set Error: {e}")
+            raise ValueError(f"FIRESTORE_ERROR: {e}")

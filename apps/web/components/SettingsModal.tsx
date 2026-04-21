@@ -4,9 +4,9 @@ import { X, Settings as SettingsIcon, Database, Key, RotateCcw, ChevronDown } fr
 // Default credentials (masked in UI — type "default" to revert)
 const DEFAULT_CREDENTIALS = {
     url: 'https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app',
-    client_id: 'Zv36QKRBcC5dpWYTG8nY',
-    client_secret: 'hwNSHYBRJqbkhdKm6k2WWykH',
-    vertex_api_key: 'AQ.Ab8RN6J-O6ePzzS-n-dzzojPT3lneGuZX0zgskLL7FFE6cULuQ',
+    client_id: 'CXy7CKWwYMjjQrHzzgxZ',
+    client_secret: 'J6KYGFmpNPwwfmFrHWXB3KGG',
+    vertex_api_key: 'AQ.Ab8RN6Ljoi9PCQfD3fEgEQ-wiAogIYtnLag_fMpIYVJo9XmboQ',
     claude_api_key: '',
     google_api_key: '',
 };
@@ -41,7 +41,7 @@ export default function SettingsModal({ isOpen, onClose, onSave, initialSettings
     const [clientId, setClientId] = useState(initialSettings?.credentials.client_id || '');
     const [clientSecret, setClientSecret] = useState(initialSettings?.credentials.client_secret || '');
     const [mode, setMode] = useState<'existing' | 'dummy'>(initialSettings?.mode || 'existing');
-    const [model, setModel] = useState(initialSettings?.model || 'claude-sonnet-4-5');
+    const [model, setModel] = useState(initialSettings?.model || 'claude-sonnet-4-6');
     const [gcpProject, setGcpProject] = useState(initialSettings?.gcpProject || 'looker-core-demo-ffrancois');
     const [gcpLocation, setGcpLocation] = useState(initialSettings?.gcpLocation || 'europe-west1');
 
@@ -58,7 +58,7 @@ export default function SettingsModal({ isOpen, onClose, onSave, initialSettings
     const [showGoogleKey, setShowGoogleKey] = useState(false);
     const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
 
-    const isDefaultCred = (val: string, field: keyof typeof DEFAULT_CREDENTIALS) => val === DEFAULT_CREDENTIALS[field];
+    const isDefaultCred = (val: string, field: keyof typeof DEFAULT_CREDENTIALS) => val === DEFAULT_CREDENTIALS[field] || (field === 'vertex_api_key' && val === 'AQ.Ab8RN6IApYrJpLv1jipHJww-hpKCffNayNpfpe7tP66DJjT15w');
 
     const handleClientIdChange = (val: string) => {
         if (val.toLowerCase() === 'default') { setClientId(DEFAULT_CREDENTIALS.client_id); }
@@ -196,8 +196,9 @@ export default function SettingsModal({ isOpen, onClose, onSave, initialSettings
                         </optgroup>
                         <optgroup label="Gemini Models">
                             <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro (Preview)</option>
+                            <option value="gemini-3.1-flash-lite-preview">Gemini 3.1 Flash Lite (Preview)</option>
+                            <option value="gemini-3-pro-preview">Gemini 3 Pro (Preview)</option>
                             <option value="gemini-3-flash-preview">Gemini 3 Flash (Preview)</option>
-                            <option value="gemini-3-pro-image-preview">Gemini 3 Pro Image (Preview)</option>
                             <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
                             <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
                             <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite</option>

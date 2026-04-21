@@ -1,11 +1,31 @@
 from google import genai
-from google.oauth2 import credentials
-try:
-    token = 'AQ.Ab8RN6J-O6ePzzS-n-dzzojPT3lneGuZX0zgskLL7FFE6cULuQ'
-    creds = credentials.Credentials(token)
-    client = genai.Client(vertexai=True, project='antigravity-innovations', location='europe-west1', credentials=creds)
-    # Just inspect, don't run query that would error due to token being generic
-    print("Initialize success")
-except Exception as e:
-    import traceback
-    traceback.print_exc()
+import traceback
+
+def test_key(key, name):
+    print(f"\n--- Testing {name} ---")
+    
+    print("\n  Method A: As plain API key (AI Studio / Vertex API Key format)")
+    try:
+        client = genai.Client(api_key=key) # Standard API key method
+        models = list(client.models.list())
+        print(f"  Success (A)! Listed {len(models)} models.")
+        return True
+    except Exception as e:
+        print(f"  FAILED A: {e}")
+
+    print("\n  Method B: As Vertex API key with vertexai=True")
+    try:
+        from google.auth.credentials import AnonymousCredentials
+        # sometimes Vertex takes api key differently?
+        client = genai.Client(vertexai=True, location='europe-west1', project='antigravity-innovations', api_key=key)
+        models = list(client.models.list())
+        print(f"  Success (B)! Listed {len(models)} models.")
+        return True
+    except Exception as e:
+        print(f"  FAILED B: {e}")
+
+old_key_looker_core = 'AQ.Ab8RN6Jv1IUeOiEpY2dmAkD6PZeXkhGIhpe9JaMDv-wSqDU8Qw'
+new_key_antigravity = 'AQ.Ab8RN6Ljoi9PCQfD3fEgEQ-wiAogIYtnLag_fMpIYVJo9XmboQ'
+
+test_key(old_key_looker_core, "Key 1 (looker-core bound)")
+test_key(new_key_antigravity, "Key 2 (antigravity bound)")

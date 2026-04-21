@@ -5,7 +5,7 @@ from google import genai
 from google.oauth2 import credentials as oauth_credentials
 
 def main():
-    token = 'AQ.Ab8RN6J-O6ePzzS-n-dzzojPT3lneGuZX0zgskLL7FFE6cULuQ'
+    token = 'AQ.Ab8RN6Jv1IUeOiEpY2dmAkD6PZeXkhGIhpe9JaMDv-wSqDU8Qw'
     
     print("Test 1: Normal API Key initialization")
     try:

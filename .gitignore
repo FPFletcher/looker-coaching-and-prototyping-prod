@@ -1,4 +1,3 @@
 **/node_modules
 tools/mcp-toolbox/toolbox
-**/node_modules
-tools/mcp-toolbox/toolbox
+apps/agent/vertex-sa-key.json

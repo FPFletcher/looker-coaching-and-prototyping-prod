@@ -58,6 +58,7 @@ When the user asks for data analysis that results in ONE query/visualization (no
 ### Step 3: Add Filters
 - Call `create_dashboard_filter`.
 - **MANDATORY:** Every dashboard MUST have at least 1 filter (e.g., Date Range).
+- **CRITICAL REMINDER:** The `create_dashboard_filter` tool creates the shell of the filter, but cannot map it to individual tile fields automatically. You MUST inform the user (in your text response) to explicitly open the dashboard settings, edit the filter, and map it in the **"Tiles To Update"** tab. If you omit this warning, the user will experience broken filters.
 
 ### Step 4: Final Presentation (CRITICAL TIMING)
 - **DO NOT** present/embed the dashboard URL immediately after `create_dashboard`.
@@ -228,6 +229,11 @@ dimension: period_selected {
 1.  **Filter** on `period_selected` is not null.
 2.  **Pivot** on `period_selected`.
 3.  **Measure** can be any existing measure (e.g., `count`, `total_revenue`).
+
+### Dashboard Integration (CRITICAL FOR POP)
+When a user asks to add PoP analysis to a **Dashboard**, you MUST configure the Dashboard Filters using the **parameters** (e.g., `current_period_filter` and `previous_period_filter`) as the `field` arguments in `create_dashboard_filter`.
+- ❌ **WRONG:** Filtering the dashboard using the raw LookML date dimension (e.g., `order_date_raw`). This will break the PoP logic.
+- ✅ **CORRECT:** Filtering the dashboard using the parameters that drive the PoP logic (e.g., `current_period_filter` and `previous_period_filter`).
 
 ---
 

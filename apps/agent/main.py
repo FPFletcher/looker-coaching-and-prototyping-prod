@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 # Load .env from the same directory as this file
 load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import StreamingResponse
 import json
 import asyncio
@@ -34,6 +34,24 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+from fastapi.exceptions import RequestValidationError
+from starlette.responses import JSONResponse
+import traceback
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    error_trace = traceback.format_exc()
+    logger.error(f"GLOBAL UNHANDLED EXCEPTION for {request.url.path}: {str(exc)}\n{error_trace}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": f"Internal Server Error: {str(exc)}", "trace": error_trace}
+    )
+
+# Optionally handle validation errors explicitly if we want
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(status_code=422, content={"detail": exc.errors()})
 
 # Initialize agent - Global for stateless ops, but preferred to be per-request
 # agent = MCPAgent()
@@ -82,7 +100,48 @@ class ResetRequest(BaseModel):
 async def root():
     return {"message": "Looker MCP Chat API", "status": "running"}
 
-@app.post("/api/configure_looker")
+@app.get("/api/sys/info")
+def sys_info():
+    import os
+    import urllib.request
+    import google.auth
+    from google.oauth2 import service_account
+    info = {"env": {k: v for k, v in os.environ.items() if "KEY" not in k and "SECRET" not in k}}
+    try:
+        credentials, project = google.auth.default()
+        info["adc_type"] = str(type(credentials))
+        info["adc_project"] = project
+        if hasattr(credentials, "service_account_email"):
+            info["sa_email"] = credentials.service_account_email
+    except Exception as e:
+        info["adc_error"] = str(e)
+        
+    try:
+        url = "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token"
+        req = urllib.request.Request(url, headers={"Metadata-Flavor": "Google"})
+        with urllib.request.urlopen(req, timeout=5) as response:
+            info["metadata_token"] = response.read().decode()[:20] + "..."
+    except Exception as e:
+        info["metadata_error"] = str(e)
+        if hasattr(e, 'read'):
+            info["metadata_body"] = e.read().decode()
+
+    return info
+
+@app.get("/api/sys/fs")
+def test_fs():
+    import firebase_admin
+    from firebase_admin import firestore
+    try:
+        import traceback
+        if not firebase_admin._apps:
+            firebase_admin.initialize_app()
+        db = firestore.client()
+        docs = db.collection('chat_sessions').limit(1).get()
+        return {"success": True, "ids": [doc.id for doc in docs]}
+    except Exception as e:
+        import traceback
+        return {"error": str(e), "trace": traceback.format_exc()}
 async def configure_looker(request: ConfigureRequest):
     """
     Validates Looker credentials and returns available MCP tools.
@@ -294,6 +353,19 @@ async def google_auth(request: Dict[str, Any]):
         logger.error(f"Google auth failed: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/api/auth/test2")
+async def test_auth_trace(request: Dict[str, Any]):
+    try:
+        token = request.get("token")
+        from google.oauth2 import id_token
+        from google.auth.transport import requests
+        client_id = "826056756274-7653f7jteulh4en41u5oiupqe2stur2s.apps.googleusercontent.com"
+        idinfo = id_token.verify_oauth2_token(token, requests.Request(), client_id)
+        return {"success": True, "idinfo": idinfo}
+    except Exception as e:
+        import traceback
+        return {"error_type": str(type(e)), "error": str(e), "trace": traceback.format_exc()}
+
 @app.post("/api/history/sessions")
 async def get_sessions(request: Dict[str, Any]):
     """Get all chat sessions for a user"""
@@ -372,4 +444,4 @@ async def update_title(request: Dict[str, Any]):
         return {"error": str(e)}
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host="127.0.0.1", port=8080, reload=False)

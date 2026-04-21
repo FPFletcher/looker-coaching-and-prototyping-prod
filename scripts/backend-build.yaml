@@ -1,5 +1,5 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/antigravity-backend', '-f', 'apps/agent/Dockerfile', '.']
+    args: ['build', '-t', 'europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/selo-backend', '-f', 'apps/agent/Dockerfile', '.']
 images:
-  - 'europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/antigravity-backend'
+  - 'europe-west1-docker.pkg.dev/antigravity-innovations/antigravity-repo-eu/selo-backend'

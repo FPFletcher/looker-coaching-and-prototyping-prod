@@ -145,13 +145,6 @@ class MCPAgent:
         claude_api_key: str = "",
         llm_region: str = "US",
     ):
-        # SSL Bypass (Nuclear Option for Corporate Proxies)
-        import ssl
-        try:
-            _create_unverified_https_context = ssl._create_unverified_context
-            ssl._create_default_https_context = _create_unverified_https_context
-        except AttributeError:
-            pass
 
         self.model_name = model_name
         self.session_id = session_id
@@ -195,9 +188,10 @@ class MCPAgent:
                      logger.info(f"Extracted project ID from Service Account JSON: {_gcp_project}")
              except Exception as e:
                  logger.error(f"Failed to parse service account JSON: {e}")
-        elif _vertex_key and (_vertex_key.startswith("AQ") or _vertex_key.startswith("ya29")):
+        elif _vertex_key and _vertex_key.startswith("ya29"):
              logger.info("Vertex AI: Using OAuth2 Access Token provided.")
              _vertex_access_token = _vertex_key
+             _vertex_creds = google_credentials.Credentials(_vertex_key)
 
         # Map UI model names to Vertex IDs (Default behavior)
         # Map UI model names to Vertex IDs (Default behavior)
@@ -277,7 +271,7 @@ class MCPAgent:
                     "asia-northeast1", "asia-southeast1", "northamerica-northeast1"
                 ]
 
-                if _vertex_key and _vertex_key.startswith("AIza"):
+                if _vertex_key and (_vertex_key.startswith("AIza") or _vertex_key.startswith("AQ")):
                     logger.info("Gemini: Google AI Studio with API key provided.")
                     self.genai_client = google_genai.Client(
                         api_key=_vertex_key,
@@ -315,25 +309,25 @@ class MCPAgent:
             # Gemini 2.x
             "gemini-2.0-flash":           "gemini-2.0-flash",
             "gemini-2.0-flash-001":       "gemini-2.0-flash-001",
-            "gemini-2.5-flash":           "gemini-2.5-flash",
+            "gemini-2.5-flash":           "gemini-2.5-flash-preview-09-2025",
             "gemini-2.5-pro":             "gemini-2.5-pro",
             "gemini-2.5-flash-lite":      "gemini-2.5-flash-lite",
             "gemini-2.5-flash-image":     "gemini-2.5-flash-preview-04-17",
+            
             # Gemini 3.x (preview)
-            # Gemini 3.x (preview)
-            "gemini-3.0-flash-preview":     "gemini-3.0-flash-preview",
-            "gemini-3.0-pro-image-preview": "gemini-3.0-pro-image-preview",
             "gemini-3.1-pro-preview":     "gemini-3.1-pro-preview",
-            "gemini-3.0-pro-preview":     "gemini-3.0-pro-preview",
+            "gemini-3.1-flash-lite-preview": "gemini-3.1-flash-lite-preview",
+            "gemini-3-pro-preview":     "gemini-3-pro-preview",
+            "gemini-3-flash-preview":     "gemini-3-flash-preview",
 
             # Claude 3.5 & 3 (including handling cached UI names)
-            "claude-sonnet-4-5-20250929": "claude-3-5-sonnet@20240620",
-            "claude-sonnet-4-5@20250929": "claude-3-5-sonnet@20240620",
+            "claude-sonnet-4-5-20250929": "claude-sonnet-4-5@20250929",
+            "claude-sonnet-4-5@20250929": "claude-sonnet-4-5@20250929",
             "claude-opus-4-5-20251101":   "claude-opus-4-6@default",
             "claude-haiku-4-5-20251001":  "claude-sonnet-4-6@default",
             "claude-3-5-sonnet-v2@20241022": "claude-3-5-sonnet-v2@20241022",
             
-            # User Requested Mappings (Confirmed via Screenshots @default)
+            # User Requested Mappings
             "claude-opus-4-6":            "claude-opus-4-6@default",
             "claude-sonnet-4-6":          "claude-sonnet-4-6@default",
             "claude-sonnet-4-5":          "claude-sonnet-4-5@20250929", 
@@ -1151,7 +1145,7 @@ class MCPAgent:
                 base_url = f"https://{base_url}"
                 
             # Add &toggle=dat,pik,vis to ensure Data, Picker, and Visualization are visible
-            long_url = f"{base_url}/explore/{model}/{view}?qid={query.client_id}&toggle=dat,pik,vis"
+            long_url = f"{base_url}/explore/{model}/{view}?qid={query.client_id}&toggle=dat,pik,vis&allow_login_screen=true"
             
             return {
                 "success": True,
@@ -1316,7 +1310,7 @@ class MCPAgent:
             
             # Construct Explore Embed URL
             base_url = url.rstrip("/")
-            explore_url = f"{base_url}/embed/explore/{model}/{explore}?qid={query_slug}&toggle=dat,pik,vis"
+            explore_url = f"{base_url}/embed/explore/{model}/{explore}?qid={query_slug}&toggle=dat,pik,vis&allow_login_screen=true"
             
             logger.info(f"✅ Created chart: {explore_url}")
             
@@ -1383,7 +1377,7 @@ class MCPAgent:
             
             # Extract base URL
             base_url = url.rstrip("/")
-            full_url = f"{base_url}/embed/dashboards/{dashboard.id}"
+            full_url = f"{base_url}/embed/dashboards/{dashboard.id}?allow_login_screen=true"
             
             logger.info(f"✅ Created dashboard: ID={dashboard.id}, URL={full_url}")
             
@@ -2166,7 +2160,7 @@ class MCPAgent:
              
             # Construct absolute URL manually (assuming cloud environment)
             # If using custom domain, this might vary.
-            long_url = f"{base_url}/explore/{model}/{view}?qid={query.client_id}&toggle=dat,pik,vis"
+            long_url = f"{base_url}/explore/{model}/{view}?qid={query.client_id}&toggle=dat,pik,vis&allow_login_screen=true"
             
             return {
                 "success": True,

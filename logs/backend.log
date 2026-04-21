@@ -1,79 +1,563 @@
 INFO:     Will watch for changes in these directories: ['/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent']
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [8217] using StatReload
-/Users/ffrancois/Library/Python/3.9/lib/python/site-packages/google/oauth2/__init__.py:40: FutureWarning: You are using a Python version 3.9 past its end of life. Google will update google-auth with critical bug fixes on a best-effort basis, but not with any other fixes or features. Please upgrade your Python version, and then update google-auth.
-  warnings.warn(eol_message.format("3.9"), FutureWarning)
-/Users/ffrancois/Library/Python/3.9/lib/python/site-packages/google/auth/__init__.py:54: FutureWarning: You are using a Python version 3.9 past its end of life. Google will update google-auth with critical bug fixes on a best-effort basis, but not with any other fixes or features. Please upgrade your Python version, and then update google-auth.
-  warnings.warn(eol_message.format("3.9"), FutureWarning)
-/Users/ffrancois/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+INFO:     Started reloader process [69411] using StatReload
+INFO:     Started server process [69414]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:main:DEBUG: Processing URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:main:DEBUG: get_explores using URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app | Client ID: fSyCP*** (Fallback active)
+INFO:main:DEBUG: Attempting init40 with URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
   warnings.warn(
-/Users/ffrancois/Library/Python/3.9/lib/python/site-packages/google/api_core/_python_version_support.py:246: FutureWarning: You are using a non-supported Python version (3.9.6). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.10, and then update google.api_core.
-  warnings.warn(message, FutureWarning)
-INFO:     Started server process [8220]
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:DEBUG: SDK 4.0 Initialized. Connected as 
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:✅ /api/explores: Returning 100 explores from 45 models.
+Warning: Failed to initialize Firestore: Project ID is required to access Firestore. Either set the projectId option, or use service account credentials. Alternatively, set the GOOGLE_CLOUD_PROJECT environment variable.
+INFO:     127.0.0.1:56736 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:main:DEBUG: Processing URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:main:DEBUG: get_explores using URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app | Client ID: fSyCP*** (Fallback active)
+INFO:main:DEBUG: Attempting init40 with URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:DEBUG: SDK 4.0 Initialized. Connected as 
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:✅ /api/explores: Returning 100 explores from 45 models.
+INFO:     127.0.0.1:56737 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:main:DEBUG: Processing URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:main:DEBUG: get_explores using URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app | Client ID: fSyCP*** (Fallback active)
+INFO:main:DEBUG: Attempting init40 with URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:DEBUG: SDK 4.0 Initialized. Connected as 
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:✅ /api/explores: Returning 100 explores from 45 models.
+INFO:     127.0.0.1:57019 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:main:DEBUG: Processing URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:main:DEBUG: get_explores using URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app | Client ID: fSyCP*** (Fallback active)
+INFO:main:DEBUG: Attempting init40 with URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:DEBUG: SDK 4.0 Initialized. Connected as 
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:✅ /api/explores: Returning 100 explores from 45 models.
+INFO:     127.0.0.1:57021 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57053 - "OPTIONS /api/chat HTTP/1.1" 200 OK
+INFO:main:--- Chat Request ---
+INFO:main:Session: 2c1m1d, Model: claude-sonnet-4-6
+INFO:main:Use Vertex: False
+INFO:main:Vertex Key Provided: Yes (Len: 53)
+INFO:main:Google API Key (Env): Yes (Len: 39)
+INFO:main:Anthropic Key Provided: No (Len: 0)
+WARNING:main:GOOGLE_APPLICATION_CREDENTIALS not set
+INFO:lookml_context:ℹ️ No existing context file found at /Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/.lookml_context_2c1m1d.json
+INFO:mcp_agent:Claude: falling back to direct Anthropic API key
+INFO:     127.0.0.1:57053 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:mcp_agent:Processing message: Describe what you can do... (POC Mode: False)
+INFO:mcp_agent:Listing tools (POC Mode: False)...
+WARNING:mcp_agent:Binary tool listing failed (non-fatal): [Errno 2] No such file or directory: '/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/tools/mcp-toolbox/toolbox'
+INFO:mcp_agent:Total tools available: 15 (POC Mode: False)
+INFO:mcp_agent:  - POC-safe tools: 11
+INFO:mcp_agent:  - Production-only tools: 3
+INFO:mcp_agent:  - Other tools: 1
+INFO:mcp_agent:Claude Turn 1/10
+INFO:httpx:HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+INFO:main:--- Chat Request ---
+INFO:main:Session: qe9c07, Model: gemini-2.5-pro
+INFO:main:Use Vertex: False
+INFO:main:Vertex Key Provided: Yes (Len: 53)
+INFO:main:Google API Key (Env): Yes (Len: 39)
+INFO:main:Anthropic Key Provided: No (Len: 0)
+WARNING:main:GOOGLE_APPLICATION_CREDENTIALS not set
+INFO:lookml_context:ℹ️ No existing context file found at /Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/.lookml_context_qe9c07.json
+INFO:mcp_agent:Gemini Init. Vertex Key Present: True
+INFO:mcp_agent:Gemini: Google AI Studio with API key provided.
+INFO:mcp_agent:Gemini model initialized: gemini-2.5-pro (is_vertex: False)
+INFO:     127.0.0.1:57084 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:mcp_agent:Processing message: Describe what you can do... (POC Mode: False)
+INFO:mcp_agent:Listing tools (POC Mode: False)...
+WARNING:mcp_agent:Binary tool listing failed (non-fatal): [Errno 2] No such file or directory: '/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/tools/mcp-toolbox/toolbox'
+INFO:mcp_agent:Total tools available: 15 (POC Mode: False)
+INFO:mcp_agent:  - POC-safe tools: 11
+INFO:mcp_agent:  - Production-only tools: 3
+INFO:mcp_agent:  - Other tools: 1
+INFO:mcp_agent:Gemini: Processing message with Native Function Calling
+INFO:main:--- Chat Request ---
+INFO:main:Session: tm31wc, Model: gemini-2.5-pro
+INFO:main:Use Vertex: True
+INFO:main:Vertex Key Provided: Yes (Len: 53)
+INFO:main:Google API Key (Env): Yes (Len: 39)
+INFO:main:Anthropic Key Provided: No (Len: 0)
+WARNING:main:GOOGLE_APPLICATION_CREDENTIALS not set
+INFO:lookml_context:ℹ️ No existing context file found at /Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/.lookml_context_tm31wc.json
+INFO:mcp_agent:Vertex AI: Using OAuth2 Access Token provided.
+INFO:mcp_agent:Gemini Init. Vertex Key Present: True
+INFO:mcp_agent:Gemini: Vertex AI via Ambient ADC (project=antigravity-innovations)
+INFO:google_genai._api_client:The user provided project/location will take precedence over the Vertex AI API key from the environment variable.
+INFO:mcp_agent:Gemini model initialized: gemini-2.5-pro (is_vertex: True)
+INFO:     127.0.0.1:57090 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:mcp_agent:Processing message: Describe what you can do... (POC Mode: False)
+INFO:mcp_agent:Listing tools (POC Mode: False)...
+WARNING:mcp_agent:Binary tool listing failed (non-fatal): [Errno 2] No such file or directory: '/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/tools/mcp-toolbox/toolbox'
+INFO:mcp_agent:Total tools available: 15 (POC Mode: False)
+INFO:mcp_agent:  - POC-safe tools: 11
+INFO:mcp_agent:  - Production-only tools: 3
+INFO:mcp_agent:  - Other tools: 1
+INFO:mcp_agent:Gemini: Processing message with Native Function Calling
+WARNING:google.auth._default:No project ID could be determined. Consider running `gcloud config set project` or setting the GOOGLE_CLOUD_PROJECT environment variable
+INFO:mcp_agent:Gemini: Executing tool get_explore_fields
+INFO:mcp_agent:Executing tool: get_explore_fields with args: {'explore_name': 'order_items', 'model_name': 'marketing_returning_customers'}
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models/marketing_returning_customers/explores/order_items)
+INFO:     127.0.0.1:58487 - "OPTIONS /api/explores HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58489 - "OPTIONS /api/explores HTTP/1.1" 200 OK
+INFO:main:DEBUG: Processing URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:main:DEBUG: get_explores using URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app | Client ID: fSyCP*** (Fallback active)
+INFO:main:DEBUG: Attempting init40 with URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:DEBUG: SDK 4.0 Initialized. Connected as 
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:✅ /api/explores: Returning 100 explores from 45 models.
+INFO:     127.0.0.1:58489 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:main:DEBUG: Processing URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:main:DEBUG: get_explores using URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app | Client ID: fSyCP*** (Fallback active)
+INFO:main:DEBUG: Attempting init40 with URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:DEBUG: SDK 4.0 Initialized. Connected as 
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:✅ /api/explores: Returning 100 explores from 45 models.
+INFO:     127.0.0.1:58487 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58537 - "OPTIONS /api/auth/google HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58537 - "POST /api/auth/google HTTP/1.1" 200 OK
+INFO:main:DEBUG: Processing URL: https://lookerpoccareem.cloud.looker.com
+INFO:main:DEBUG: get_explores using URL: https://lookerpoccareem.cloud.looker.com | Client ID: VSfjT*** (Fallback active)
+INFO:main:DEBUG: Attempting init40 with URL: https://lookerpoccareem.cloud.looker.com
+INFO:looker_sdk.rtl.requests_transport:POST(https://lookerpoccareem.cloud.looker.com/api/4.0/login)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'lookerpoccareem.cloud.looker.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://lookerpoccareem.cloud.looker.com/api/4.0/user)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'lookerpoccareem.cloud.looker.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:DEBUG: SDK 4.0 Initialized. Connected as Francois Fletcher
+INFO:looker_sdk.rtl.requests_transport:GET(https://lookerpoccareem.cloud.looker.com/api/4.0/lookml_models)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'lookerpoccareem.cloud.looker.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:✅ /api/explores: Returning 7 explores from 7 models.
+INFO:     127.0.0.1:58537 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:main:DEBUG: Processing URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:main:DEBUG: get_explores using URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app | Client ID: fSyCP*** (Fallback active)
+INFO:main:DEBUG: Attempting init40 with URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:DEBUG: SDK 4.0 Initialized. Connected as 
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:✅ /api/explores: Returning 100 explores from 45 models.
+INFO:     127.0.0.1:58537 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:main:DEBUG: Processing URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:main:DEBUG: get_explores using URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app | Client ID: fSyCP*** (Fallback active)
+INFO:main:DEBUG: Attempting init40 with URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:DEBUG: SDK 4.0 Initialized. Connected as 
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:✅ /api/explores: Returning 100 explores from 45 models.
+INFO:     127.0.0.1:58559 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:main:DEBUG: Processing URL: https://lookerpoccareem.cloud.looker.com
+INFO:main:DEBUG: get_explores using URL: https://lookerpoccareem.cloud.looker.com | Client ID: VSfjT*** (Fallback active)
+INFO:main:DEBUG: Attempting init40 with URL: https://lookerpoccareem.cloud.looker.com
+INFO:looker_sdk.rtl.requests_transport:POST(https://lookerpoccareem.cloud.looker.com/api/4.0/login)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'lookerpoccareem.cloud.looker.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://lookerpoccareem.cloud.looker.com/api/4.0/user)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'lookerpoccareem.cloud.looker.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:DEBUG: SDK 4.0 Initialized. Connected as Francois Fletcher
+INFO:looker_sdk.rtl.requests_transport:GET(https://lookerpoccareem.cloud.looker.com/api/4.0/lookml_models)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'lookerpoccareem.cloud.looker.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:✅ /api/explores: Returning 7 explores from 7 models.
+INFO:     127.0.0.1:58561 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:main:DEBUG: Processing URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:main:DEBUG: get_explores using URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app | Client ID: fSyCP*** (Fallback active)
+INFO:main:DEBUG: Attempting init40 with URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:DEBUG: SDK 4.0 Initialized. Connected as 
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:✅ /api/explores: Returning 100 explores from 45 models.
+INFO:     127.0.0.1:59802 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:main:DEBUG: Processing URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:main:DEBUG: get_explores using URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app | Client ID: fSyCP*** (Fallback active)
+INFO:main:DEBUG: Attempting init40 with URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:DEBUG: SDK 4.0 Initialized. Connected as 
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:✅ /api/explores: Returning 100 explores from 45 models.
+INFO:     127.0.0.1:59804 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:main:DEBUG: Processing URL: https://lookerpoccareem.cloud.looker.com
+INFO:main:DEBUG: get_explores using URL: https://lookerpoccareem.cloud.looker.com | Client ID: VSfjT*** (Fallback active)
+INFO:main:DEBUG: Attempting init40 with URL: https://lookerpoccareem.cloud.looker.com
+INFO:looker_sdk.rtl.requests_transport:POST(https://lookerpoccareem.cloud.looker.com/api/4.0/login)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'lookerpoccareem.cloud.looker.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://lookerpoccareem.cloud.looker.com/api/4.0/user)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'lookerpoccareem.cloud.looker.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:DEBUG: SDK 4.0 Initialized. Connected as Francois Fletcher
+INFO:looker_sdk.rtl.requests_transport:GET(https://lookerpoccareem.cloud.looker.com/api/4.0/lookml_models)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'lookerpoccareem.cloud.looker.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:✅ /api/explores: Returning 7 explores from 7 models.
+INFO:     127.0.0.1:59805 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:main:DEBUG: Processing URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:main:DEBUG: get_explores using URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app | Client ID: fSyCP*** (Fallback active)
+INFO:main:DEBUG: Attempting init40 with URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
+INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:DEBUG: SDK 4.0 Initialized. Connected as 
+INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+INFO:main:✅ /api/explores: Returning 100 explores from 45 models.
+INFO:     127.0.0.1:59867 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59888 - "OPTIONS /api/chat HTTP/1.1" 200 OK
+INFO:main:--- Chat Request ---
+INFO:main:Session: hwg5l, Model: claude-sonnet-4-5
+INFO:main:Use Vertex: True
+INFO:main:Vertex Key Provided: No (Len: 0)
+INFO:main:Google API Key (Env): Yes (Len: 39)
+INFO:main:Anthropic Key Provided: No (Len: 0)
+WARNING:main:GOOGLE_APPLICATION_CREDENTIALS not set
+INFO:lookml_context:ℹ️ No existing context file found at /Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/.lookml_context_hwg5l.json
+INFO:mcp_agent:Claude: falling back to direct Anthropic API key
+INFO:     127.0.0.1:59888 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:mcp_agent:Processing message: Describe what you can do... (POC Mode: False)
+INFO:mcp_agent:Listing tools (POC Mode: False)...
+WARNING:mcp_agent:Binary tool listing failed (non-fatal): [Errno 2] No such file or directory: '/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/tools/mcp-toolbox/toolbox'
+INFO:mcp_agent:Total tools available: 15 (POC Mode: False)
+INFO:mcp_agent:  - POC-safe tools: 11
+INFO:mcp_agent:  - Production-only tools: 3
+INFO:mcp_agent:  - Other tools: 1
+INFO:mcp_agent:Claude Turn 1/10
+INFO:httpx:HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+INFO:main:--- Chat Request ---
+INFO:main:Session: 7ykho, Model: claude-sonnet-4-5
+INFO:main:Use Vertex: True
+INFO:main:Vertex Key Provided: Yes (Len: 53)
+INFO:main:Google API Key (Env): Yes (Len: 39)
+INFO:main:Anthropic Key Provided: No (Len: 0)
+WARNING:main:GOOGLE_APPLICATION_CREDENTIALS not set
+INFO:lookml_context:ℹ️ No existing context file found at /Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/.lookml_context_7ykho.json
+INFO:mcp_agent:Vertex AI: Using OAuth2 Access Token provided.
+INFO:mcp_agent:Claude: Using Vertex AI with provided credentials (project=antigravity-innovations)
+INFO:mcp_agent:Vertex AI model mapping: claude-sonnet-4-5 -> claude-sonnet-4-5@20250929
+INFO:mcp_agent:Claude: Vertex AI (project=antigravity-innovations, region=global) - Using SA Creds
+INFO:     127.0.0.1:60131 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:mcp_agent:Processing message: Describe what you can do... (POC Mode: False)
+INFO:mcp_agent:Listing tools (POC Mode: False)...
+WARNING:mcp_agent:Binary tool listing failed (non-fatal): [Errno 2] No such file or directory: '/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/tools/mcp-toolbox/toolbox'
+INFO:mcp_agent:Total tools available: 15 (POC Mode: False)
+INFO:mcp_agent:  - POC-safe tools: 11
+INFO:mcp_agent:  - Production-only tools: 3
+INFO:mcp_agent:  - Other tools: 1
+INFO:mcp_agent:Claude Turn 1/10
+INFO:httpx:HTTP Request: POST https://aiplatform.googleapis.com/v1/projects/antigravity-innovations/locations/global/publishers/anthropic/models/claude-sonnet-4-5@20250929:streamRawPredict "HTTP/1.1 200 OK"
+WARNING:  StatReload detected changes in 'test_vertex_auth.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [69414]
+INFO:     Started server process [72557]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'test_auth_token.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [72557]
+Warning: Failed to initialize Firestore: Project ID is required to access Firestore. Either set the projectId option, or use service account credentials. Alternatively, set the GOOGLE_CLOUD_PROJECT environment variable.
+INFO:     Started server process [72576]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'mcp_agent.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [72576]
+Warning: Failed to initialize Firestore: Project ID is required to access Firestore. Either set the projectId option, or use service account credentials. Alternatively, set the GOOGLE_CLOUD_PROJECT environment variable.
+/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/mcp_agent.py:3227: SyntaxWarning: invalid escape sequence '\['
+  "text": f"\[Attempted to use tool '{p.get('tool')}' with input {p.get('input')} but the user aborted the request before it finished.\]"
+/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/mcp_agent.py:3227: SyntaxWarning: invalid escape sequence '\]'
+  "text": f"\[Attempted to use tool '{p.get('tool')}' with input {p.get('input')} but the user aborted the request before it finished.\]"
+/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/mcp_agent.py:3235: SyntaxWarning: invalid escape sequence '\['
+  "text": f"\[Successfully used tool '{p.get('tool')}' with input {p.get('input')}. Result: {p.get('result')}\]"
+/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/mcp_agent.py:3235: SyntaxWarning: invalid escape sequence '\]'
+  "text": f"\[Successfully used tool '{p.get('tool')}' with input {p.get('input')}. Result: {p.get('result')}\]"
+INFO:     Started server process [72706]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'test_auth_token.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [72706]
+Warning: Failed to initialize Firestore: Project ID is required to access Firestore. Either set the projectId option, or use service account credentials. Alternatively, set the GOOGLE_CLOUD_PROJECT environment variable.
+INFO:     Started server process [73792]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'test_auth_token.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [73792]
+Warning: Failed to initialize Firestore: Project ID is required to access Firestore. Either set the projectId option, or use service account credentials. Alternatively, set the GOOGLE_CLOUD_PROJECT environment variable.
+INFO:     Started server process [73838]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'mcp_agent.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [73838]
+Warning: Failed to initialize Firestore: Project ID is required to access Firestore. Either set the projectId option, or use service account credentials. Alternatively, set the GOOGLE_CLOUD_PROJECT environment variable.
+/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/mcp_agent.py:3227: SyntaxWarning: invalid escape sequence '\['
+  "text": f"\[Attempted to use tool '{p.get('tool')}' with input {p.get('input')} but the user aborted the request before it finished.\]"
+/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/mcp_agent.py:3227: SyntaxWarning: invalid escape sequence '\]'
+  "text": f"\[Attempted to use tool '{p.get('tool')}' with input {p.get('input')} but the user aborted the request before it finished.\]"
+/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/mcp_agent.py:3235: SyntaxWarning: invalid escape sequence '\['
+  "text": f"\[Successfully used tool '{p.get('tool')}' with input {p.get('input')}. Result: {p.get('result')}\]"
+/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/mcp_agent.py:3235: SyntaxWarning: invalid escape sequence '\]'
+  "text": f"\[Successfully used tool '{p.get('tool')}' with input {p.get('input')}. Result: {p.get('result')}\]"
+INFO:     Started server process [74008]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 Warning: Failed to initialize Firestore: Project ID is required to access Firestore. Either set the projectId option, or use service account credentials. Alternatively, set the GOOGLE_CLOUD_PROJECT environment variable.
-INFO:     127.0.0.1:53855 - "OPTIONS /api/explores HTTP/1.1" 200 OK
-INFO:     127.0.0.1:53857 - "OPTIONS /api/explores HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50804 - "OPTIONS /api/explores HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50806 - "OPTIONS /api/explores HTTP/1.1" 200 OK
 INFO:main:DEBUG: Processing URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
 INFO:main:DEBUG: get_explores using URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app | Client ID: fSyCP*** (Fallback active)
 INFO:main:DEBUG: Attempting init40 with URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
 INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
-/Users/ffrancois/Library/Python/3.9/lib/python/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
   warnings.warn(
 INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
-/Users/ffrancois/Library/Python/3.9/lib/python/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
   warnings.warn(
 INFO:main:DEBUG: SDK 4.0 Initialized. Connected as 
 INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
-/Users/ffrancois/Library/Python/3.9/lib/python/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
   warnings.warn(
 INFO:main:✅ /api/explores: Returning 100 explores from 45 models.
-INFO:     127.0.0.1:53857 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50806 - "POST /api/explores HTTP/1.1" 200 OK
 INFO:main:DEBUG: Processing URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
 INFO:main:DEBUG: get_explores using URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app | Client ID: fSyCP*** (Fallback active)
 INFO:main:DEBUG: Attempting init40 with URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
 INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
-/Users/ffrancois/Library/Python/3.9/lib/python/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
   warnings.warn(
 INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
-/Users/ffrancois/Library/Python/3.9/lib/python/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
   warnings.warn(
 INFO:main:DEBUG: SDK 4.0 Initialized. Connected as 
 INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
-/Users/ffrancois/Library/Python/3.9/lib/python/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
   warnings.warn(
 INFO:main:✅ /api/explores: Returning 100 explores from 45 models.
-INFO:     127.0.0.1:53855 - "POST /api/explores HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60864 - "OPTIONS /api/explores HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60865 - "OPTIONS /api/explores HTTP/1.1" 200 OK
-INFO:main:DEBUG: Processing URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
-INFO:main:DEBUG: get_explores using URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app | Client ID: fSyCP*** (Fallback active)
-INFO:main:DEBUG: Attempting init40 with URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
-INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
-/Users/ffrancois/Library/Python/3.9/lib/python/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
-  warnings.warn(
-INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
-/Users/ffrancois/Library/Python/3.9/lib/python/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
-  warnings.warn(
-INFO:main:DEBUG: SDK 4.0 Initialized. Connected as 
-INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
-/Users/ffrancois/Library/Python/3.9/lib/python/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
-  warnings.warn(
-INFO:main:✅ /api/explores: Returning 100 explores from 45 models.
-INFO:     127.0.0.1:60865 - "POST /api/explores HTTP/1.1" 200 OK
-INFO:main:DEBUG: Processing URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
-INFO:main:DEBUG: get_explores using URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app | Client ID: fSyCP*** (Fallback active)
-INFO:main:DEBUG: Attempting init40 with URL: https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app
-INFO:looker_sdk.rtl.requests_transport:POST(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/login)
-/Users/ffrancois/Library/Python/3.9/lib/python/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
-  warnings.warn(
-INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/user)
-/Users/ffrancois/Library/Python/3.9/lib/python/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
-  warnings.warn(
-INFO:main:DEBUG: SDK 4.0 Initialized. Connected as 
-INFO:looker_sdk.rtl.requests_transport:GET(https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app/api/4.0/lookml_models)
-/Users/ffrancois/Library/Python/3.9/lib/python/site-packages/urllib3/connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host '8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
-  warnings.warn(
-INFO:main:✅ /api/explores: Returning 100 explores from 45 models.
-INFO:     127.0.0.1:60864 - "POST /api/explores HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50804 - "POST /api/explores HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'chat_history.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [74008]
+INFO:     Started server process [76406]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [76406]
+Warning: Failed to initialize Firestore: Project ID is required to access Firestore. Either set the projectId option, or use service account credentials. Alternatively, set the GOOGLE_CLOUD_PROJECT environment variable.
+INFO:     Started server process [76897]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'mcp_agent.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [76897]
+Warning: Failed to initialize Firestore: Project ID is required to access Firestore. Either set the projectId option, or use service account credentials. Alternatively, set the GOOGLE_CLOUD_PROJECT environment variable.
+/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/mcp_agent.py:3220: SyntaxWarning: invalid escape sequence '\['
+  "text": f"\[Attempted to use tool '{p.get('tool')}' with input {p.get('input')} but the user aborted the request before it finished.\]"
+/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/mcp_agent.py:3220: SyntaxWarning: invalid escape sequence '\]'
+  "text": f"\[Attempted to use tool '{p.get('tool')}' with input {p.get('input')} but the user aborted the request before it finished.\]"
+/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/mcp_agent.py:3228: SyntaxWarning: invalid escape sequence '\['
+  "text": f"\[Successfully used tool '{p.get('tool')}' with input {p.get('input')}. Result: {p.get('result')}\]"
+/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/mcp_agent.py:3228: SyntaxWarning: invalid escape sequence '\]'
+  "text": f"\[Successfully used tool '{p.get('tool')}' with input {p.get('input')}. Result: {p.get('result')}\]"
+INFO:     Started server process [76992]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [76992]
+Warning: Failed to initialize Firestore: Project ID is required to access Firestore. Either set the projectId option, or use service account credentials. Alternatively, set the GOOGLE_CLOUD_PROJECT environment variable.
+INFO:     Started server process [83650]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [83650]
+Warning: Failed to initialize Firestore: Project ID is required to access Firestore. Either set the projectId option, or use service account credentials. Alternatively, set the GOOGLE_CLOUD_PROJECT environment variable.
+INFO:     Started server process [84262]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [84262]
+Warning: Failed to initialize Firestore: Project ID is required to access Firestore. Either set the projectId option, or use service account credentials. Alternatively, set the GOOGLE_CLOUD_PROJECT environment variable.
+INFO:     Started server process [84624]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [84624]
+Warning: Failed to initialize Firestore: Project ID is required to access Firestore. Either set the projectId option, or use service account credentials. Alternatively, set the GOOGLE_CLOUD_PROJECT environment variable.
+INFO:     Started server process [85161]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [85161]
+Warning: Failed to initialize Firestore: Project ID is required to access Firestore. Either set the projectId option, or use service account credentials. Alternatively, set the GOOGLE_CLOUD_PROJECT environment variable.
+INFO:     Started server process [85752]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [85752]
+Warning: Failed to initialize Firestore: Project ID is required to access Firestore. Either set the projectId option, or use service account credentials. Alternatively, set the GOOGLE_CLOUD_PROJECT environment variable.
+Process SpawnProcess-16:
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/uvicorn/_subprocess.py", line 78, in subprocess_started
+    target(sockets=sockets)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/uvicorn/server.py", line 62, in run
+    return asyncio.run(self.serve(sockets=sockets))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/base_events.py", line 686, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/uvicorn/server.py", line 69, in serve
+    config.load()
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/uvicorn/config.py", line 458, in load
+    self.loaded_app = import_from_string(self.app)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/uvicorn/importer.py", line 21, in import_from_string
+    module = importlib.import_module(module_str)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/Users/ffrancois/Library/CloudStorage/GoogleDrive-ffrancois@google.com/Shared drives/00 - BI FR & ME Markets (BISS & CEs)/00 - Antigravity projects/99 - Looker coaching and prototyping (staging)/looker-coaching-and-prototyping/apps/agent/main.py", line 43, in <module>
+    async def global_exception_handler(request: Request, exc: Exception):
+                                                ^^^^^^^
+NameError: name 'Request' is not defined
+Warning: Failed to initialize Firestore: Project ID is required to access Firestore. Either set the projectId option, or use service account credentials. Alternatively, set the GOOGLE_CLOUD_PROJECT environment variable.
+WARNING:  StatReload detected changes in 'main.py'. Reloading...
+INFO:     Started server process [90709]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.

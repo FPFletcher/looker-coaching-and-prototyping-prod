@@ -35,7 +35,7 @@ export default function Home() {
     const [sessionId, setSessionId] = useState(() => Math.random().toString(36).substring(7));
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [mode, setMode] = useState<'existing' | 'dummy'>('existing');
-    const [selectedModel, setSelectedModel] = useState('claude-sonnet-4-5');
+    const [selectedModel, setSelectedModel] = useState('claude-sonnet-4-6');
     const [selectedExplore, setSelectedExplore] = useState<Explore | null>(null);
     const [abortController, setAbortController] = useState<AbortController | null>(null);
     const [currentUser, setCurrentUser] = useState<GoogleUser | null>(null);
@@ -49,8 +49,8 @@ export default function Home() {
     // Default credentials
     const defaultCredentials: LookerCredentials = {
         url: "https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app",
-        client_id: "fSyCPCpCtdb26F8Zwq42",
-        client_secret: "3bs3QFkvRjKFr7cV3cZkyjJH"
+        client_id: "CXy7CKWwYMjjQrHzzgxZ",
+        client_secret: "J6KYGFmpNPwwfmFrHWXB3KGG"
     };
 
     const [credentials, setCredentials] = useState<LookerCredentials>(defaultCredentials);
@@ -100,7 +100,7 @@ export default function Home() {
                 }
 
                 setMode(settings.mode || 'existing');
-                setSelectedModel(settings.model || 'claude-sonnet-4-5');
+                setSelectedModel(settings.model || 'claude-sonnet-4-6');
                 // Load extended settings
                 setVertexApiKey(settings.vertexApiKey || "");
                 setClaudeApiKey(settings.claudeApiKey || "");
@@ -245,7 +245,7 @@ export default function Home() {
             if (userSettings) {
                 setCredentials(userSettings.credentials);
                 setMode(userSettings.mode || 'existing');
-                setSelectedModel(userSettings.model || 'claude-sonnet-4-5');
+                setSelectedModel(userSettings.model || 'claude-sonnet-4-6');
 
                 // Update extended state
                 setVertexApiKey(userSettings.vertexApiKey || "");
@@ -269,7 +269,7 @@ export default function Home() {
             if (anonSettings) {
                 setCredentials(anonSettings.credentials);
                 setMode(anonSettings.mode || 'existing');
-                setSelectedModel(anonSettings.model || 'claude-sonnet-4-5');
+                setSelectedModel(anonSettings.model || 'claude-sonnet-4-6');
 
                 // Update extended state
                 setVertexApiKey(anonSettings.vertexApiKey || "");
@@ -282,11 +282,11 @@ export default function Home() {
                 // Reset to defaults
                 setCredentials({
                     url: "https://8168ca92-acf6-485c-aba1-0dbf0987da05.looker.app",
-                    client_id: "fSyCPCpCtdb26F8Zwq42",
-                    client_secret: "3bs3QFkvRjKFr7cV3cZkyjJH"
+                    client_id: "CXy7CKWwYMjjQrHzzgxZ",
+                    client_secret: "J6KYGFmpNPwwfmFrHWXB3KGG"
                 });
                 setMode('existing');
-                setSelectedModel('claude-sonnet-4-5');
+                setSelectedModel('claude-sonnet-4-6');
 
                 // Reset extended state
                 setVertexApiKey("");
