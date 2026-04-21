@@ -197,8 +197,6 @@ export default function SettingsModal({ isOpen, onClose, onSave, initialSettings
                         <optgroup label="Gemini Models">
                             <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro (Preview)</option>
                             <option value="gemini-3.1-flash-lite-preview">Gemini 3.1 Flash Lite (Preview)</option>
-                            <option value="gemini-3-pro-preview">Gemini 3 Pro (Preview)</option>
-                            <option value="gemini-3-flash-preview">Gemini 3 Flash (Preview)</option>
                             <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
                             <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
                             <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite</option>
@@ -293,151 +291,56 @@ export default function SettingsModal({ isOpen, onClose, onSave, initialSettings
                 <div className="mb-6 pt-4 border-t border-[#37393b]">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-sm font-medium text-gray-400">AI & Cloud Credentials</h3>
-                        <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-500">{useVertex ? 'Using Vertex AI' : 'Using Direct APIs'}</span>
+                    </div>
+
+                    <div className="mb-4">
+                        <label htmlFor="vertex-sa-key" className="block text-sm font-medium text-gray-300 mb-2">
+                            Vertex AI Service Account JSON Key (Claude Models)
+                        </label>
+                        <div className="relative">
+                            <textarea
+                                id="vertex-sa-key"
+                                rows={4}
+                                value={isDefaultCred(vertexApiKey, 'vertex_api_key') ? (showVertexKey ? 'default' : '••••••••••••••••••••') : vertexApiKey}
+                                onFocus={(e) => { if (isDefaultCred(vertexApiKey, 'vertex_api_key') && !showVertexKey) { e.target.value = ''; setShowVertexKey(true); } else if (e.target.value === 'default') { e.target.value = ''; } }}
+                                onChange={(e) => handleVertexKeyChange(e.target.value)}
+                                placeholder="Paste API Key (AIza...) or entire Service Account JSON content here..."
+                                className={`w-full px-3 py-2 bg-[#2a2b2c] border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 pr-20 text-xs font-mono ${isDefaultCred(vertexApiKey, 'vertex_api_key') ? 'border-green-500/40' : 'border-[#37393b]'}`}
+                            />
                             <button
                                 type="button"
-                                onClick={() => setUseVertex(!useVertex)}
-                                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${useVertex ? 'bg-blue-600' : 'bg-gray-600'}`}
+                                onClick={() => setShowVertexKey(!showVertexKey)}
+                                className="absolute right-2 top-2 px-2 py-1 text-xs text-gray-400 hover:text-white transition-colors bg-[#2a2b2c] border border-gray-600 rounded"
                             >
-                                <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${useVertex ? 'translate-x-5' : 'translate-x-1'}`} />
+                                {showVertexKey ? 'Hide' : 'Show'}
+                            </button>
+                        </div>
+                        {isDefaultCred(vertexApiKey, 'vertex_api_key') && <p className="text-xs text-green-400 mt-1">✓ Using Server Native IAM Identity</p>}
+                    </div>
+
+                    <div>
+                        <label htmlFor="google-api-key" className="block text-sm font-medium text-gray-300 mb-2">
+                            Google AI Studio API Key (Gemini Models)
+                        </label>
+                        <div className="relative">
+                            <input
+                                id="google-api-key"
+                                type={showGoogleKey ? 'text' : 'password'}
+                                value={isDefaultCred(googleApiKey, 'google_api_key') ? (showGoogleKey ? 'default' : '••••••••••••••••••••') : googleApiKey}
+                                onFocus={(e) => { if (isDefaultCred(googleApiKey, 'google_api_key') && !showGoogleKey) { e.target.value = ''; setShowGoogleKey(true); } else if (e.target.value === 'default') { e.target.value = ''; } }}
+                                onChange={(e) => handleGoogleKeyChange(e.target.value)}
+                                placeholder="Enter Google AI Studio API Key"
+                                className={`w-full px-3 py-2 bg-[#2a2b2c] border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 pr-20 ${isDefaultCred(googleApiKey, 'google_api_key') ? 'border-green-500/40' : 'border-[#37393b]'}`}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowGoogleKey(!showGoogleKey)}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-1 text-xs text-gray-400 hover:text-white transition-colors"
+                            >
+                                {showGoogleKey ? 'Hide' : 'Show'}
                             </button>
                         </div>
                     </div>
-
-                    {useVertex ? (
-                        <div className="mb-4">
-                            <label htmlFor="vertex-api-key" className="block text-sm font-medium text-gray-300 mb-2">
-                                Vertex API Key / Service Account JSON <span className="text-gray-500 text-xs font-normal">(type "default" to revert)</span>
-                            </label>
-                            <div className="relative">
-                                <textarea
-                                    id="vertex-api-key"
-                                    rows={4}
-                                    value={isDefaultCred(vertexApiKey, 'vertex_api_key') ? (showVertexKey ? 'default' : '••••••••••••••••••••') : vertexApiKey}
-                                    onFocus={(e) => { if (isDefaultCred(vertexApiKey, 'vertex_api_key') && !showVertexKey) { e.target.value = ''; setShowVertexKey(true); } else if (e.target.value === 'default') { e.target.value = ''; } }}
-                                    onChange={(e) => handleVertexKeyChange(e.target.value)}
-                                    placeholder="Paste API Key (AIza...) or entire Service Account JSON content here..."
-                                    className={`w-full px-3 py-2 bg-[#2a2b2c] border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 pr-20 text-xs font-mono ${isDefaultCred(vertexApiKey, 'vertex_api_key') ? 'border-green-500/40' : 'border-[#37393b]'}`}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowVertexKey(!showVertexKey)}
-                                    className="absolute right-2 top-2 px-2 py-1 text-xs text-gray-400 hover:text-white transition-colors bg-[#2a2b2c] border border-gray-600 rounded"
-                                >
-                                    {showVertexKey ? 'Hide' : 'Show'}
-                                </button>
-                            </div>
-                            {isDefaultCred(vertexApiKey, 'vertex_api_key') && <p className="text-xs text-green-400 mt-1">✓ Using Server Native IAM Identity</p>}
-                            {!isDefaultCred(vertexApiKey, 'vertex_api_key') && vertexApiKey.trim().startsWith('{') && <p className="text-xs text-blue-400 mt-1">✓ Service Account JSON detected</p>}
-                        </div>
-                    ) : (
-                        <>
-                            <div className="mb-4">
-                                <label htmlFor="google-api-key" className="block text-sm font-medium text-gray-300 mb-2">
-                                    Gemini API Key (AI Studio) <span className="text-gray-500 text-xs font-normal">(type "default" to revert)</span>
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        id="google-api-key"
-                                        type={showGoogleKey ? 'text' : 'password'}
-                                        value={isDefaultCred(googleApiKey, 'google_api_key') ? (showGoogleKey ? 'default' : '••••••••••••••••••••') : googleApiKey}
-                                        onFocus={(e) => { if (isDefaultCred(googleApiKey, 'google_api_key') && !showGoogleKey) { e.target.value = ''; setShowGoogleKey(true); } else if (e.target.value === 'default') { e.target.value = ''; } }}
-                                        onChange={(e) => handleGoogleKeyChange(e.target.value)}
-                                        placeholder="Enter Google AI Studio API Key"
-                                        className={`w-full px-3 py-2 bg-[#2a2b2c] border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 pr-20 ${isDefaultCred(googleApiKey, 'google_api_key') ? 'border-green-500/40' : 'border-[#37393b]'}`}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowGoogleKey(!showGoogleKey)}
-                                        className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-1 text-xs text-gray-400 hover:text-white transition-colors"
-                                    >
-                                        {showGoogleKey ? 'Hide' : 'Show'}
-                                    </button>
-                                </div>
-                                </div>
-                                <div className="mb-4">
-                                    <label htmlFor="claude-api-key" className="block text-sm font-medium text-gray-300 mb-2">
-                                        Anthropic API Key <span className="text-gray-500 text-xs font-normal">(type "default" to revert)</span>
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            id="claude-api-key"
-                                            type={showClaudeKey ? 'text' : 'password'}
-                                            value={isDefaultCred(claudeApiKey, 'claude_api_key') ? (showClaudeKey ? 'default' : '••••••••••••••••••••') : claudeApiKey}
-                                            onFocus={(e) => { if (isDefaultCred(claudeApiKey, 'claude_api_key') && !showClaudeKey) { e.target.value = ''; setShowClaudeKey(true); } else if (e.target.value === 'default') { e.target.value = ''; } }}
-                                            onChange={(e) => handleClaudeKeyChange(e.target.value)}
-                                            placeholder="Enter Anthropic API Key"
-                                            className={`w-full px-3 py-2 bg-[#2a2b2c] border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 pr-20 ${isDefaultCred(claudeApiKey, 'claude_api_key') ? 'border-green-500/40' : 'border-[#37393b]'}`}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowClaudeKey(!showClaudeKey)}
-                                            className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-1 text-xs text-gray-400 hover:text-white transition-colors"
-                                        >
-                                            {showClaudeKey ? 'Hide' : 'Show'}
-                                        </button>
-                                    </div>
-                                </div>
-                            </>
-                    )}
-                </div>
-
-                {/* Advanced Options Toggle */}
-                <div className="mb-6 pt-4 border-t border-[#37393b]">
-                    <button
-                        type="button"
-                        onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
-                        className="flex items-center gap-2 w-full text-sm font-medium text-gray-400 hover:text-white transition-colors"
-                    >
-                        <ChevronDown className={`w-4 h-4 transition-transform ${isAdvancedOpen ? 'rotate-180' : ''}`} />
-                        Advanced Options
-                    </button>
-
-                    {isAdvancedOpen && (
-                        <div className="mt-5 space-y-6">
-
-                            <div>
-                                <h4 className="text-sm font-medium text-gray-300 mb-3">Conversational Analytics (Optional)</h4>
-                                {useVertex ? (
-                                    <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-                                        <p className="text-xs text-blue-300">
-                                            Settings inferred from Vertex Service Account.
-                                        </p>
-                                    </div>
-                                ) : (
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <div>
-                                                <label htmlFor="gcp-project" className="block text-xs font-medium text-gray-400 mb-1">
-                                                    GCP Project ID
-                                                </label>
-                                                <input
-                                                    id="gcp-project"
-                                                    type="text"
-                                                    value={gcpProject}
-                                                    onChange={(e) => setGcpProject(e.target.value)}
-                                                    placeholder="looker-core-demo-..."
-                                                    className="w-full px-3 py-2 bg-[#2a2b2c] border border-[#37393b] rounded-lg text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label htmlFor="gcp-location" className="block text-xs font-medium text-gray-400 mb-1">
-                                                    Location
-                                                </label>
-                                                <input
-                                                    id="gcp-location"
-                                                    type="text"
-                                                    value={gcpLocation}
-                                                    onChange={(e) => setGcpLocation(e.target.value)}
-                                                    placeholder="europe-west1"
-                                                    className="w-full px-3 py-2 bg-[#2a2b2c] border border-[#37393b] rounded-lg text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                                                />
-                                            </div>
-                                        </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
                 </div>
 
                 {/* Info Box */}

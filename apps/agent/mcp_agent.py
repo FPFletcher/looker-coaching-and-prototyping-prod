@@ -143,6 +143,7 @@ class MCPAgent:
         model_name: str = "gemini-2.0-flash",
         vertex_api_key: str = "",
         claude_api_key: str = "",
+        google_api_key: str = "",
         llm_region: str = "US",
     ):
 
@@ -164,7 +165,8 @@ class MCPAgent:
         self.is_claude = model_name.startswith("claude-")
 
         # Resolve credentials: UI-provided > env fallback
-        _vertex_key = vertex_api_key or os.getenv("VERTEX_API_KEY", "") or os.getenv("GOOGLE_API_KEY", "")
+        _vertex_key = vertex_api_key or os.getenv("VERTEX_API_KEY", "")
+        _google_key = google_api_key or os.getenv("GOOGLE_API_KEY", "")
         _claude_key = claude_api_key or os.getenv("ANTHROPIC_API_KEY", "")
         _gcp_project = os.getenv("VERTEX_PROJECT", "antigravity-innovations")
         _gcp_region_claude = os.getenv("VERTEX_REGION_CLAUDE", "global")  # User suspects global works with correct ID
@@ -192,6 +194,21 @@ class MCPAgent:
              logger.info("Vertex AI: Using OAuth2 Access Token provided.")
              _vertex_access_token = _vertex_key
              _vertex_creds = google_credentials.Credentials(_vertex_key)
+        elif os.getenv("GOOGLE_APPLICATION_CREDENTIALS") and os.path.exists(os.getenv("GOOGLE_APPLICATION_CREDENTIALS")):
+             try:
+                 import json
+                 from google.oauth2 import service_account
+                 with open(os.getenv("GOOGLE_APPLICATION_CREDENTIALS"), 'r') as f:
+                     sa_info = json.load(f)
+                 _vertex_creds = service_account.Credentials.from_service_account_info(
+                     sa_info, 
+                     scopes=["https://www.googleapis.com/auth/cloud-platform"]
+                 )
+                 if "project_id" in sa_info:
+                      _gcp_project = sa_info["project_id"]
+                 logger.info(f"Loaded credentials from GOOGLE_APPLICATION_CREDENTIALS: {os.getenv('GOOGLE_APPLICATION_CREDENTIALS')}")
+             except Exception as e:
+                 logger.error(f"Failed to load service account from GOOGLE_APPLICATION_CREDENTIALS: {e}")
 
         # Map UI model names to Vertex IDs (Default behavior)
         # Map UI model names to Vertex IDs (Default behavior)
@@ -271,15 +288,25 @@ class MCPAgent:
                     "asia-northeast1", "asia-southeast1", "northamerica-northeast1"
                 ]
 
-                if _vertex_key and (_vertex_key.startswith("AIza") or _vertex_key.startswith("AQ")):
+                if _google_key:
                     logger.info("Gemini: Google AI Studio with API key provided.")
+                    # Temporarily remove GOOGLE_APPLICATION_CREDENTIALS to avoid confusion with SA token
+                    adc_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
+                    if adc_path:
+                        del os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
+                    
                     self.genai_client = google_genai.Client(
-                        api_key=_vertex_key,
+                        api_key=_google_key,
                     )
                     self.is_vertex = False
+                    
+                    # Restore it for other uses
+                    if adc_path:
+                        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = adc_path
                 else: 
                      # Fallback to pure ADC (environment)
                      logger.info(f"Gemini: Vertex AI via Ambient ADC (project={_gcp_project})")
+                     self.model_name = self._map_to_vertex_model(self.model_name)
                      vertex_kwargs = {
                         "vertexai": True,
                         "project": _gcp_project,
@@ -317,8 +344,7 @@ class MCPAgent:
             # Gemini 3.x (preview)
             "gemini-3.1-pro-preview":     "gemini-3.1-pro-preview",
             "gemini-3.1-flash-lite-preview": "gemini-3.1-flash-lite-preview",
-            "gemini-3-pro-preview":     "gemini-3-pro-preview",
-            "gemini-3-flash-preview":     "gemini-3-flash-preview",
+
 
             # Claude 3.5 & 3 (including handling cached UI names)
             "claude-sonnet-4-5-20250929": "claude-sonnet-4-5@20250929",
@@ -2455,8 +2481,7 @@ class MCPAgent:
         Constructs the system prompt for the agent with clear POC mode restrictions.
         """
         system_prompt = (
-            f"You are a Looker assistant with direct access to Looker MCP tools.\n"
-            f"Active GCP Project: {gcp_project}, Location: {gcp_location}\n\n"
+            f"You are a Looker assistant with direct access to Looker MCP tools.\n\n"
         )
 
         # TOOL INTEGRITY RULES (applies to ALL modes)

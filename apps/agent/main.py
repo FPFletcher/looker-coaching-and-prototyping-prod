@@ -210,9 +210,9 @@ async def chat(request: ChatRequest):
         chat_agent = MCPAgent(
             session_id=session_id, 
             model_name=request.model,
-            vertex_api_key=effective_gemini_key or "",
+            vertex_api_key=request.vertex_api_key or "",
             claude_api_key=request.claude_api_key or "",
-            # llm_region removed as it was deprecated
+            google_api_key=request.google_api_key or "",
         )
 
         async def event_generator():
